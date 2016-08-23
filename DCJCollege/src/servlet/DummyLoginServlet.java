@@ -11,6 +11,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import bean.account.AccountBean;
+import data.account.AccountBeanHelper;
+import data.account.DummyAccountBeanHelper;
+
 /**
  * Servlet implementation class DummyLoginServlet
  */
@@ -36,6 +40,12 @@ public class DummyLoginServlet extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		HttpSession session = request.getSession();
+		String name = request.getParameter("name");
+		String pass = request.getParameter("pass");
+		AccountBean account = null;
+		AccountBeanHelper helper = null;
+		
+		session.setAttribute("errText", "");
 		
 		Object o = session.getAttribute("csrfToken");
 		if(o == null) {
@@ -52,7 +62,23 @@ public class DummyLoginServlet extends HttpServlet {
 			}
 		}
 		
-		response.getOutputStream().println("<h1>Good!</h1>");
+		if(name == null || pass == null) {
+			session.setAttribute("errText", "Missing input parameters");
+			request.getRequestDispatcher("index.jsp").forward(request, response);
+			return;
+		}
+		
+		helper = DummyAccountBeanHelper.getInstance();
+		if(helper.checkCredentials(name, pass)) {
+			account = new AccountBean();
+			account.setName(name);
+			session.setAttribute("login-data", account);
+			request.getRequestDispatcher("MainMenu.jsp").forward(request, response);
+			return;
+		}
+		
+		session.setAttribute("errText", "An error occurred");
+		request.getRequestDispatcher("index.jsp").forward(request, response);
 	}
 
 }
