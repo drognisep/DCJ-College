@@ -18,15 +18,15 @@ import data.account.DummyAccountBeanHelper;
 /**
  * Servlet implementation class DummyLoginServlet
  */
-@WebServlet("/DummyLogin")
-public class DummyLoginServlet extends HttpServlet {
+@WebServlet("/Login")
+public class LoginServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private Logger log = Logger.getLogger("DummyLoginServlet");
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public DummyLoginServlet() {}
+    public LoginServlet() {}
 
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)

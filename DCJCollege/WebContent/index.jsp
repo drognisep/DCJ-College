@@ -12,7 +12,7 @@
 	<h1>Welcome to DCJ College!</h1>
 	<br />
 	<h3>Please login to continue</h3>
-	<form action="DummyLogin" method="post">
+	<form action="Login" method="post">
 		<p>
 			<label for="name">User name</label>
 			<input type="text" name="name" required />

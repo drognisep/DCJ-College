@@ -9,7 +9,7 @@
 <title>DCJ College - Main Menu</title>
 </head>
 <body>
-	<nav>
+	<nav class="top-nav">
 		<a href="StudentFunctions.jsp">Student</a>
 		<a href="AdministrativeFunctions.jsp">Administrative</a>
 		<a href="ReportingFunctions.jsp">Reporting</a>
