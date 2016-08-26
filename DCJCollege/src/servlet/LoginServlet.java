@@ -13,7 +13,6 @@ import javax.servlet.http.HttpSession;
 
 import bean.account.AccountBean;
 import data.account.AccountBeanHelper;
-import data.account.DummyAccountBeanHelper;
 
 /**
  * Servlet implementation class DummyLoginServlet
@@ -68,7 +67,7 @@ public class LoginServlet extends HttpServlet {
 			return;
 		}
 		
-		helper = DummyAccountBeanHelper.getInstance();
+		helper = AccountBeanHelper.getInstance();
 		if(helper.checkCredentials(name, pass)) {
 			account = new AccountBean();
 			account.setName(name);
