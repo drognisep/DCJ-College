@@ -42,7 +42,7 @@ public abstract class AbstractStudentFunctionHelper {
 	 * @param sectionID This should be the section
 	 * @return True if the addition was successful, false otherwise.
 	 */
-	public abstract boolean registerSection(AccountBean act, String courseID, String sectionID);
+	public abstract boolean addSection(AccountBean act, String courseID, String sectionID);
 	
 	/**
 	 * Removes a course for the given {@code AccountBean} based on the {@code courseID} value passed.
@@ -59,7 +59,7 @@ public abstract class AbstractStudentFunctionHelper {
 	 * @throws DbHelperException indicating what error occurred.
 	 * @return A double with the total amount if successful
 	 */
-	public abstract double getFees(AccountBean act) throws DbHelperException;
+	public abstract double getTotalFees(AccountBean act) throws DbHelperException;
 	
 	/**
 	 * Update the fees owed by the student by the given amount.
@@ -69,4 +69,12 @@ public abstract class AbstractStudentFunctionHelper {
 	 * @throws DbHelperException indicating what error occurred.
 	 */
 	public abstract double payFees(AccountBean act, double amount) throws DbHelperException;
+
+	/**
+	 * Get the total amount of fees paid by the student.
+	 * @param act Initialized {@code AccountBean} with all account information.
+	 * @return The amount paid
+	 * @throws DbHelperException indicating what error occurred.
+	 */
+	public abstract double getPaidFees(AccountBean act) throws DbHelperException;
 }

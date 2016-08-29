@@ -11,6 +11,7 @@ public class DummyStudentFunctionHelper extends AbstractStudentFunctionHelper {
 	Logger log = Logger.getLogger("DummyStudentFunctionHelper");
 	
 	private double fees = 123;
+	private double paidFees = 0;
 	
 	private String[] courses = new String[] {
 			"100 - English",
@@ -77,10 +78,11 @@ public class DummyStudentFunctionHelper extends AbstractStudentFunctionHelper {
 	}
 
 	@Override
-	public boolean registerSection(AccountBean act, String courseID, String sectionID) {
+	public boolean addSection(AccountBean act, String courseID, String sectionID) {
 		int cid = -1;
 		
 		for(int i = 0; i < courses.length; i++) {
+			log.info("Found courseID: " + courses[i].split(" - ")[0]);
 			if(courseID.equals(courses[i].split(" - ")[0])) {
 				cid = i;
 				break;
@@ -131,21 +133,27 @@ public class DummyStudentFunctionHelper extends AbstractStudentFunctionHelper {
 	}
 
 	@Override
-	public double getFees(AccountBean act) throws DbHelperException {
+	public double getTotalFees(AccountBean act) throws DbHelperException {
 		return fees;
 	}
 
 	@Override
 	public double payFees(AccountBean act, double amount)
 			throws DbHelperException {
-		fees -= amount;
-		return getFees(act);
+		if(amount > 0) {
+			paidFees += amount;
+		} else {
+			log.log(Level.SEVERE, "Bad parameter " + String.format("$%0,1.2f",amount) + " passed as parameter");
+		}
+		return getTotalFees(act);
 	}
 
 	@Override
 	public String[] getCourseSections(String courseID) throws DbHelperException {
 		int cid = -1;
+		courseID = courseID.split(" - ")[0];
 		for(int i = 0; i < courses.length; i++) {
+//			log.info("\t- Checking courseID: " + courses[i].split(" - ")[0] + " for " + courseID);
 			if(courseID.equals(courses[i].split(" - ")[0])) {
 				cid = i;
 				break;
@@ -157,5 +165,10 @@ public class DummyStudentFunctionHelper extends AbstractStudentFunctionHelper {
 		}
 		
 		return sections[cid];
+	}
+
+	@Override
+	public double getPaidFees(AccountBean act) throws DbHelperException {
+		return paidFees;
 	}
 }

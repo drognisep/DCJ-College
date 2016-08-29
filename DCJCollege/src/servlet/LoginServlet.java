@@ -63,21 +63,24 @@ public class LoginServlet extends HttpServlet {
 		
 		if(name == null || pass == null) {
 			session.setAttribute("errText", "Missing input parameters");
-			request.getRequestDispatcher("index.jsp").forward(request, response);
+//			request.getRequestDispatcher("index.jsp").forward(request, response);
+			response.sendRedirect("index.jsp");
 			return;
 		}
 		
 		helper = AccountBeanHelper.getInstance();
 		if(helper.checkCredentials(name, pass)) {
 			account = new AccountBean();
-			account.setName(name);
-			session.setAttribute("login-data", account);
-			request.getRequestDispatcher("MainMenu.jsp").forward(request, response);
+			account.setId(name);
+			session.setAttribute("account", account);
+//			request.getRequestDispatcher("StudentServices").forward(request, response);
+			response.sendRedirect("MainMenu.jsp");
 			return;
 		}
 		
 		session.setAttribute("errText", "An error occurred");
-		request.getRequestDispatcher("index.jsp").forward(request, response);
+//		request.getRequestDispatcher("index.jsp").forward(request, response);
+		response.sendRedirect("index.jsp");
 	}
 
 }

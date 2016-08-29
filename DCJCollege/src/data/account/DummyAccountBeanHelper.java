@@ -66,7 +66,7 @@ public class DummyAccountBeanHelper extends AccountBeanHelper {
 	 * Simulate getting course_no and course_name from database
 	 * @param act AccountBean instance that represents a valid account.
 	 * @return If successful, returns an array of courses. Otherwise, returns zero length array.
-	 */
+	 *//*
 	public String[] getAvailableCourses(AccountBean act) {
 		StringBuffer sb = new StringBuffer();
 		
@@ -78,7 +78,7 @@ public class DummyAccountBeanHelper extends AccountBeanHelper {
 		String s = sb.toString();
 		
 		return s.substring(0, s.length() - 1).split("|");
-	}
+	}*/
 	
 	
 }

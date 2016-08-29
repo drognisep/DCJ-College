@@ -2,10 +2,11 @@ package data.account;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.logging.Logger;
 
 import util.AppConfig;
 import bean.account.AccountBean;
-import data.util.*;
+import data.util.DbHelperException;
 
 /**
  * Singleton class template for DAO actions pertaining to AccountBean. Update this class to add required
@@ -14,6 +15,7 @@ import data.util.*;
  */
 public abstract class AccountBeanHelper {
 	protected AbstractStudentFunctionHelper sHelper;
+	private static Logger log = Logger.getLogger("AccountBeanHelper");
 	
 	protected AccountBeanHelper(AbstractStudentFunctionHelper sHelper) {
 		this.sHelper = sHelper;
@@ -29,10 +31,10 @@ public abstract class AccountBeanHelper {
 			try {
 				Class<?> abhClass = Class.forName(abName);
 				Class<?> sfhClass = Class.forName(sfName);
-				Constructor<?> sfCons = sfhClass.getConstructor(new Class<?>[0]);
-				Object sfInstance = (AbstractStudentFunctionHelper)sfCons.newInstance(new Object[] {});
-				Constructor<?> abCons = abhClass.getConstructor(new Class<?>[] {sfhClass});
-				Object abInstance = (AccountBeanHelper)abCons.newInstance(sfInstance);
+				Constructor<?> sfhCons = sfhClass.getConstructor(new Class<?>[0]);
+				Object sfInstance = (AbstractStudentFunctionHelper)sfhCons.newInstance(new Object[] {});
+				Constructor<?> abhCons = abhClass.getConstructor(new Class<?>[] {AbstractStudentFunctionHelper.class});
+				Object abInstance = (AccountBeanHelper)abhCons.newInstance(sfInstance);
 				INSTANCE = (AccountBeanHelper) abInstance;
 			} catch (ClassNotFoundException e) {
 				// TODO Auto-generated catch block
@@ -59,6 +61,8 @@ public abstract class AccountBeanHelper {
 				if(INSTANCE == null) {
 					INSTANCE = new DummyAccountBeanHelper(new DummyStudentFunctionHelper());
 					System.out.println("Failed to initialize INSTANCE");
+				} else {
+					log.info("AccountBeanHelper successfully injected with AppConfig provided dependency");
 				}
 			}
 		}
@@ -97,7 +101,7 @@ public abstract class AccountBeanHelper {
 
 	public boolean registerSection(AccountBean act, String courseID,
 			String sectionID) {
-		return sHelper.registerSection(act, courseID, sectionID);
+		return sHelper.addSection(act, courseID, sectionID);
 	}
 
 	public boolean dropSection(AccountBean act, String courseID,
@@ -106,7 +110,7 @@ public abstract class AccountBeanHelper {
 	}
 
 	public double getFees(AccountBean act) throws DbHelperException {
-		return sHelper.getFees(act);
+		return sHelper.getTotalFees(act);
 	}
 
 	public double payFees(AccountBean act, double amount)

@@ -10,15 +10,49 @@ public class TransformHtml {
 	
 	public static String getListItems(String... items) {
 		StringBuffer sb = new StringBuffer();
+		for(String i : items) sb.append("<li>").append(i).append("</li>\n");
+		return sb.toString();
+	}
+	
+	public static String getOptionList(String... items) {
+		StringBuffer sb = new StringBuffer();
+		for(String i : items) sb.append("<option value=\"").append(i).append("\">").append(i).append("\n");
+		return sb.toString();
+	}
+	
+	public String getTableRows() {
+		StringBuffer sb = new StringBuffer();
+		boolean newRow = true;
 		
-		for(String i : items) {
-			sb.append("<li>").append(i).append("</li>");
+		for(int i = 0; i < tableData.length; i++) {
+			if(newRow) {
+				sb.append("<tr>\n");
+				newRow = false;
+			}
+			sb.append("<td>").append(tableData[i]).append("</td>\n");
+			if((i + 1) % columns == 0) {
+				sb.append("</tr>\n");
+				newRow = true;
+			}
 		}
 		
 		return sb.toString();
 	}
 	
-	public static String getTable(String attributes, int columns, String headerString, String... data) {
+	public static String getTableRows(int columns, String[] data) {
+		TransformHtml trans = new TransformHtml();
+		
+		trans.setColumns(columns);
+		trans.setTableData(data);
+		
+		return trans.getTableRows();
+	}
+	
+	public static String getTableRows(int columns, String data) {
+		return getTableRows(columns, data.split("|"));
+	}
+	
+	public static String getTable(String attributes, int columns, String headerString, String[] data) {
 		TransformHtml trans = new TransformHtml();
 		
 		trans.setAttributes(attributes);
@@ -27,6 +61,10 @@ public class TransformHtml {
 		trans.setHeaderString(headerString);
 		
 		return trans.getTable();
+	}
+	
+	public static String getTable(String attributes, int columns, String headerString, String data) {
+		return getTable(attributes, columns, headerString, data.split("|"));
 	}
 	
 	public String getTable() {
@@ -91,8 +129,15 @@ public class TransformHtml {
 		return tableData;
 	}
 
-	public void setTableData(String[] headerData) {
-		if(headerData == null || headerData.length <= 0) this.tableData = new String[0];
-		else this.tableData = headerData;
+	public String[] getTableData() {
+		return tableData;
+	}
+
+	public void setTableData(String[] tableData) {
+		this.tableData = tableData;
+	}
+	
+	public void setTableData(String tableData) {
+		this.tableData = tableData.split("|");
 	}
 }

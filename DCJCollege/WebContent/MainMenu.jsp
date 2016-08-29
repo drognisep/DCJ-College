@@ -10,7 +10,7 @@
 </head>
 <body>
 	<nav class="top-nav">
-		<a href="StudentFunctions.jsp">Student</a>
+		<a href="StudentServices">Student</a>
 		<a href="AdministrativeFunctions.jsp">Administrative</a>
 		<a href="ReportingFunctions.jsp">Reporting</a>
 		<a href="Logout">Logout</a>
