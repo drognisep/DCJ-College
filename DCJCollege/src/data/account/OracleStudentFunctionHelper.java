@@ -1,3 +1,17 @@
+/*
+ * [REVIEWED BY DOUG SAYLOR (8/29)]
+ * 
+ * CORRECTIONS MADE:
+ *   - Changed AccountBean method to match master version (getID -> getId)
+ *   - Integrated abstract class changes as needed (getFees -> getTotalFees, +getPaidFees)
+ *   - Reworded exception messages to more clearly indicate error context
+ *   - getConnection() should be used in all methods that utilize a Connection object
+ *     * Talk about why
+ *   - Corrected minor typos
+ * 
+ * CORRECTIONS RECOMMENDED:
+ *   - Change getTotalFees method to return fees for _total_ fees for all courses for specified student_id.
+ */
 package data.account;
 
 import java.sql.*;
@@ -19,22 +33,22 @@ public class OracleStudentFunctionHelper extends AbstractStudentFunctionHelper {
 		} catch (SQLException e1) {
 			e1.printStackTrace();
 			throw new DbHelperException(
-					"Unable to get determined state of connection");
+					"Unable to determine state of connection");
 		}
 
 		try {
-
-			Class.forName("Oracle.jdbc.driver.OracleDriver");
+			// TODO: [FUTURE] Make this pull connection information from AppConfig, and push updates
+			Class.forName("oracle.jdbc.driver.OracleDriver");
 			connection = DriverManager.getConnection(
 					"jdbc:oracle:thin:@localhost:1521:XE", "school", "school");
 		} catch (SQLException sqle) {
 			sqle.printStackTrace();
 			throw new DbHelperException(
-					"SQL Exception; AbstractStudentFunctionHelper; connectDB()");
+					"Unable to establish connection to database");
 		} catch (ClassNotFoundException cnfe) {
 			cnfe.printStackTrace();
 			throw new DbHelperException(
-					"ClassNotFound; AbstractStudentFunctionHelper; connectDB");
+					"Unable to locate driver class");
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new DbHelperException();
@@ -47,6 +61,7 @@ public class OracleStudentFunctionHelper extends AbstractStudentFunctionHelper {
 	public String[] getAvailableCourses(AccountBean act)
 			throws DbHelperException {
 		ArrayList<String> courseArray = new ArrayList<String>();
+		Connection connection = getConnection();
 		String arrayCourses[] = null;
 		String id = act.getId();
 		if (id.charAt(0) == 's') {
@@ -81,6 +96,7 @@ public class OracleStudentFunctionHelper extends AbstractStudentFunctionHelper {
 	public String[] getCourseSections(String courseID) throws DbHelperException {
 		String[] arrayCourses = null;
 		ArrayList<String> arrayList = new ArrayList<String>();
+		Connection connection = getConnection();
 		try {
 			PreparedStatement pstmt = connection
 					.prepareStatement("Select section_id from sections where course_id = ?");
@@ -112,6 +128,7 @@ public class OracleStudentFunctionHelper extends AbstractStudentFunctionHelper {
 		ArrayList<String> courseArray = new ArrayList<String>();
 		String arrayCourses[] = null;
 		String student_id = act.getId();
+		Connection connection = getConnection();
 		if (student_id.charAt(0) == 's') {
 			try {
 				PreparedStatement pstmt = connection
@@ -144,6 +161,14 @@ public class OracleStudentFunctionHelper extends AbstractStudentFunctionHelper {
 	@Override
 	public boolean addSection(AccountBean act, String courseID, String sectionID) {
 		String student_id = act.getId();
+		Connection connection;
+		try {
+			connection = getConnection();
+		} catch (DbHelperException dbhx) {
+			dbhx.printStackTrace();
+			return false;
+		}
+		
 		boolean updated = false;
 		if (student_id.charAt(0) == 's') {
 			try {
@@ -170,6 +195,13 @@ public class OracleStudentFunctionHelper extends AbstractStudentFunctionHelper {
 	public boolean dropSection(AccountBean act, String courseID,
 			String sectionID) {
 		String student_id = act.getId();
+		Connection connection;
+		try {
+			connection = getConnection();
+		} catch (DbHelperException dbhx) {
+			dbhx.printStackTrace();
+			return false;
+		}
 		boolean updated = false;
 		if (student_id.charAt(0) == 's') {
 			try {
@@ -192,7 +224,13 @@ public class OracleStudentFunctionHelper extends AbstractStudentFunctionHelper {
 
 	@Override
 	public double getTotalFees(AccountBean act) throws DbHelperException {
+		/*
+		 * TODO: Should't this be total fees, and not fees due? Fees due can be obtained with simple
+		 * subtraction once both of these values are obtained. This could lead to less queries for 
+		 * information that can be easily calculated.
+		 */		
 		String student_id = act.getId();
+		Connection connection = getConnection();
 		double fees_due = 0;
 		if (student_id.charAt(0) == 's') {
 			try {
@@ -220,6 +258,7 @@ public class OracleStudentFunctionHelper extends AbstractStudentFunctionHelper {
 	@Override
 	public double getPaidFees(AccountBean act) throws DbHelperException {
 		String student_id = act.getId();
+		Connection connection = getConnection();
 		double fees_paid = 0;
 		if (student_id.charAt(0) == 's') {
 			try {
@@ -248,6 +287,7 @@ public class OracleStudentFunctionHelper extends AbstractStudentFunctionHelper {
 	public double payFees(AccountBean act, double amount)
 			throws DbHelperException {
 		String student_id = act.getId();
+		Connection connection = getConnection();
 		double total_fees_paid = getPaidFees(act) + amount;
 		double new_balance = 0;
 
