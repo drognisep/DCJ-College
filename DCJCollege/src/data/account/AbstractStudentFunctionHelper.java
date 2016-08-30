@@ -4,6 +4,8 @@ import bean.account.AccountBean;
 import data.util.DbHelperException;
 
 public abstract class AbstractStudentFunctionHelper {
+	public AbstractStudentFunctionHelper() {}
+	
 	/**
 	 * Get all courses available to the given account. If the {@code AccountBean} belongs to an 
 	 * instructor, then simply return a zero length array: {@code String[] ary = new String[0]; }.

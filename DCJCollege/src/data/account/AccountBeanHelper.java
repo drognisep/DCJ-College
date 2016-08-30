@@ -61,6 +61,10 @@ public abstract class AccountBeanHelper {
 				if(INSTANCE == null) {
 					// INSTANCE = new DummyAccountBeanHelper(new DummyStudentFunctionHelper());
 					System.out.println("Failed to initialize INSTANCE");
+					System.out.println("Constructors:");
+					for(Constructor<?> c : DummyStudentFunctionHelper.class.getConstructors()) {
+						System.out.println(c.toString());
+					}
 				} else {
 					log.info("AccountBeanHelper successfully injected with AppConfig provided dependency");
 				}

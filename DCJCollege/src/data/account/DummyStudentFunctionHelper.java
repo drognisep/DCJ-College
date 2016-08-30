@@ -33,7 +33,7 @@ public class DummyStudentFunctionHelper extends AbstractStudentFunctionHelper {
 	
 	private ArrayList<String> mySections = new ArrayList<>();
 	
-	private DummyStudentFunctionHelper() {
+	public DummyStudentFunctionHelper() {
 		myCourses.add(courses[1]);
 		myCourses.add(courses[2]);
 		myCourses.add(courses[4]);

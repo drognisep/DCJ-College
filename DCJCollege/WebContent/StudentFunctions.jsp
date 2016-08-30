@@ -46,6 +46,7 @@ feesDue = (o==null? 0.0 : (Double)o);
 	<p>Please select one of the options above.</p>
 	<p class="errText">${errText}</p>
 	<p class="infoText">${infoText}</p>
+	
 	<div id="div0" class="hidden-modal-div">
 		<div class="inner-modal-div">
 			<h3>Registration Form</h3>
@@ -69,10 +70,12 @@ feesDue = (o==null? 0.0 : (Double)o);
 					<input type="text" name="phone" required maxlength="10" size="10" value="<%= (account.getPhone() == 0 ? "" : account.getPhone()) %>" />
 				</p>
 				<input type="hidden" name="reqType" value="updateRegistration" />
+				<input type="hidden" name="reqOrigin" value="StudentFunctions" />
 				<input type="submit" value="Update" />
 			</form>
 		</div>
 	</div>
+	
 	<div id="div1" class="hidden-modal-div">
 		<div class="inner-modal-div">
 			<h3>Add/Drop a Course</h3>
@@ -94,7 +97,8 @@ feesDue = (o==null? 0.0 : (Double)o);
 				</select></td>
 				<td><input type="submit" /></td></tr>
 				</table>
-				<input type="hidden" name="reqType" value="AddCourse" /> 
+				<input type="hidden" name="reqType" value="AddCourse" />
+				<input type="hidden" name="reqOrigin" value="StudentFunctions" />
 			</form>
 			<form action="StudentServices" method="post">
 				<table>
@@ -109,22 +113,30 @@ feesDue = (o==null? 0.0 : (Double)o);
 				<td><input type="submit" value="Submit" /></td>
 				</table>
 				<input type="hidden" name="reqType" value="DropCourse" /> 
+				<input type="hidden" name="reqOrigin" value="StudentFunctions" />
 			</form>
 		</div>
 	</div>
+	
 	<div id="div2" class="hidden-modal-div">
 		<div class="inner-modal-div">
-			<h3>Request Transcript</h3>
-			<form>
+			<h3>Transcript</h3>
+				${transcript}
+			<form action="StudentServices" method="post">
+				<input type="submit" value="Refresh Transcript" />
 				<input type="hidden" name="reqType" value="Transcript" />
+				<input type="hidden" name="reqOrigin" value="StudentFunctions" />
 			</form>
 		</div>
 	</div>
+	
 	<div id="div3" class="hidden-modal-div">
 		<div class="inner-modal-div">
 			<h3>Pay Fees</h3>
+			${feesDue}
 			<form>
-				
+				<input type="hidden" name="reqType" value="PayFees" />
+				<input type="hidden" name="reqOrigin" value="StudentFunctions" />
 			</form>
 		</div>
 	</div>

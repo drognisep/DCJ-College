@@ -43,8 +43,9 @@ public class StudentServicesServlet extends HttpServlet {
 		session.setAttribute("infoText", "Nothing to report...");
 		AccountBean account = (AccountBean)session.getAttribute("account");
 		
-		if(ObjValidator.anyNull(reqType, reqOrigin)) {
-			session.setAttribute("errText", "Invalid request " + reqType + " from " + reqOrigin);
+		if(ObjValidator.emptyStrings(reqType)) {
+			response.sendRedirect("StudentFunctions.jsp");
+			return;
 		} else if(account == null) {
 			response.sendRedirect("index.jsp");
 			return;
