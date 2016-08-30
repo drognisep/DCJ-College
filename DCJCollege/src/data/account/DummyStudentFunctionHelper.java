@@ -33,7 +33,7 @@ public class DummyStudentFunctionHelper extends AbstractStudentFunctionHelper {
 	
 	private ArrayList<String> mySections = new ArrayList<>();
 	
-	public DummyStudentFunctionHelper() {
+	private DummyStudentFunctionHelper() {
 		myCourses.add(courses[1]);
 		myCourses.add(courses[2]);
 		myCourses.add(courses[4]);
@@ -50,7 +50,7 @@ public class DummyStudentFunctionHelper extends AbstractStudentFunctionHelper {
 		for(String s : courses) {
 			boolean canAdd = true;
 			for(int i = 0; i < myCourses.size(); i++) {
-				if(s.equals(myCourses.get(i))) {
+				if(s.equals(myCourses.get(i).split(" - ")[0])) {
 					canAdd = false;
 					break;
 				}

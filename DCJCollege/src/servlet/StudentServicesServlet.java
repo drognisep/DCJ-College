@@ -1,5 +1,7 @@
 package servlet;
 
+import inval.object.ObjValidator;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.logging.Level;
@@ -35,14 +37,19 @@ public class StudentServicesServlet extends HttpServlet {
 	 */
 	protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String reqType = request.getParameter("reqType");
-		
+		String reqOrigin = request.getParameter("reqOrigin");
 		HttpSession session = request.getSession();
 		session.setAttribute("errText", "");
 		session.setAttribute("infoText", "Nothing to report...");
 		AccountBean account = (AccountBean)session.getAttribute("account");
-		if(account == null) {
+		
+		if(ObjValidator.anyNull(reqType, reqOrigin)) {
+			session.setAttribute("errText", "Invalid request " + reqType + " from " + reqOrigin);
+		} else if(account == null) {
 			response.sendRedirect("index.jsp");
 			return;
+		} else {
+			reqOrigin = "StudentServicesServlet";
 		}
 		
 		AccountBeanHelper helper = AccountBeanHelper.getInstance();
@@ -83,8 +90,8 @@ public class StudentServicesServlet extends HttpServlet {
 			session.setAttribute("availSections", availSections);
 			
 			session.setAttribute("transcript", "<table><tr><td>Transcript currently unavailable</td></tr></table>");
-			session.setAttribute("feesPaid", helper.getFees(account));
-			session.setAttribute("feesDue", helper.getFees(account));
+			session.setAttribute("feesPaid", helper.getPaidFees(account));
+			session.setAttribute("feesDue", helper.getTotalFees(account));
 		} catch(DbHelperException dbhx) {
 			log.log(Level.SEVERE, "An error occurred: " + dbhx.getMessage());
 			dbhx.printStackTrace();
@@ -97,11 +104,58 @@ public class StudentServicesServlet extends HttpServlet {
 			return;
 		}
 		
-		switch(reqType) {
-		case "updateRegistration":
+		// Switch for reqOrigin and reqType
+		switch(reqOrigin) {
+		case "StudentFunctions.jsp":
+			switch(reqType) {
+			case "AJAX_UpdateRegistration":
+				if(ObjValidator.anyNull(
+						request.getParameter("fname"),
+						request.getParameter("lname"),
+						request.getParameter("street"),
+						request.getParameter("city"),
+						request.getParameter("state"),
+						request.getParameter("zip"),
+						request.getParameter("phone")
+						)) {
+					session.setAttribute("errText", "Missing request parameters");
+					response.sendRedirect("StudentFunctions.jsp");
+				} else {
+					request.getRequestDispatcher("UpdateRegistrationServlet").forward(request, response);
+					return;
+				}
+				break;
+			case "AddCourse":
+				if(ObjValidator.anyNull(
+						request.getParameter("courseAddSelection")
+						)) {
+					session.setAttribute("errText", "Missing request parameters");
+					response.sendRedirect("StudentFunctions.jsp");
+				} else {
+					request.getRequestDispatcher("AddDropCourseServlet").forward(request, response);
+					return;
+				}
+				break;
+			case "DropCourse":
+				if(ObjValidator.anyNull(
+						request.getParameter("courseDropSelection")
+						)) {
+					session.setAttribute("errText", "Missing request parameters");
+					response.sendRedirect("StudentFunctions.jsp");
+				} else {
+					request.getRequestDispatcher("AddDropCourseServlet").forward(request, response);
+					return;
+				}
+				break;
+			case "Transcript":
+				break;
+			default:
+				session.setAttribute("errText", "Unrecognized request type");
+			}
 			break;
+			
 		default:
-			session.setAttribute("errText", "Unrecognized request type");
+			session.setAttribute("errText", "Unrecognized request originator");
 		}
 		
 		log.info("Request Type: " + reqType);

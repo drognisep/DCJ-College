@@ -3,7 +3,7 @@ package data.account;
 import bean.account.AccountBean;
 
 public class DummyAccountBeanHelper extends AccountBeanHelper {
-	public DummyAccountBeanHelper(AbstractStudentFunctionHelper sHelper) {
+	private DummyAccountBeanHelper(AbstractStudentFunctionHelper sHelper) {
 		super(sHelper);
 	}
 	

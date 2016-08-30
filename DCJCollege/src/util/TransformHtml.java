@@ -103,7 +103,7 @@ public class TransformHtml {
 	}
 
 	public void setAttributes(String attributes) {
-		if(ObjValidator.notEmptyString(attributes)) this.attributes = attributes;
+		if(ObjValidator.notEmptyStrings(attributes)) this.attributes = attributes;
 		else this.attributes = "";
 	}
 
@@ -121,7 +121,7 @@ public class TransformHtml {
 	}
 
 	public void setHeaderString(String headerString) {
-		if(ObjValidator.notEmptyString(headerString)) this.headerString = headerString;
+		if(ObjValidator.notEmptyStrings(headerString)) this.headerString = headerString;
 		else this.headerString = "";
 	}
 

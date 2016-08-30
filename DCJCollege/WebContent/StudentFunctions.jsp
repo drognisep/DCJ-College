@@ -84,7 +84,21 @@ feesDue = (o==null? 0.0 : (Double)o);
 			</table>
 			<form action="StudentServices" method="post">
 				<table>
-				<tr><th>Section to Drop</th><th>Section to Add</th></tr>
+				<tr><th>Section to Add</th></tr>
+				<tr>
+				<td><select name="courseAddSelection" style="width:100%;">
+					<option value=" "></option>
+					<%=
+						TransformHtml.getOptionList(availSections)
+					%>
+				</select></td>
+				<td><input type="submit" /></td></tr>
+				</table>
+				<input type="hidden" name="reqType" value="AddCourse" /> 
+			</form>
+			<form action="StudentServices" method="post">
+				<table>
+				<tr><th>Section to Drop</th></tr>
 				<tr>
 				<td><select name="courseDropSelection" style="width:100%;">
 					<option value=" "></option>
@@ -92,26 +106,26 @@ feesDue = (o==null? 0.0 : (Double)o);
 						TransformHtml.getOptionList(mySections)
 					%>
 				</select></td>
-				<td><select name="courseAddSelection" style="width:100%;">
-					<option value=" "></option>
-					<%=
-						TransformHtml.getOptionList(availSections)
-					%>
-				</select></td>
 				<td><input type="submit" value="Submit" /></td>
 				</table>
-				<input type="hidden" name="reqType" value="addDropCourse" /> 
+				<input type="hidden" name="reqType" value="DropCourse" /> 
 			</form>
 		</div>
 	</div>
 	<div id="div2" class="hidden-modal-div">
 		<div class="inner-modal-div">
 			<h3>Request Transcript</h3>
+			<form>
+				<input type="hidden" name="reqType" value="Transcript" />
+			</form>
 		</div>
 	</div>
 	<div id="div3" class="hidden-modal-div">
 		<div class="inner-modal-div">
 			<h3>Pay Fees</h3>
+			<form>
+				
+			</form>
 		</div>
 	</div>
 </body>

@@ -59,7 +59,7 @@ public abstract class AccountBeanHelper {
 				e.printStackTrace();
 			} finally {
 				if(INSTANCE == null) {
-					INSTANCE = new DummyAccountBeanHelper(new DummyStudentFunctionHelper());
+					// INSTANCE = new DummyAccountBeanHelper(new DummyStudentFunctionHelper());
 					System.out.println("Failed to initialize INSTANCE");
 				} else {
 					log.info("AccountBeanHelper successfully injected with AppConfig provided dependency");
@@ -80,11 +80,7 @@ public abstract class AccountBeanHelper {
 	 */
 	public abstract boolean checkCredentials(String name, String password);
 	
-	/*
-	 ******************************
-	 * Student Function Delegates *
-	 ******************************
-	 */
+	// Generic functionality generically
 
 	public String[] getAvailableCourses(AccountBean act)
 			throws DbHelperException {
@@ -99,8 +95,7 @@ public abstract class AccountBeanHelper {
 		return sHelper.getMyCourses(act);
 	}
 
-	public boolean registerSection(AccountBean act, String courseID,
-			String sectionID) {
+	public boolean addSection(AccountBean act, String courseID, String sectionID) {
 		return sHelper.addSection(act, courseID, sectionID);
 	}
 
@@ -109,12 +104,16 @@ public abstract class AccountBeanHelper {
 		return sHelper.dropSection(act, courseID, sectionID);
 	}
 
-	public double getFees(AccountBean act) throws DbHelperException {
+	public double getTotalFees(AccountBean act) throws DbHelperException {
 		return sHelper.getTotalFees(act);
 	}
 
 	public double payFees(AccountBean act, double amount)
 			throws DbHelperException {
 		return sHelper.payFees(act, amount);
+	}
+
+	public double getPaidFees(AccountBean act) throws DbHelperException {
+		return sHelper.getPaidFees(act);
 	}
 }
