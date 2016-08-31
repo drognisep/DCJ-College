@@ -1,5 +1,5 @@
 /*
- * [REVIEWED BY DOUG SAYLOR (8/29)]
+ * [REVIEWED 8/29]
  * 
  * CORRECTIONS MADE:
  *   - Changed AccountBean method to match master version (getID -> getId)
@@ -11,14 +11,32 @@
  * 
  * CORRECTIONS RECOMMENDED:
  *   - Change getTotalFees method to return fees for _total_ fees for all courses for specified student_id.
+ * 
+ * [REVIEWED 8/30]
+ * 
+ * CORRECTIONS MADE:
+ *   - Changed return types of some methods to match new abstract class
+ *   - Removed array return variables and conversion to int[]
+ *   - Changed package to aid organization (data.account -> data.account.oracle.xe)
+ *   - Implement getTranscript method as outlined in the abstract class
+ *   
+ * [REVIEWED 8/31]
+ * 
+ * CORRECTIONS MADE:
+ *   - changed return types of some methods from List<String> to List<Section> or List<Course>
  */
-package data.account;
+package data.account.oracle.xe;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.List;
 
 import bean.account.AccountBean;
+import data.account.AbstractStudentFunctionHelper;
+import data.util.Course;
 import data.util.DbHelperException;
+import data.util.Section;
+import data.util.TranscriptEntry;
 
 public class OracleStudentFunctionHelper extends AbstractStudentFunctionHelper {
 
@@ -37,7 +55,8 @@ public class OracleStudentFunctionHelper extends AbstractStudentFunctionHelper {
 		}
 
 		try {
-			// TODO: [FUTURE] Make this pull connection information from AppConfig, and push updates
+			// TODO: [FUTURE] Make this pull connection information from
+			// AppConfig, and push updates
 			Class.forName("oracle.jdbc.driver.OracleDriver");
 			connection = DriverManager.getConnection(
 					"jdbc:oracle:thin:@localhost:1521:XE", "school", "school");
@@ -47,8 +66,7 @@ public class OracleStudentFunctionHelper extends AbstractStudentFunctionHelper {
 					"Unable to establish connection to database");
 		} catch (ClassNotFoundException cnfe) {
 			cnfe.printStackTrace();
-			throw new DbHelperException(
-					"Unable to locate driver class");
+			throw new DbHelperException("Unable to locate driver class");
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new DbHelperException();
@@ -58,27 +76,27 @@ public class OracleStudentFunctionHelper extends AbstractStudentFunctionHelper {
 	}
 
 	@Override
-	public String[] getAvailableCourses(AccountBean act)
+	public List<Course> getAvailableCourses(AccountBean act)
 			throws DbHelperException {
-		ArrayList<String> courseArray = new ArrayList<String>();
+		ArrayList<Course> courseArray = new ArrayList<Course>();
 		Connection connection = getConnection();
-		String arrayCourses[] = null;
 		String id = act.getId();
 		if (id.charAt(0) == 's') {
 			try {
 				PreparedStatement pstmt = connection
-						.prepareStatement("Select course_id, course_name from courses where student_id != ?");
+						.prepareStatement("Select * from courses where student_id != ?");
 				pstmt.setString(1, id);
 				ResultSet rs = pstmt.executeQuery();
 				while (rs.next()) {
 					String course_id = rs.getString("course_id");
 					String course_name = rs.getString("course_name");
-					courseArray.add(course_id + " - " + course_name);
+					int hours = rs.getInt("hours");
+					int dept_id = rs.getInt("dept_id");
+					Course course = new Course(course_id, course_name, hours,
+							dept_id);
+					courseArray.add(course);
 				}
-				arrayCourses = new String[courseArray.size()];
-				for (int i = 0; i < courseArray.size(); i++) {
-					arrayCourses[i] = courseArray.get(i);
-				}
+
 			} catch (SQLException sqle) {
 				sqle.printStackTrace();
 				throw new DbHelperException("Error getting available courses");
@@ -86,32 +104,33 @@ public class OracleStudentFunctionHelper extends AbstractStudentFunctionHelper {
 				e.printStackTrace();
 				throw new DbHelperException();
 			}
-			return arrayCourses;
+			return courseArray;
 		}
-		arrayCourses = new String[0];
-		return arrayCourses;
+		return courseArray;
 	}
 
 	@Override
-	public String[] getCourseSections(String courseID) throws DbHelperException {
-		String[] arrayCourses = null;
-		ArrayList<String> arrayList = new ArrayList<String>();
+	public List<Section> getCourseSections(String courseID)
+			throws DbHelperException {
+		ArrayList<Section> arraySections = new ArrayList<Section>();
 		Connection connection = getConnection();
 		try {
 			PreparedStatement pstmt = connection
-					.prepareStatement("Select section_id from sections where course_id = ?");
+					.prepareStatement("Select * from sections where course_id = ?");
 			pstmt.setString(1, courseID);
 			ResultSet rs = pstmt.executeQuery();
 			while (rs.next()) {
-				String course_no = rs.getString("course_no");
-				String course_name = rs.getString("course_name");
-				arrayList.add(course_no + " - " + course_name);
+				int term = rs.getInt("term");
+				String section_id = rs.getString("section_id");
+				String course_id = rs.getString("course_id");
+				int room = rs.getInt("room");
+				int schedule_id = rs.getInt("schedule_id");
+				String instr_id = rs.getString("instr_id");
+				Section section = new Section(term, section_id, course_id,
+						room, schedule_id, instr_id);
+				arraySections.add(section);
 			}
-			arrayCourses = new String[arrayList.size()];
-			for (int i = 0; i < arrayList.size(); i++) {
-				arrayCourses[i] = arrayList.get(i);
 
-			}
 		} catch (SQLException sqle) {
 			sqle.printStackTrace();
 			throw new DbHelperException("Error getting available courses");
@@ -119,31 +138,40 @@ public class OracleStudentFunctionHelper extends AbstractStudentFunctionHelper {
 			e.printStackTrace();
 			throw new DbHelperException();
 		}
-		arrayCourses = new String[0];
-		return arrayCourses;
+		return arraySections;
 	}
 
 	@Override
-	public String[] getMyCourses(AccountBean act) throws DbHelperException {
-		ArrayList<String> courseArray = new ArrayList<String>();
-		String arrayCourses[] = null;
-		String student_id = act.getId();
+	public List<Course> getMyCourses(AccountBean act, int term)
+			throws DbHelperException {
+		ArrayList<Course> myCourseArray = new ArrayList<Course>();
+		String id = act.getId();
+		String query;
 		Connection connection = getConnection();
-		if (student_id.charAt(0) == 's') {
+		if (id.charAt(0) == 's') {
+			query = "Select * from student_section where (student_id = ?) and (term = ?)";
+		}else if (id.charAt(0)=='i'){
+			query = "Select * from instr_section where (instr_id = ?) and (term = ?)";
+		}else{
+			throw new DbHelperException("Not a student or instructor id");
+		}
 			try {
 				PreparedStatement pstmt = connection
-						.prepareStatement("Select course_id, course_name from courses where student_id = ?");
-				pstmt.setString(1, student_id);
+						.prepareStatement(query);
+				pstmt.setString(1, id);
+				pstmt.setInt(2, term);
 				ResultSet rs = pstmt.executeQuery();
 				while (rs.next()) {
 					String course_id = rs.getString("course_id");
 					String course_name = rs.getString("course_name");
-					courseArray.add(course_id + " - " + course_name);
-				}
-				arrayCourses = new String[courseArray.size()];
-				for (int i = 0; i < courseArray.size(); i++) {
-					arrayCourses[i] = courseArray.get(i);
-				}
+					int hours = rs.getInt("hours");
+					int dept_id = rs.getInt("dept_id");
+					List<Section> sections = getCourseSections(course_id);
+					Course course = new Course(course_id, course_name, hours,
+							dept_id, sections);
+					myCourseArray.add(course);
+				} return myCourseArray;
+
 			} catch (SQLException sqle) {
 				sqle.printStackTrace();
 				throw new DbHelperException(
@@ -152,26 +180,56 @@ public class OracleStudentFunctionHelper extends AbstractStudentFunctionHelper {
 				e.printStackTrace();
 				throw new DbHelperException();
 			}
-			return arrayCourses;
-		}
-		arrayCourses = new String[0];
-		return arrayCourses;
+		
 	}
 
-	@Override
-	public boolean addSection(AccountBean act, String courseID, String sectionID) {
-		String student_id = act.getId();
-		Connection connection;
-		try {
-			connection = getConnection();
-		} catch (DbHelperException dbhx) {
-			dbhx.printStackTrace();
-			return false;
+	public List<Course> getMyCourses(AccountBean act) throws DbHelperException {
+		ArrayList<Course> myCourseArray = new ArrayList<Course>();
+		String id = act.getId();
+		String query;
+		Connection connection = getConnection();
+		if (id.charAt(0) == 's') {
+			query = "Select * from student_section where (student_id = ?)";
+		}else if (id.charAt(0)=='i'){
+			query = "Select * from instr_section where (instr_id = ?)";
+		}else{
+			throw new DbHelperException("Not a student or instructor id");
 		}
-		
+			try {
+				PreparedStatement pstmt = connection
+						.prepareStatement(query);
+				pstmt.setString(1, id);
+				ResultSet rs = pstmt.executeQuery();
+				while (rs.next()) {
+					String course_id = rs.getString("course_id");
+					String course_name = rs.getString("course_name");
+					int hours = rs.getInt("hours");
+					int dept_id = rs.getInt("dept_id");
+					List<Section> sections = getCourseSections(course_id);
+					Course course = new Course(course_id, course_name, hours,
+							dept_id, sections);
+					myCourseArray.add(course);
+				} return myCourseArray;
+			} catch (SQLException sqle) {
+				sqle.printStackTrace();
+				throw new DbHelperException(
+						"Error querying current student courses");
+			} catch (Exception e) {
+				e.printStackTrace();
+				throw new DbHelperException();
+			}
+		}
+
+
+	@Override
+	public boolean enrollSection(AccountBean act, String courseID,
+			String sectionID) {
+		String student_id = act.getId();
 		boolean updated = false;
+
 		if (student_id.charAt(0) == 's') {
 			try {
+				connection = getConnection();
 				PreparedStatement pstmt = connection
 						.prepareStatement("Insert into enrollment values(?,?,?,0,3)");
 				pstmt.setString(1, student_id);
@@ -206,7 +264,7 @@ public class OracleStudentFunctionHelper extends AbstractStudentFunctionHelper {
 		if (student_id.charAt(0) == 's') {
 			try {
 				PreparedStatement pstmt = connection
-						.prepareStatement("Delete from enrollment where (student_id = ?) and (section_id = ?) ");
+						.prepareStatement("Delete from enrollment where (student_id = ?) and (section_id = ?)");
 				pstmt.setString(1, student_id);
 				pstmt.setString(2, sectionID);
 				int rs = pstmt.executeUpdate();
@@ -224,14 +282,10 @@ public class OracleStudentFunctionHelper extends AbstractStudentFunctionHelper {
 
 	@Override
 	public double getTotalFees(AccountBean act) throws DbHelperException {
-		/*
-		 * TODO: Should't this be total fees, and not fees due? Fees due can be obtained with simple
-		 * subtraction once both of these values are obtained. This could lead to less queries for 
-		 * information that can be easily calculated.
-		 */		
+
 		String student_id = act.getId();
 		Connection connection = getConnection();
-		double fees_due = 0;
+		double total_fees_due = 0;
 		if (student_id.charAt(0) == 's') {
 			try {
 				PreparedStatement pstmt = connection
@@ -239,7 +293,7 @@ public class OracleStudentFunctionHelper extends AbstractStudentFunctionHelper {
 				pstmt.setString(1, student_id);
 				ResultSet rs = pstmt.executeQuery();
 				while (rs.next()) {
-					fees_due = rs.getDouble("fees_due");
+					total_fees_due = rs.getDouble("fees_due");
 				}
 			} catch (SQLException sqle) {
 				sqle.printStackTrace();
@@ -249,10 +303,10 @@ public class OracleStudentFunctionHelper extends AbstractStudentFunctionHelper {
 				e.printStackTrace();
 				throw new DbHelperException();
 			}
-			return fees_due;
+			return total_fees_due;
 		}
-		fees_due = 0; // should we return another amount?
-		return fees_due;
+		total_fees_due = 0;
+		return total_fees_due;
 	}
 
 	@Override
@@ -279,7 +333,7 @@ public class OracleStudentFunctionHelper extends AbstractStudentFunctionHelper {
 			}
 			return fees_paid;
 		}
-		fees_paid = 0; // should we return another amount?
+		fees_paid = 0;
 		return fees_paid;
 	}
 
@@ -302,7 +356,7 @@ public class OracleStudentFunctionHelper extends AbstractStudentFunctionHelper {
 					double total_fees = getTotalFees(act);
 					new_balance = total_fees - total_fees_paid;
 				} else {
-					new_balance = 0; // what value should we return?
+					new_balance = 0;
 				}
 			} catch (SQLException sqle) {
 				sqle.printStackTrace();
@@ -313,7 +367,50 @@ public class OracleStudentFunctionHelper extends AbstractStudentFunctionHelper {
 			}
 			return new_balance;
 		}
-		new_balance = 0; // should we return another amount?
+		new_balance = 0;
 		return new_balance;
+	}
+
+	@Override
+	public List<TranscriptEntry> getTranscript(AccountBean act)
+			throws DbHelperException {
+		ArrayList<TranscriptEntry> transcript = new ArrayList<TranscriptEntry>();
+		String student_id = act.getId();
+		Connection connection = getConnection();
+		if (student_id.charAt(0) == 's') {
+			try {
+				PreparedStatement pstmt = connection
+						.prepareStatement("Select * from transcript where student_id = ?");
+				pstmt.setString(1, student_id);
+				ResultSet rs = pstmt.executeQuery();
+
+				while (rs.next()) {
+					String first_name = rs.getString("first_name");
+					String last_name = rs.getString("last_name");
+					String section_id = rs.getString("section_id");
+					String course_id = rs.getString("course_id");
+					String course_name = rs.getString("course_name");
+					int dept_id = rs.getInt("dept_id");
+					int hours = rs.getInt("hours");
+					int term = rs.getInt("term");
+					double section_gpa = rs.getDouble("section_gpa");
+					double overall_gpa = rs.getDouble("overall_gpa");
+					TranscriptEntry entry = new TranscriptEntry(first_name,
+							last_name, student_id, section_id, course_id,
+							course_name, dept_id, hours, term, section_gpa,
+							overall_gpa);
+					transcript.add(entry);
+				}
+				return transcript;
+			} catch (SQLException sqle) {
+				sqle.printStackTrace();
+				throw new DbHelperException(
+						"Error querying current student courses");
+			} catch (Exception e) {
+				e.printStackTrace();
+				throw new DbHelperException();
+			}
+		}
+		return transcript;
 	}
 }
