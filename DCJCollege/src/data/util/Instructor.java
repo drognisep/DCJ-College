@@ -5,9 +5,12 @@
  */
 package data.util;
 
+import java.util.List;
+
 public class Instructor {
 	String instr_id, first_name, last_name;
 	int dept_id;
+	List<Course> courses;
 	
 	public Instructor(String instr_id, String first_name, String last_name,
 			int dept_id) {
@@ -41,6 +44,14 @@ public class Instructor {
 	}
 	public void setDept_id(int dept_id) {
 		this.dept_id = dept_id;
+	}
+
+	public List<Course> getCourses() {
+		return courses;
+	}
+
+	public void setCourses(List<Course> courses) {
+		this.courses = courses;
 	}
 
 }
