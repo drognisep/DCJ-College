@@ -46,11 +46,10 @@ feesDue = (o==null? 0.0 : (Double)o);
 	<p>Please select one of the options above.</p>
 	<p class="errText">${errText}</p>
 	<p class="infoText">${infoText}</p>
-	
 	<div id="div0" class="hidden-modal-div">
 		<div class="inner-modal-div">
 			<h3>Registration Form</h3>
-			<form action="StudentServices" method="post">
+			<form action="StudentServices" method="post" onsubmit="event.preventDefault();updateRegistration(this);">
 				<p>Please confirm your information is correct and make changes as needed</p>
 				<p>
 					<label for="fname">First Name</label>
@@ -75,7 +74,6 @@ feesDue = (o==null? 0.0 : (Double)o);
 			</form>
 		</div>
 	</div>
-	
 	<div id="div1" class="hidden-modal-div">
 		<div class="inner-modal-div">
 			<h3>Add/Drop a Course</h3>
@@ -117,7 +115,6 @@ feesDue = (o==null? 0.0 : (Double)o);
 			</form>
 		</div>
 	</div>
-	
 	<div id="div2" class="hidden-modal-div">
 		<div class="inner-modal-div">
 			<h3>Transcript</h3>
@@ -129,12 +126,15 @@ feesDue = (o==null? 0.0 : (Double)o);
 			</form>
 		</div>
 	</div>
-	
 	<div id="div3" class="hidden-modal-div">
 		<div class="inner-modal-div">
 			<h3>Pay Fees</h3>
-			${feesDue}
+			<p>Fees Due: <%= String.format("$%0,1.2f", feesDue) %></p>
 			<form>
+				<p>
+					<label for="amount">Amount</label>
+					<input type="text" name="amount" />
+				</p>
 				<input type="hidden" name="reqType" value="PayFees" />
 				<input type="hidden" name="reqOrigin" value="StudentFunctions" />
 			</form>

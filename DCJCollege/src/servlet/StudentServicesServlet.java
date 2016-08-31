@@ -122,6 +122,23 @@ public class StudentServicesServlet extends HttpServlet {
 					session.setAttribute("errText", "Missing request parameters");
 					response.sendRedirect("StudentFunctions.jsp");
 				} else {
+					request.getRequestDispatcher("ajaxRegistrationUpdate").forward(request, response);
+					return;
+				}
+				break;
+			case "UpdateRegistration":
+				if(ObjValidator.anyNull(
+						request.getParameter("fname"),
+						request.getParameter("lname"),
+						request.getParameter("street"),
+						request.getParameter("city"),
+						request.getParameter("state"),
+						request.getParameter("zip"),
+						request.getParameter("phone")
+						)) {
+					session.setAttribute("errText", "Missing request parameters");
+					response.sendRedirect("StudentFunctions.jsp");
+				} else {
 					request.getRequestDispatcher("UpdateRegistrationServlet").forward(request, response);
 					return;
 				}

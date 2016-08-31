@@ -7,25 +7,20 @@ var anchorKeys = [
 
 window.onload = function() {
 	var as = document.querySelectorAll("nav.top-nav > a");
-	console.log("DEBUG: Attempting to traverse through anchors in top-nav");
 	for(var i = 0; i < as.length && i < anchorKeys.length; i++) {
 		console.log("  - In iteration: " + i);
 		as[i].innerHTML = anchorKeys[i];
 		console.log("    Key is set");
 	}
-	console.log("DEBUG: Out of loop");
 	
-	console.log("DEBUG: Hiding all hidden divs with keys");
 	for(var i = 0; i < anchorKeys.length; i++) {
 		var div = document.getElementById("div"+i);
 		if(div) {
-			console.log("DEBUG: Hiding div" + i);
 			div.style.display = "none";
 		} else {
 			console.log("ERROR: div" + i + " was not found!");
 		}
 	}
-	console.log("DEBUG: Done!");
 };
 
 /**
@@ -33,8 +28,6 @@ window.onload = function() {
  * @param a Reference to an anchor tag.
  */
 function showFunction(a) {
-	console.log("DEBUG: Running dummy showFunction(a) with parameter: " + a.innerHTML);
-	// TODO: Implement showFunction(a) in StudentFunctions.js
 	var key = a.innerHTML;
 	var ikey = -1;
 	
@@ -46,14 +39,60 @@ function showFunction(a) {
 		var div = document.getElementById("div"+i);
 		if(div) {
 			if(i == ikey) {
-				console.log("DEBUG: Showing div" + i);
 				div.style.display = "block";
 			} else {
-				console.log("DEBUG: Hiding div" + i);
 				div.style.display = "none";
 			}
 		} else {
 			console.log("ERROR: div" + i + " was not found!");
 		}
+	}
+}
+
+/**
+ * Creates an async ajax request to update registration.
+ * @param form
+ */
+function updateRegistration(form) {
+	if(form) {
+		var xhr = new XMLHttpRequest();
+		var fname = form.fname.value;
+		var lname = form.lname.value;
+		var street = form.street.value;
+		var city = form.city.value;
+		var state = form.state.value;
+		var zip = form.zip.value;
+		var phone = form.phone.value;
+		var reqType = "AJAX_UpdateRegistration";
+		var reqOrigin = "StudentFunctions.jsp";
+		
+		var parameters = "fname=" + fname +
+						"&lname=" + lname +
+						"&street=" + street +
+						"&city=" + city +
+						"&state=" + state +
+						"&zip=" + zip +
+						"&phone=" + phone +
+						"&reqType=" + reqType +
+						"&reqOrigin=" + reqOrigin
+		;
+		xhr.open('post', 'StudentServicesServlet', true); // true for async
+		xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+		xhr.send(parameters);
+		xhr.send();
+
+		xhr.onreadystatechange = function() {
+			var DONE = 4;
+			var OK = 200;
+			if(xhr.readyState === DONE) {
+				if(xhr.status === OK) {
+					console.log("Response type: " + (xhr.responseType === "" ? "text (corrected)" : xhr.responseType));
+					var res = xhr.responseText;
+					alert("Got response: " + res);
+				} else {
+					alert("An error occurred processing AJAX request");
+				}
+			}
+		};
 	}
 }
