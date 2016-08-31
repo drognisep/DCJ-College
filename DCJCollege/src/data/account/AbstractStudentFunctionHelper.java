@@ -9,6 +9,8 @@
 package data.account;
 import java.util.List;
 
+import data.util.Course;
+import data.util.Section;
 import data.util.TranscriptEntry;
 import bean.account.AccountBean;
 import data.util.DbHelperException;
@@ -25,7 +27,7 @@ public abstract class AbstractStudentFunctionHelper {
 	 * @return Returns an array of {@code String} with each course as an element with the form:
 	 *   "course_no - course_name". If an error occurs, returns a zero length array.
 	 */
-	public abstract List<String> getAvailableCourses(AccountBean act) throws DbHelperException;
+	public abstract List<Course> getAvailableCourses(AccountBean act) throws DbHelperException;
 	
 	/**
 	 * Get all sections for the given course
@@ -34,7 +36,7 @@ public abstract class AbstractStudentFunctionHelper {
 	 * @return An array containing the sectionIDs of the given course, a zero length array if no sections
 	 *   have been added to the course, and an exception otherwise.
 	 */
-	public abstract List<String> getCourseSections(String courseID) throws DbHelperException;
+	public abstract List<Section> getCourseSections(String courseID) throws DbHelperException;
 	
 	/**
 	 * Get all courses the given account is enrolled in by term. If the {@code AccountBean} belongs to an 
@@ -44,7 +46,7 @@ public abstract class AbstractStudentFunctionHelper {
 	 * @return Returns an array of {@code String} with each course enrolled in as an element with
 	 * the form: "course_no - course_name".
 	 */
-	public abstract List<String> getMyCourses(AccountBean act, int term) throws DbHelperException;
+	public abstract List<Course> getMyCourses(AccountBean act, int term) throws DbHelperException;
 	
 	/**
 	 * Get all courses the given account is enrolled in. If the {@code AccountBean} belongs to an 
@@ -54,7 +56,7 @@ public abstract class AbstractStudentFunctionHelper {
 	 * @return Returns an array of {@code String} with each course enrolled in as an element with
 	 * the form: "course_no - course_name".
 	 */
-	public abstract List<String> getMyCourses(AccountBean act) throws DbHelperException;
+	public abstract List<Course> getMyCourses(AccountBean act) throws DbHelperException;
 	
 	/**
 	 * Adds a section as an entry in the enrollment table.
@@ -64,7 +66,7 @@ public abstract class AbstractStudentFunctionHelper {
 	 * @param sectionID This should be the section
 	 * @return True if the addition was successful, false otherwise.
 	 */
-	public abstract boolean addSection(AccountBean act, String courseID, String sectionID, int term);
+	public abstract boolean enrollSection(AccountBean act, String courseID, String sectionID);
 	
 	/**
 	 * Removes a course for the given {@code AccountBean} based on the {@code courseID} value passed.

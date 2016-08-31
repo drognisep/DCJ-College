@@ -96,10 +96,6 @@ public abstract class AccountBeanHelper {
 				if(INSTANCE == null) {
 					// INSTANCE = new DummyAccountBeanHelper(new DummyStudentFunctionHelper());
 					System.out.println("Failed to initialize INSTANCE");
-					System.out.println("Constructors:");
-					for(Constructor<?> c : DummyStudentFunctionHelper.class.getConstructors()) {
-						System.out.println(c.toString());
-					}
 				} else {
 					log.info("AccountBeanHelper successfully injected with AppConfig provided dependency");
 				}
@@ -117,26 +113,30 @@ public abstract class AccountBeanHelper {
 	 * @param password Password in respective table.
 	 * @return True if the credentials match, false otherwise.
 	 */
-	public abstract boolean checkCredentials(String name, String password); // FIXME: Implement this!
+	public abstract boolean checkCredentials(String name, String password);
 
-	public List<String> getAvailableCourses(AccountBean act)
+	public List<Course> getAvailableCourses(AccountBean act)
 			throws DbHelperException {
 		return sHelper.getAvailableCourses(act);
 	}
 
-	public List<String> getCourseSections(String courseID)
+	public List<Section> getCourseSections(String courseID)
 			throws DbHelperException {
 		return sHelper.getCourseSections(courseID);
 	}
 
-	public List<String> getMyCourses(AccountBean act, int term)
+	public List<Course> getMyCourses(AccountBean act, int term)
 			throws DbHelperException {
 		return sHelper.getMyCourses(act, term);
 	}
 
-	public boolean addSection(AccountBean act, String courseID,
-			String sectionID, int term) {
-		return sHelper.addSection(act, courseID, sectionID, term);
+	public List<Course> getMyCourses(AccountBean act) throws DbHelperException {
+		return sHelper.getMyCourses(act);
+	}
+
+	public boolean enrollSection(AccountBean act, String courseID,
+			String sectionID) {
+		return sHelper.enrollSection(act, courseID, sectionID);
 	}
 
 	public boolean dropSection(AccountBean act, String courseID,
@@ -166,16 +166,16 @@ public abstract class AccountBeanHelper {
 		return iHelper.addCourse(act, course);
 	}
 
-	public boolean dropCourse(AccountBean act, String courseID) {
-		return iHelper.dropCourse(act, courseID);
+	public boolean removeCourse(AccountBean act, String courseID) {
+		return iHelper.removeCourse(act, courseID);
 	}
 
 	public boolean addSection(AccountBean act, Section section) {
 		return iHelper.addSection(act, section);
 	}
 
-	public boolean dropSection(AccountBean act, String sectionID) {
-		return iHelper.dropSection(act, sectionID);
+	public boolean removeSection(AccountBean act, String sectionID) {
+		return iHelper.removeSection(act, sectionID);
 	}
 
 	public boolean updateSection(AccountBean act, Section section) {
@@ -194,13 +194,13 @@ public abstract class AccountBeanHelper {
 	}
 
 	public boolean addInstructor(AccountBean act, String instr_id,
-			String section_id, int term) {
-		return iHelper.addInstructor(act, instr_id, section_id, term);
+			String section_id) {
+		return iHelper.addInstructor(act, instr_id, section_id);
 	}
 
 	public boolean dropInstructor(AccountBean act, String section_id,
-			String instr_id, int term) {
-		return iHelper.dropInstructor(act, section_id, instr_id, term);
+			String instr_id) {
+		return iHelper.dropInstructor(act, section_id, instr_id);
 	}
 
 	public List<Instructor> getInstructors(AccountBean act)
@@ -240,6 +240,4 @@ public abstract class AccountBeanHelper {
 			throws DbHelperException {
 		return rHelper.getHonorsList(dept_id, term);
 	}
-	
-	
 }

@@ -1,9 +1,3 @@
-/*
- * [REVIEW 8/30]
- * 
- * CORRECTIONS MADE:
- *   - Changed package (classes -> data.util)
- */
 package data.util;
 
 public class ScheduleEntry {

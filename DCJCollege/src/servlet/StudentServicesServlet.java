@@ -17,7 +17,9 @@ import javax.servlet.http.HttpSession;
 
 import bean.account.AccountBean;
 import data.account.AccountBeanHelper;
+import data.util.Course;
 import data.util.DbHelperException;
+import data.util.Section;
 
 /**
  * Servlet implementation class StudentServicesServlet
@@ -43,7 +45,7 @@ public class StudentServicesServlet extends HttpServlet {
 		session.setAttribute("infoText", "Nothing to report...");
 		AccountBean account = (AccountBean)session.getAttribute("account");
 		
-		if(ObjValidator.emptyStrings(reqType)) {
+		if(ObjValidator.emptyStrings(reqType, reqOrigin)) {
 			response.sendRedirect("StudentFunctions.jsp");
 			return;
 		} else if(account == null) {
@@ -56,38 +58,29 @@ public class StudentServicesServlet extends HttpServlet {
 		AccountBeanHelper helper = AccountBeanHelper.getInstance();
 		
 		try {
-			List<String> myCourses = helper.getMyCourses(account, 1);
-			List<String> availCourses = helper.getAvailableCourses(account);
-			String[] mySections;
-			String[] availSections;
-			ArrayList<String> alMySections = new ArrayList<>(100);
-			ArrayList<String> alAvailSections = new ArrayList<>(100);
+			List<Course> myCourses = helper.getMyCourses(account, 1);
+			List<Course> availCourses = helper.getAvailableCourses(account);
+			ArrayList<Section> availSections = new ArrayList<>();
+			List<Section> alMySections = new ArrayList<>(100);
 			session.setAttribute("myCourses", myCourses);
 			session.setAttribute("availCourses", availCourses);
 			
 			// My Sections
-			for(String course : myCourses) {
-				List<String> sections = helper.getCourseSections(course);
-				for(String s : sections) {
-					alMySections.add(s);
-				}
+			for(Course course : myCourses) {
+				alMySections = helper.getCourseSections(course.getCourse_id());
 			}
-			mySections = new String[alMySections.size()];
-			for(int i = 0; i < mySections.length; i++) {
-				mySections[i] = alMySections.get(i);
-			}
-			session.setAttribute("mySections", mySections);
+//			mySections = new String[alMySections.size()];
+//			for(int i = 0; i < mySections.length; i++) {
+//				mySections[i] = alMySections.get(i);
+//			}
+			session.setAttribute("mySections", alMySections);
 			
 			// Available Sections
-			for(String course : availCourses) {
-				List<String> sections = helper.getCourseSections(course);
-				for(String s : sections) {
-					alAvailSections.add(s);
+			for(Course course : availCourses) {
+				List<Section> sections = helper.getCourseSections(course.getCourse_id());
+				for(Section s : sections) {
+					availSections.add(s);
 				}
-			}
-			availSections = new String[alMySections.size()];
-			for(int i = 0; i < availSections.length; i++) {
-				availSections[i] = alAvailSections.get(i);
 			}
 			session.setAttribute("availSections", availSections);
 			
@@ -99,11 +92,6 @@ public class StudentServicesServlet extends HttpServlet {
 			dbhx.printStackTrace();
 			session.setAttribute("errText", dbhx.getMessage());
 			response.sendRedirect("StudentFunctions.jsp");
-		}
-		
-		if(reqType == null) {
-			response.sendRedirect("StudentFunctions.jsp");
-			return;
 		}
 		
 		// Switch for reqOrigin and reqType

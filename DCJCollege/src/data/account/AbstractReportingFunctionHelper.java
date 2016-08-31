@@ -1,10 +1,10 @@
 package data.account;
 import java.util. *;
 
-import data.util.Course;
-import data.util.Section;
 import bean.account.AccountBean;
+import data.util.Course;
 import data.util.DbHelperException;
+import data.util.Section;
 
 public abstract class AbstractReportingFunctionHelper {
 	

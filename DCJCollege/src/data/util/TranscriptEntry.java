@@ -1,12 +1,7 @@
-/*
- * [REVIEW 8/30]
- * 
- * CORRECTIONS MADE:
- *   - Changed package (classes -> data.util)
- */
 package data.util;
 
 public class TranscriptEntry {
+	
 	private String first_name;
 	private String last_name;
 	private String student_id;
@@ -19,7 +14,7 @@ public class TranscriptEntry {
 	private double section_gpa;
 	private double overall_gpa;
 
-	public TranscriptEntry() {
+	TranscriptEntry() {
 	}
 
 	public TranscriptEntry(String first_name, String last_name, String student_id,
@@ -126,4 +121,5 @@ public class TranscriptEntry {
 	public void setOverall_gpa(double overall_gpa) {
 		this.overall_gpa = overall_gpa;
 	}
+
 }

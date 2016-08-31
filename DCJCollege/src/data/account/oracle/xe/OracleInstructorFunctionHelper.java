@@ -93,7 +93,7 @@ public class OracleInstructorFunctionHelper extends
 	}
 
 	@Override
-	public boolean dropCourse(AccountBean act, String courseID) {
+	public boolean removeCourse(AccountBean act, String courseID) {
 		boolean autoCom = true;
 		String instr_id = act.getId();
 		int updated = 0;
@@ -188,7 +188,7 @@ public class OracleInstructorFunctionHelper extends
 	}
 
 	@Override
-	public boolean dropSection(AccountBean act, String section_id) {
+	public boolean removeSection(AccountBean act, String section_id) {
 		boolean autoCom = true;
 		String instr_id = act.getId();
 		int updated = 0;
@@ -198,17 +198,17 @@ public class OracleInstructorFunctionHelper extends
 				autoCom = connection.getAutoCommit();
 				connection.setAutoCommit(false);
 				PreparedStatement pstmt1 = connection
-						.prepareStatement("Delete from enrollment where section_id = ?"/*"Delete from enrollment where (section_id = ?) and (term = ?)"*/);
+						.prepareStatement("Delete from enrollment where section_id = ?"/* "Delete from enrollment where (section_id = ?) and (term = ?)" */);
 				pstmt1.setString(1, section_id);
-//				pstmt1.setInt(2, term);
+				// pstmt1.setInt(2, term);
 				updated = pstmt1.executeUpdate();
 				if (updated < 1) {
 					throw new SQLException();
 				} else {
 					PreparedStatement pstmt2 = connection
-							.prepareStatement("Delete from sections where section_id = ?"/*"Delete from sections where (section_id = ?) and (term = ?)"*/);
+							.prepareStatement("Delete from sections where section_id = ?"/* "Delete from sections where (section_id = ?) and (term = ?)" */);
 					pstmt2.setString(1, section_id);
-//					pstmt2.setInt(2, term);
+					// pstmt2.setInt(2, term);
 					updated = pstmt2.executeUpdate();
 					if (updated < 1) {
 						throw new SQLException();
@@ -432,7 +432,7 @@ public class OracleInstructorFunctionHelper extends
 
 	@Override
 	public boolean addInstructor(AccountBean act, String instr_id,
-			String section_id, int term) {
+			String section_id) {
 		String myinstr_id = act.getId();
 
 		int updated = 0;
@@ -440,10 +440,9 @@ public class OracleInstructorFunctionHelper extends
 			try {
 				connection = getConnection();
 				PreparedStatement pstmt = connection
-						.prepareStatement("Update sections set instr_id = ? where (section_id = ?) and (term = ?)");
+						.prepareStatement("Update sections set instr_id = ? where (section_id = ?)");
 				pstmt.setString(1, instr_id);
 				pstmt.setString(2, section_id);
-				pstmt.setInt(3, term);
 				updated = pstmt.executeUpdate();
 				if (updated == 1) {
 					return true;
@@ -459,7 +458,7 @@ public class OracleInstructorFunctionHelper extends
 
 	@Override
 	public boolean dropInstructor(AccountBean act, String section_id,
-			String instr_id, int term) {
+			String instr_id) {
 		boolean autoCom = true;
 		String myinstr_id = act.getId();
 		int updated = 0;
@@ -469,9 +468,8 @@ public class OracleInstructorFunctionHelper extends
 				autoCom = connection.getAutoCommit();
 				connection.setAutoCommit(false);
 				PreparedStatement pstmt1 = connection
-						.prepareStatement("Update sections set instr_id = null where (section_id = ?) and (term = ?) ");
+						.prepareStatement("Update sections set instr_id = null where (section_id = ?)");
 				pstmt1.setString(1, section_id);
-				pstmt1.setInt(2, term);
 				updated = pstmt1.executeUpdate();
 				if (updated < 1) {
 					throw new SQLException();
@@ -523,7 +521,7 @@ public class OracleInstructorFunctionHelper extends
 					arrayInstr.add(instr);
 				}
 				return arrayInstr;
-				
+
 			} catch (SQLException sqle) {
 				sqle.printStackTrace();
 				throw new DbHelperException("Error getting available courses");
@@ -564,7 +562,8 @@ public class OracleInstructorFunctionHelper extends
 	}
 
 	@Override
-	public List<ScheduleEntry> getSchedule(AccountBean act) throws DbHelperException {
+	public List<ScheduleEntry> getSchedule(AccountBean act)
+			throws DbHelperException {
 		ArrayList<ScheduleEntry> scheduleEntries = new ArrayList<ScheduleEntry>();
 		String instr_id = act.getId();
 		if (instr_id.charAt(0) == 'i') {
@@ -590,10 +589,11 @@ public class OracleInstructorFunctionHelper extends
 					String course_id = rs.getString(13);
 					int room = rs.getInt(14);
 					String instr_last_name = rs.getString(15);
-					ScheduleEntry sched = new ScheduleEntry(schedule_id, mon_start,
-							mon_end, tues_start, tues_end, wed_start, wed_end,
-							thur_start, thur_end, fri_start, fri_end,
-							section_id, course_id, room, instr_last_name);
+					ScheduleEntry sched = new ScheduleEntry(schedule_id,
+							mon_start, mon_end, tues_start, tues_end,
+							wed_start, wed_end, thur_start, thur_end,
+							fri_start, fri_end, section_id, course_id, room,
+							instr_last_name);
 					scheduleEntries.add(sched);
 				}
 			} catch (SQLException sqle) {

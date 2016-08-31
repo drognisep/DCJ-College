@@ -31,7 +31,7 @@ public abstract class AbstractInstructorFunctionHelper {
 		 * @param courseID The course that the sections should belong to.
 		 * @return True if the deletion was successful, false otherwise.
 		 */
-		public abstract boolean dropCourse(AccountBean act, String courseID);
+		public abstract boolean removeCourse(AccountBean act, String courseID);
 		
 		/**
 		 * Allow instructor to add a new section.
@@ -47,7 +47,7 @@ public abstract class AbstractInstructorFunctionHelper {
 		 * @param sectionID This should be the section
 		 * @return True if the deletion was successful, false otherwise.
 		 */
-		public abstract boolean dropSection(AccountBean act, String sectionID);
+		public abstract boolean removeSection(AccountBean act, String sectionID);
 		
 		/**
 		 * Allows an instructor to update current section information
@@ -100,7 +100,7 @@ public abstract class AbstractInstructorFunctionHelper {
 		 * @throws DbHelperException indicating what error occurred.
 		 * @return A double with the total amount of fees due if successful
 		 */
-		public abstract boolean addInstructor(AccountBean act, String instr_id, String section_id, int term);
+		public abstract boolean addInstructor(AccountBean act, String instr_id, String section_id);
 		
 		/**
 		 * Allows admin to delete instructor from section
@@ -108,7 +108,7 @@ public abstract class AbstractInstructorFunctionHelper {
 		 * @param student_id and the section_id from which he is being dropped
 		 * @return True if the deletion was successful, false otherwise.
 		 */
-		public abstract boolean dropInstructor(AccountBean act, String section_id, String instr_id, int term);
+		public abstract boolean dropInstructor(AccountBean act, String section_id, String instr_id);
 		
 		/**
 		 * Allows admin to delete instructor from section

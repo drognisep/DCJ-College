@@ -18,9 +18,12 @@
  *   - Changed return types of some methods to match new abstract class
  *   - Removed array return variables and conversion to int[]
  *   - Changed package to aid organization (data.account -> data.account.oracle.xe)
+ *   - Implement getTranscript method as outlined in the abstract class
+ *   
+ * [REVIEWED 8/31]
  * 
- * CORRECTIONS RECOMMENDED:
- *   - FIXME: Implement getTransaction method as outlined in the abstract class
+ * CORRECTIONS MADE:
+ *   - changed return types of some methods from List<String> to List<Section> or List<Course>
  */
 package data.account.oracle.xe;
 
@@ -30,7 +33,9 @@ import java.util.List;
 
 import bean.account.AccountBean;
 import data.account.AbstractStudentFunctionHelper;
+import data.util.Course;
 import data.util.DbHelperException;
+import data.util.Section;
 import data.util.TranscriptEntry;
 
 public class OracleStudentFunctionHelper extends AbstractStudentFunctionHelper {
@@ -70,25 +75,28 @@ public class OracleStudentFunctionHelper extends AbstractStudentFunctionHelper {
 
 	}
 
-	// FIXME: Return List<Course>
 	@Override
-	public List<String> getAvailableCourses(AccountBean act)
+	public List<Course> getAvailableCourses(AccountBean act)
 			throws DbHelperException {
-		ArrayList<String> courseArray = new ArrayList<String>();
+		ArrayList<Course> courseArray = new ArrayList<Course>();
 		Connection connection = getConnection();
 		String id = act.getId();
 		if (id.charAt(0) == 's') {
 			try {
 				PreparedStatement pstmt = connection
-						.prepareStatement("Select course_id, course_name from courses where student_id != ?");
+						.prepareStatement("Select * from courses where student_id != ?");
 				pstmt.setString(1, id);
 				ResultSet rs = pstmt.executeQuery();
 				while (rs.next()) {
 					String course_id = rs.getString("course_id");
 					String course_name = rs.getString("course_name");
-					courseArray.add(course_id + " - " + course_name);
+					int hours = rs.getInt("hours");
+					int dept_id = rs.getInt("dept_id");
+					Course course = new Course(course_id, course_name, hours,
+							dept_id);
+					courseArray.add(course);
 				}
-				
+
 			} catch (SQLException sqle) {
 				sqle.printStackTrace();
 				throw new DbHelperException("Error getting available courses");
@@ -101,21 +109,28 @@ public class OracleStudentFunctionHelper extends AbstractStudentFunctionHelper {
 		return courseArray;
 	}
 
-	// FIXME: Return List<Section>
 	@Override
-	public List<String> getCourseSections(String courseID) throws DbHelperException {
-		ArrayList<String> arraySections = new ArrayList<String>();
+	public List<Section> getCourseSections(String courseID)
+			throws DbHelperException {
+		ArrayList<Section> arraySections = new ArrayList<Section>();
 		Connection connection = getConnection();
 		try {
 			PreparedStatement pstmt = connection
-					.prepareStatement("Select section_id from sections where course_id = ?");
+					.prepareStatement("Select * from sections where course_id = ?");
 			pstmt.setString(1, courseID);
 			ResultSet rs = pstmt.executeQuery();
 			while (rs.next()) {
+				int term = rs.getInt("term");
 				String section_id = rs.getString("section_id");
-				arraySections.add(section_id);
+				String course_id = rs.getString("course_id");
+				int room = rs.getInt("room");
+				int schedule_id = rs.getInt("schedule_id");
+				String instr_id = rs.getString("instr_id");
+				Section section = new Section(term, section_id, course_id,
+						room, schedule_id, instr_id);
+				arraySections.add(section);
 			}
-			
+
 		} catch (SQLException sqle) {
 			sqle.printStackTrace();
 			throw new DbHelperException("Error getting available courses");
@@ -126,26 +141,36 @@ public class OracleStudentFunctionHelper extends AbstractStudentFunctionHelper {
 		return arraySections;
 	}
 
-
-	// FIXME: Return List<Course>
-	// FIXME: populate each Course with List<Section>
 	@Override
-	public List<String> getMyCourses(AccountBean act, int term) throws DbHelperException {
-		ArrayList<String> myCourseArray = new ArrayList<String>();
-		String student_id = act.getId();
+	public List<Course> getMyCourses(AccountBean act, int term)
+			throws DbHelperException {
+		ArrayList<Course> myCourseArray = new ArrayList<Course>();
+		String id = act.getId();
+		String query;
 		Connection connection = getConnection();
-		if (student_id.charAt(0) == 's') {
+		if (id.charAt(0) == 's') {
+			query = "Select * from student_section where (student_id = ?) and (term = ?)";
+		}else if (id.charAt(0)=='i'){
+			query = "Select * from instr_section where (instr_id = ?) and (term = ?)";
+		}else{
+			throw new DbHelperException("Not a student or instructor id");
+		}
 			try {
 				PreparedStatement pstmt = connection
-						.prepareStatement("Select course_id, course_name from student_section where (student_id = ?) and (term = ?)");
-				pstmt.setString(1, student_id);
+						.prepareStatement(query);
+				pstmt.setString(1, id);
 				pstmt.setInt(2, term);
 				ResultSet rs = pstmt.executeQuery();
 				while (rs.next()) {
 					String course_id = rs.getString("course_id");
 					String course_name = rs.getString("course_name");
-					myCourseArray.add(course_id + " - " + course_name);
-				}
+					int hours = rs.getInt("hours");
+					int dept_id = rs.getInt("dept_id");
+					List<Section> sections = getCourseSections(course_id);
+					Course course = new Course(course_id, course_name, hours,
+							dept_id, sections);
+					myCourseArray.add(course);
+				} return myCourseArray;
 
 			} catch (SQLException sqle) {
 				sqle.printStackTrace();
@@ -155,28 +180,36 @@ public class OracleStudentFunctionHelper extends AbstractStudentFunctionHelper {
 				e.printStackTrace();
 				throw new DbHelperException();
 			}
-			return myCourseArray;
-		}
-		return myCourseArray;
+		
 	}
-	
-	// FIXME: Get List<Course> based on student_id
-	// FIXME: populate each Course with List<Section>
-	public List<String> getMyCourses(AccountBean act) throws DbHelperException {
-		ArrayList<String> myCourseArray = new ArrayList<String>();
-		String student_id = act.getId();
+
+	public List<Course> getMyCourses(AccountBean act) throws DbHelperException {
+		ArrayList<Course> myCourseArray = new ArrayList<Course>();
+		String id = act.getId();
+		String query;
 		Connection connection = getConnection();
-		if (student_id.charAt(0) == 's') {
+		if (id.charAt(0) == 's') {
+			query = "Select * from student_section where (student_id = ?)";
+		}else if (id.charAt(0)=='i'){
+			query = "Select * from instr_section where (instr_id = ?)";
+		}else{
+			throw new DbHelperException("Not a student or instructor id");
+		}
 			try {
 				PreparedStatement pstmt = connection
-						.prepareStatement("Select course_id, course_name from courses where student_id = ?");
-				pstmt.setString(1, student_id);
+						.prepareStatement(query);
+				pstmt.setString(1, id);
 				ResultSet rs = pstmt.executeQuery();
 				while (rs.next()) {
 					String course_id = rs.getString("course_id");
 					String course_name = rs.getString("course_name");
-					myCourseArray.add(course_id + " - " + course_name);
-				}
+					int hours = rs.getInt("hours");
+					int dept_id = rs.getInt("dept_id");
+					List<Section> sections = getCourseSections(course_id);
+					Course course = new Course(course_id, course_name, hours,
+							dept_id, sections);
+					myCourseArray.add(course);
+				} return myCourseArray;
 			} catch (SQLException sqle) {
 				sqle.printStackTrace();
 				throw new DbHelperException(
@@ -185,25 +218,23 @@ public class OracleStudentFunctionHelper extends AbstractStudentFunctionHelper {
 				e.printStackTrace();
 				throw new DbHelperException();
 			}
-			return myCourseArray;
 		}
-		return myCourseArray;
-	}
+
 
 	@Override
-	public boolean addSection(AccountBean act, String courseID, String sectionID, int term) {
+	public boolean enrollSection(AccountBean act, String courseID,
+			String sectionID) {
 		String student_id = act.getId();
 		boolean updated = false;
-		
+
 		if (student_id.charAt(0) == 's') {
 			try {
 				connection = getConnection();
 				PreparedStatement pstmt = connection
-						.prepareStatement("Insert into enrollment values(?,?,?,0,3,?)");
+						.prepareStatement("Insert into enrollment values(?,?,?,0,3)");
 				pstmt.setString(1, student_id);
 				pstmt.setString(2, courseID);
 				pstmt.setString(3, sectionID);
-				pstmt.setInt(4, term);
 				int rs = pstmt.executeUpdate();
 				if (rs == 1) {
 					updated = true;

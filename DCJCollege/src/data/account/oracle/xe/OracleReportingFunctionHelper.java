@@ -130,13 +130,12 @@ public class OracleReportingFunctionHelper extends
 				Statement stmt = connection.createStatement();
 				ResultSet rs = stmt.executeQuery("Select * from courses");
 				while (rs.next()) {
-					
 					String course_id = rs.getString("course_id");
 					String course_name = rs.getString("course_name");
 					int hours = rs.getInt("hours");
 					int dept_id = rs.getInt("dept_id");
-					int fees = rs.getInt("fees");
-					Course course = new Course(course_id, course_name, hours, dept_id, fees);
+//					int fees = rs.getInt("fees");
+					Course course = new Course(course_id, course_name, hours, dept_id);
 					courses.add(course);
 				}
 				

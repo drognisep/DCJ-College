@@ -3,7 +3,15 @@
  * 
  * CORRECTIONS MADE:
  *   - Changed package (classes -> data.util)
+ *
+ *
+ *
+ * [REVIEW 8/31]
+ *
+ * CORRECTIONS MADE:
+ * 	 - Removed fees property: duplicate functionality
  */
+
 package data.util;
 
 import java.util.List;
@@ -13,17 +21,25 @@ public class Course {
 	private String course_name;
 	private int hours;
 	private int dept_id;
-	private int fees;
 	private List<Section> sections;
-	
-	Course(){}
-	
-	public Course(String course_id, String course_name, int hours, int dept_id, int fees){
+
+	Course() {
+	}
+
+	public Course(String course_id, String course_name, int hours, int dept_id) {
 		this.course_id = course_id;
 		this.course_name = course_name;
 		this.hours = hours;
 		this.dept_id = dept_id;
-		this.fees = fees;
+	}
+
+	public Course(String course_id, String course_name, int hours, int dept_id,
+			List<Section> sections) {
+		this.course_id = course_id;
+		this.course_name = course_name;
+		this.hours = hours;
+		this.dept_id = dept_id;
+		this.sections = sections;
 	}
 
 	public String getCourse_id() {
@@ -56,14 +72,6 @@ public class Course {
 
 	public void setDept_id(int dept_id) {
 		this.dept_id = dept_id;
-	}
-
-	public int getFees() {
-		return fees;
-	}
-
-	public void setFees(int fees) {
-		this.fees = fees;
 	}
 
 	public List<Section> getSections() {
