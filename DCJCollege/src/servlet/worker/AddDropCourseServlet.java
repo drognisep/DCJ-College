@@ -57,5 +57,6 @@ public class AddDropCourseServlet extends HttpServlet {
 		session.setAttribute("errText", "");
 		session.setAttribute("infoText", "");
 		//Process data
+		session.setAttribute("reqReturn", null /* whatever response */);
 	}
 }
