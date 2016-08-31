@@ -4,6 +4,7 @@ import inval.object.ObjValidator;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -14,7 +15,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import util.TransformHtml;
 import bean.account.AccountBean;
 import data.account.AccountBeanHelper;
 import data.util.DbHelperException;
@@ -55,8 +55,8 @@ public class StudentServicesServlet extends HttpServlet {
 		
 		AccountBeanHelper helper = AccountBeanHelper.getInstance();
 		try {
-			String[] myCourses = helper.getMyCourses(account);
-			String[] availCourses = helper.getAvailableCourses(account);
+			List<String> myCourses = helper.getMyCourses(account, 1);
+			List<String> availCourses = helper.getAvailableCourses(account);
 			String[] mySections;
 			String[] availSections;
 			ArrayList<String> alMySections = new ArrayList<>(100);
@@ -66,7 +66,7 @@ public class StudentServicesServlet extends HttpServlet {
 			
 			// My Sections
 			for(String course : myCourses) {
-				String[] sections = helper.getCourseSections(course);
+				List<String> sections = helper.getCourseSections(course);
 				for(String s : sections) {
 					alMySections.add(s);
 				}
@@ -79,7 +79,7 @@ public class StudentServicesServlet extends HttpServlet {
 			
 			// Available Sections
 			for(String course : availCourses) {
-				String[] sections = helper.getCourseSections(course);
+				List<String> sections = helper.getCourseSections(course);
 				for(String s : sections) {
 					alAvailSections.add(s);
 				}

@@ -2,11 +2,13 @@ package data.account;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.List;
 import java.util.logging.Logger;
 
 import util.AppConfig;
 import bean.account.AccountBean;
 import data.util.DbHelperException;
+import data.util.TranscriptEntry;
 
 /**
  * Singleton class template for DAO actions pertaining to AccountBean. Update this class to add required
@@ -83,24 +85,25 @@ public abstract class AccountBeanHelper {
 	 * @return True if the credentials match, false otherwise.
 	 */
 	public abstract boolean checkCredentials(String name, String password);
-	
-	// Generic functionality generically
 
-	public String[] getAvailableCourses(AccountBean act)
+	public List<String> getAvailableCourses(AccountBean act)
 			throws DbHelperException {
 		return sHelper.getAvailableCourses(act);
 	}
 
-	public String[] getCourseSections(String courseID) throws DbHelperException {
+	public List<String> getCourseSections(String courseID)
+			throws DbHelperException {
 		return sHelper.getCourseSections(courseID);
 	}
 
-	public String[] getMyCourses(AccountBean act) throws DbHelperException {
-		return sHelper.getMyCourses(act);
+	public List<String> getMyCourses(AccountBean act, int term)
+			throws DbHelperException {
+		return sHelper.getMyCourses(act, term);
 	}
 
-	public boolean addSection(AccountBean act, String courseID, String sectionID) {
-		return sHelper.addSection(act, courseID, sectionID);
+	public boolean addSection(AccountBean act, String courseID,
+			String sectionID, int term) {
+		return sHelper.addSection(act, courseID, sectionID, term);
 	}
 
 	public boolean dropSection(AccountBean act, String courseID,
@@ -112,12 +115,19 @@ public abstract class AccountBeanHelper {
 		return sHelper.getTotalFees(act);
 	}
 
+	public double getPaidFees(AccountBean act) throws DbHelperException {
+		return sHelper.getPaidFees(act);
+	}
+
 	public double payFees(AccountBean act, double amount)
 			throws DbHelperException {
 		return sHelper.payFees(act, amount);
 	}
 
-	public double getPaidFees(AccountBean act) throws DbHelperException {
-		return sHelper.getPaidFees(act);
+	public List<TranscriptEntry> getTranscript(AccountBean act)
+			throws DbHelperException {
+		return sHelper.getTranscript(act);
 	}
+	
+	
 }

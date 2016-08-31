@@ -1,11 +1,13 @@
 package data.account;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import bean.account.AccountBean;
 import data.util.DbHelperException;
+import data.util.TranscriptEntry;
 
 public class DummyStudentFunctionHelper extends AbstractStudentFunctionHelper {
 	Logger log = Logger.getLogger("DummyStudentFunctionHelper");
@@ -44,9 +46,8 @@ public class DummyStudentFunctionHelper extends AbstractStudentFunctionHelper {
 	}
 
 	@Override
-	public String[] getAvailableCourses(AccountBean act) {
+	public List<String> getAvailableCourses(AccountBean act) {
 		ArrayList<String> availCourses = new ArrayList<>();
-		String[] avail;
 		for(String s : courses) {
 			boolean canAdd = true;
 			for(int i = 0; i < myCourses.size(); i++) {
@@ -57,28 +58,25 @@ public class DummyStudentFunctionHelper extends AbstractStudentFunctionHelper {
 			}
 			if(canAdd) availCourses.add(s);
 		}
-		
-		avail = new String[availCourses.size()];
-		for(int i = 0; i < avail.length; i++) {
-			avail[i] = availCourses.get(i);
-		}
-		
-		return courses;
+
+		return availCourses;
 	}
 
 	@Override
-	public String[] getMyCourses(AccountBean act) throws DbHelperException {
-		String[] retCourses = new String[myCourses.size()];
-		
-		for(int i = 0; i < retCourses.length; i++) {
-			retCourses[i] = myCourses.get(i);
-		}
-		
-		return retCourses;
+	public List<String> getMyCourses(AccountBean act, int term) throws DbHelperException {
+//		String[] retCourses = new String[myCourses.size()];
+//		ArrayList<String> retCourses = new ArrayList<>();
+//		
+//		for(int i = 0; i < retCourses.length; i++) {
+//			retCourses[i] = myCourses.get(i);
+//		}
+//		
+//		return retCourses;
+		return myCourses;
 	}
 
 	@Override
-	public boolean addSection(AccountBean act, String courseID, String sectionID) {
+	public boolean addSection(AccountBean act, String courseID, String sectionID, int term) {
 		int cid = -1;
 		
 		for(int i = 0; i < courses.length; i++) {
@@ -114,7 +112,7 @@ public class DummyStudentFunctionHelper extends AbstractStudentFunctionHelper {
 
 	@Override
 	public boolean dropSection(AccountBean act, String courseID, String sectionID) {
-		String[] cSections = null;
+		List<String> cSections = null;
 		try {
 			cSections = getCourseSections(courseID);
 		} catch(DbHelperException dbhx) {
@@ -149,7 +147,8 @@ public class DummyStudentFunctionHelper extends AbstractStudentFunctionHelper {
 	}
 
 	@Override
-	public String[] getCourseSections(String courseID) throws DbHelperException {
+	public List<String> getCourseSections(String courseID) throws DbHelperException {
+		ArrayList<String> list = new ArrayList<>();
 		int cid = -1;
 		courseID = courseID.split(" - ")[0];
 		for(int i = 0; i < courses.length; i++) {
@@ -161,14 +160,26 @@ public class DummyStudentFunctionHelper extends AbstractStudentFunctionHelper {
 		}
 		if(cid == -1) {
 			log.log(Level.SEVERE, "Unable to find section");
-			return new String[0];
+			return null;
+		} else {
+			for(String s : sections[cid]) {
+				list.add(s);
+			}
 		}
 		
-		return sections[cid];
+		return list;
 	}
 
 	@Override
 	public double getPaidFees(AccountBean act) throws DbHelperException {
 		return paidFees;
+	}
+
+	@Override
+	public List<TranscriptEntry> getTranscript(AccountBean act)
+			throws DbHelperException {
+		ArrayList<String> list = new ArrayList<>();
+		list.add("Transcript is unavailable at this time");
+		return null;
 	}
 }

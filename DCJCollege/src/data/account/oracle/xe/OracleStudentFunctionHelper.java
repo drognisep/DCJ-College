@@ -1,5 +1,5 @@
 /*
- * [REVIEWED BY DOUG SAYLOR (8/29)]
+ * [REVIEWED 8/29]
  * 
  * CORRECTIONS MADE:
  *   - Changed AccountBean method to match master version (getID -> getId)
@@ -11,14 +11,27 @@
  * 
  * CORRECTIONS RECOMMENDED:
  *   - Change getTotalFees method to return fees for _total_ fees for all courses for specified student_id.
+ * 
+ * [REVIEWED 8/30]
+ * 
+ * CORRECTIONS MADE:
+ *   - Changed return types of some methods to match new abstract class
+ *   - Removed array return variables and conversion to int[]
+ *   - Changed package to aid organization (data.account -> data.account.oracle.xe)
+ * 
+ * CORRECTIONS RECOMMENDED:
+ *   - TODO: Implement getTransaction method as outlined in the abstract class
  */
-package data.account;
+package data.account.oracle.xe;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.List;
 
 import bean.account.AccountBean;
+import data.account.AbstractStudentFunctionHelper;
 import data.util.DbHelperException;
+import data.util.TranscriptEntry;
 
 public class OracleStudentFunctionHelper extends AbstractStudentFunctionHelper {
 
@@ -58,11 +71,10 @@ public class OracleStudentFunctionHelper extends AbstractStudentFunctionHelper {
 	}
 
 	@Override
-	public String[] getAvailableCourses(AccountBean act)
+	public List<String> getAvailableCourses(AccountBean act)
 			throws DbHelperException {
 		ArrayList<String> courseArray = new ArrayList<String>();
 		Connection connection = getConnection();
-		String arrayCourses[] = null;
 		String id = act.getId();
 		if (id.charAt(0) == 's') {
 			try {
@@ -75,10 +87,6 @@ public class OracleStudentFunctionHelper extends AbstractStudentFunctionHelper {
 					String course_name = rs.getString("course_name");
 					courseArray.add(course_id + " - " + course_name);
 				}
-				arrayCourses = new String[courseArray.size()];
-				for (int i = 0; i < courseArray.size(); i++) {
-					arrayCourses[i] = courseArray.get(i);
-				}
 			} catch (SQLException sqle) {
 				sqle.printStackTrace();
 				throw new DbHelperException("Error getting available courses");
@@ -86,15 +94,13 @@ public class OracleStudentFunctionHelper extends AbstractStudentFunctionHelper {
 				e.printStackTrace();
 				throw new DbHelperException();
 			}
-			return arrayCourses;
+			return courseArray;
 		}
-		arrayCourses = new String[0];
-		return arrayCourses;
+		return courseArray;
 	}
 
 	@Override
-	public String[] getCourseSections(String courseID) throws DbHelperException {
-		String[] arrayCourses = null;
+	public List<String> getCourseSections(String courseID) throws DbHelperException {
 		ArrayList<String> arrayList = new ArrayList<String>();
 		Connection connection = getConnection();
 		try {
@@ -107,11 +113,6 @@ public class OracleStudentFunctionHelper extends AbstractStudentFunctionHelper {
 				String course_name = rs.getString("course_name");
 				arrayList.add(course_no + " - " + course_name);
 			}
-			arrayCourses = new String[arrayList.size()];
-			for (int i = 0; i < arrayList.size(); i++) {
-				arrayCourses[i] = arrayList.get(i);
-
-			}
 		} catch (SQLException sqle) {
 			sqle.printStackTrace();
 			throw new DbHelperException("Error getting available courses");
@@ -119,14 +120,12 @@ public class OracleStudentFunctionHelper extends AbstractStudentFunctionHelper {
 			e.printStackTrace();
 			throw new DbHelperException();
 		}
-		arrayCourses = new String[0];
-		return arrayCourses;
+		return arrayList;
 	}
 
 	@Override
-	public String[] getMyCourses(AccountBean act) throws DbHelperException {
+	public List<String> getMyCourses(AccountBean act, int term) throws DbHelperException {
 		ArrayList<String> courseArray = new ArrayList<String>();
-		String arrayCourses[] = null;
 		String student_id = act.getId();
 		Connection connection = getConnection();
 		if (student_id.charAt(0) == 's') {
@@ -140,10 +139,6 @@ public class OracleStudentFunctionHelper extends AbstractStudentFunctionHelper {
 					String course_name = rs.getString("course_name");
 					courseArray.add(course_id + " - " + course_name);
 				}
-				arrayCourses = new String[courseArray.size()];
-				for (int i = 0; i < courseArray.size(); i++) {
-					arrayCourses[i] = courseArray.get(i);
-				}
 			} catch (SQLException sqle) {
 				sqle.printStackTrace();
 				throw new DbHelperException(
@@ -152,14 +147,13 @@ public class OracleStudentFunctionHelper extends AbstractStudentFunctionHelper {
 				e.printStackTrace();
 				throw new DbHelperException();
 			}
-			return arrayCourses;
+			return courseArray;
 		}
-		arrayCourses = new String[0];
-		return arrayCourses;
+		return courseArray;
 	}
 
 	@Override
-	public boolean addSection(AccountBean act, String courseID, String sectionID) {
+	public boolean addSection(AccountBean act, String courseID, String sectionID, int term) {
 		String student_id = act.getId();
 		Connection connection;
 		try {
@@ -315,5 +309,12 @@ public class OracleStudentFunctionHelper extends AbstractStudentFunctionHelper {
 		}
 		new_balance = 0; // should we return another amount?
 		return new_balance;
+	}
+
+	@Override
+	public List<TranscriptEntry> getTranscript(AccountBean act)
+			throws DbHelperException {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
