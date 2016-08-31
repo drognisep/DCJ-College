@@ -6,12 +6,15 @@
  */
 package data.util;
 
+import java.util.List;
+
 public class Course {
 	private String course_id;
 	private String course_name;
 	private int hours;
 	private int dept_id;
 	private int fees;
+	private List<Section> sections;
 	
 	Course(){}
 	
@@ -61,6 +64,14 @@ public class Course {
 
 	public void setFees(int fees) {
 		this.fees = fees;
+	}
+
+	public List<Section> getSections() {
+		return sections;
+	}
+
+	public void setSections(List<Section> sections) {
+		this.sections = sections;
 	}
 
 }

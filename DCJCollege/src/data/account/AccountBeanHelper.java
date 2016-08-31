@@ -12,6 +12,7 @@ import data.util.DbHelperException;
 import data.util.Instructor;
 import data.util.ScheduleEntry;
 import data.util.Section;
+import data.util.Student;
 import data.util.TranscriptEntry;
 
 /**
@@ -24,7 +25,16 @@ public abstract class AccountBeanHelper {
 	protected AbstractInstructorFunctionHelper iHelper;
 	protected AbstractReportingFunctionHelper rHelper;
 	private static Logger log = Logger.getLogger("AccountBeanHelper");
+	private Student student;
 	
+	public Student getStudent() {
+		return student;
+	}
+
+	public void setStudent(Student student) {
+		this.student = student;
+	}
+
 	protected AccountBeanHelper(
 			AbstractStudentFunctionHelper sHelper,
 			AbstractInstructorFunctionHelper iHelper,

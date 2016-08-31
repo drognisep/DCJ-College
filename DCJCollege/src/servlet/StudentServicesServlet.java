@@ -54,6 +54,7 @@ public class StudentServicesServlet extends HttpServlet {
 		}
 		
 		AccountBeanHelper helper = AccountBeanHelper.getInstance();
+		
 		try {
 			List<String> myCourses = helper.getMyCourses(account, 1);
 			List<String> availCourses = helper.getAvailableCourses(account);

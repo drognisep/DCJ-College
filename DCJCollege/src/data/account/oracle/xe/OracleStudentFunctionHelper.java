@@ -70,6 +70,7 @@ public class OracleStudentFunctionHelper extends AbstractStudentFunctionHelper {
 
 	}
 
+	// FIXME: Return List<Course>
 	@Override
 	public List<String> getAvailableCourses(AccountBean act)
 			throws DbHelperException {
@@ -100,6 +101,7 @@ public class OracleStudentFunctionHelper extends AbstractStudentFunctionHelper {
 		return courseArray;
 	}
 
+	// FIXME: Return List<Section>
 	@Override
 	public List<String> getCourseSections(String courseID) throws DbHelperException {
 		ArrayList<String> arraySections = new ArrayList<String>();
@@ -124,8 +126,43 @@ public class OracleStudentFunctionHelper extends AbstractStudentFunctionHelper {
 		return arraySections;
 	}
 
+
+	// FIXME: Return List<Course>
+	// FIXME: populate each Course with List<Section>
 	@Override
 	public List<String> getMyCourses(AccountBean act, int term) throws DbHelperException {
+		ArrayList<String> myCourseArray = new ArrayList<String>();
+		String student_id = act.getId();
+		Connection connection = getConnection();
+		if (student_id.charAt(0) == 's') {
+			try {
+				PreparedStatement pstmt = connection
+						.prepareStatement("Select course_id, course_name from student_section where (student_id = ?) and (term = ?)");
+				pstmt.setString(1, student_id);
+				pstmt.setInt(2, term);
+				ResultSet rs = pstmt.executeQuery();
+				while (rs.next()) {
+					String course_id = rs.getString("course_id");
+					String course_name = rs.getString("course_name");
+					myCourseArray.add(course_id + " - " + course_name);
+				}
+
+			} catch (SQLException sqle) {
+				sqle.printStackTrace();
+				throw new DbHelperException(
+						"Error querying current student courses");
+			} catch (Exception e) {
+				e.printStackTrace();
+				throw new DbHelperException();
+			}
+			return myCourseArray;
+		}
+		return myCourseArray;
+	}
+	
+	// FIXME: Get List<Course> based on student_id
+	// FIXME: populate each Course with List<Section>
+	public List<String> getMyCourses(AccountBean act) throws DbHelperException {
 		ArrayList<String> myCourseArray = new ArrayList<String>();
 		String student_id = act.getId();
 		Connection connection = getConnection();

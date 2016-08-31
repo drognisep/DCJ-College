@@ -37,7 +37,7 @@ public abstract class AbstractStudentFunctionHelper {
 	public abstract List<String> getCourseSections(String courseID) throws DbHelperException;
 	
 	/**
-	 * Get all courses the given account is enrolled in. If the {@code AccountBean} belongs to an 
+	 * Get all courses the given account is enrolled in by term. If the {@code AccountBean} belongs to an 
 	 * instructor, then simply return a zero length array: {@code String[] ary = new String[0]; }.
 	 * @param act Initialized {@code AccountBean} with all account information.
 	 * @throws DbHelperException indicating what error occurred.
@@ -45,6 +45,16 @@ public abstract class AbstractStudentFunctionHelper {
 	 * the form: "course_no - course_name".
 	 */
 	public abstract List<String> getMyCourses(AccountBean act, int term) throws DbHelperException;
+	
+	/**
+	 * Get all courses the given account is enrolled in. If the {@code AccountBean} belongs to an 
+	 * instructor, then simply return a zero length array: {@code String[] ary = new String[0]; }.
+	 * @param act Initialized {@code AccountBean} with all account information.
+	 * @throws DbHelperException indicating what error occurred.
+	 * @return Returns an array of {@code String} with each course enrolled in as an element with
+	 * the form: "course_no - course_name".
+	 */
+	public abstract List<String> getMyCourses(AccountBean act) throws DbHelperException;
 	
 	/**
 	 * Adds a section as an entry in the enrollment table.
