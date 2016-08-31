@@ -10,6 +10,7 @@ import java.util.List;
 import bean.account.AccountBean;
 import data.util.Course;
 import data.util.DbHelperException;
+import data.util.Instructor;
 import data.util.ScheduleEntry;
 import data.util.Section;
 public abstract class AbstractInstructorFunctionHelper {

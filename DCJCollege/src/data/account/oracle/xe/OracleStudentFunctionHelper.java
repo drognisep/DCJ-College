@@ -20,7 +20,7 @@
  *   - Changed package to aid organization (data.account -> data.account.oracle.xe)
  * 
  * CORRECTIONS RECOMMENDED:
- *   - TODO: Implement getTransaction method as outlined in the abstract class
+ *   - FIXME: Implement getTransaction method as outlined in the abstract class
  */
 package data.account.oracle.xe;
 
