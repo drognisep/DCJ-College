@@ -9,6 +9,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import data.account.AccountBeanHelper;
+
 /**
  * Servlet implementation class LogoutServlet
  */
@@ -31,7 +33,7 @@ public class LogoutServlet extends HttpServlet {
     		session.invalidate();
     	}
     	
+    	AccountBeanHelper.getInstance().closeConnection();
     	response.sendRedirect("index.jsp");
     }
-
 }

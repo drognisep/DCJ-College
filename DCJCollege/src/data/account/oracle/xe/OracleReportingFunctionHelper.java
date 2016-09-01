@@ -74,7 +74,7 @@ public class OracleReportingFunctionHelper extends
 							room, schedule_id, instr_id);
 					sections.add(section);
 				}
-				
+				rs.close();
 			} catch (SQLException sqle) {
 				sqle.printStackTrace();
 				throw new DbHelperException(
@@ -108,7 +108,7 @@ public class OracleReportingFunctionHelper extends
 							room, schedule_id, instr_id);
 					sections.add(section);
 				}
-				
+				rs.close();
 			} catch (SQLException sqle) {
 				sqle.printStackTrace();
 				throw new DbHelperException(
@@ -137,7 +137,7 @@ public class OracleReportingFunctionHelper extends
 					Course course = new Course(course_id, course_name, hours, dept_id);
 					courses.add(course);
 				}
-				
+				rs.close();
 			} catch (SQLException sqle) {
 				sqle.printStackTrace();
 				throw new DbHelperException(
@@ -168,7 +168,7 @@ public class OracleReportingFunctionHelper extends
 							room, schedule_id, instr_id);
 					sections.add(section);
 				}
-				
+				rs.close();
 			} catch (SQLException sqle) {
 				sqle.printStackTrace();
 				throw new DbHelperException(
@@ -194,7 +194,7 @@ public class OracleReportingFunctionHelper extends
 					String name = rs.getString(1) + " " + rs.getString(2);
 					honors.add(name);
 				}
-				
+				rs.close();
 			} catch (SQLException sqle) {
 				sqle.printStackTrace();
 				throw new DbHelperException(

@@ -11,11 +11,11 @@
 <body>
 	<nav class="top-nav">
 		<a href="StudentServices">Student</a>
-		<a href="AdministrativeFunctions.jsp">Administrative</a>
+		<a href="InstructorServices">Instructor</a>
 		<a href="ReportingFunctions.jsp">Reporting</a>
 		<a href="Logout">Logout</a>
 	</nav>
-	<h1>Welcome to your home page</h1>
+	<h1 class="banner">Welcome to your home page</h1>
 	<h3>Pick one of the options above to continue</h3>
 </body>
 </html>

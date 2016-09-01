@@ -17,7 +17,7 @@ import data.account.AccountBeanHelper;
 /**
  * Servlet implementation class InstructorServicesServlet
  */
-@WebServlet("/InstructorServicesServlet")
+@WebServlet("/InstructorServices")
 public class InstructorServicesServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
@@ -48,7 +48,9 @@ public class InstructorServicesServlet extends HttpServlet {
 			// Handle request from each valid reqOrigin
 			break;
 		default:
-			
+			session.setAttribute("errText", "Unrecognized request");
 		}
+		
+		response.sendRedirect("InstructorFunctions.jsp");
 	}
 }

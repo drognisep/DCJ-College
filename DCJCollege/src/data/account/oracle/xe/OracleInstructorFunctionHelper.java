@@ -625,6 +625,7 @@ public class OracleInstructorFunctionHelper extends
 							instr_last_name);
 					scheduleEntries.add(sched);
 				}
+				rs.close();
 			} catch (SQLException sqle) {
 				sqle.printStackTrace();
 				throw new DbHelperException(

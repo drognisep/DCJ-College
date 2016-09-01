@@ -6,12 +6,14 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<link href="../css/style.css" type="text/css" rel="stylesheet" />
 <title>Error</title>
 </head>
 <body>
 <h1>An error occurred on the Student Functions page</h1>
-<h3>${pageContext.errorData.throwable }</h3>
+<h3>${pageContext.errorData.throwable}</h3>
 <p>${pageContext.errorData.throwable.cause}</p>
-<a href="StudentFunctions.jsp">Go back</a>
+<a href="StudentFunctions.jsp"><button>Go back</button></a>
+<a href="Logout"><button>Logout</button></a>
 </body>
 </html>

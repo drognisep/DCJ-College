@@ -243,4 +243,6 @@ public abstract class AccountBeanHelper {
 	}
 
 	public abstract Connection getConnection() throws DbHelperException;
+	
+	public abstract void closeConnection();
 }

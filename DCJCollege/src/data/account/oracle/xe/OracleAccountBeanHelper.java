@@ -62,6 +62,15 @@ public class OracleAccountBeanHelper extends AccountBeanHelper {
 	}
 
 	@Override
+	public void closeConnection() {
+		if(connection != null) {
+			try {
+				connection.close();
+			} catch(Exception any) { /* ignore */ }
+		}
+	}
+	
+	@Override
 	public boolean checkCredentials(String name, String password) {
 		if (name.charAt(0) == 's') {
 			try {
@@ -73,11 +82,13 @@ public class OracleAccountBeanHelper extends AccountBeanHelper {
 				ResultSet rs = pstmt.executeQuery();
 				if (rs.next()) {
 					try {
+						rs.close();
 						pstmt.close();
 					} catch(Exception any) { /* ignore */ }
 					return true;
 				} else {
 					try {
+						rs.close();
 						pstmt.close();
 					} catch(Exception any) { /* ignore */ }
 					return false;
@@ -108,8 +119,10 @@ public class OracleAccountBeanHelper extends AccountBeanHelper {
 				pstmt.setString(2, password);
 				ResultSet rs = pstmt.executeQuery();
 				if (rs.next()) {
+					rs.close();
 					return true;
 				} else
+					rs.close();
 					return false;
 			} catch (SQLException sqle) {
 				sqle.printStackTrace();

@@ -1,6 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-	pageEncoding="ISO-8859-1" errorPage="InstructorFunctionsErr.jsp"%>
+	pageEncoding="ISO-8859-1" errorPage="InstructorFunctionsErr.jsp"
+	import="data.account.AccountBeanHelper"%>
 <jsp:include page="include/validateLogin.jsp"></jsp:include>
+<% AccountBeanHelper.getInstance().closeConnection(); %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -18,13 +20,15 @@
 	</nav>
 	--%>
 	<nav class="top-nav">
-		<a href="#" onclick="showFunction(this)">0</a>
-		<a href="#" onclick="showFunction(this)">1</a>
-		<a href="#" onclick="showFunction(this)">2</a>
-		<a href="MainMenu.jsp">Back</a>
+		<a id="nav0" href="#" onclick="showFunction(this)">0</a>
+		<a id="nav1" href="#" onclick="showFunction(this)">1</a>
+		<a id="nav2" href="#" onclick="showFunction(this)">2</a>
+		<a href="MainMenu.jsp">&lt;Back</a>
 	</nav>
+	<h1 class="banner">Instructor Functions</h1>
 	<div id="div0" class="hidden-modal-div">
 		<div class="inner-modal-div">
+			<p class="x-btn" onclick="hideFunction();">X</p>
 			<h3>Course creation</h3>
 			<form action="InstructorFunctions" method="post">
 				<p>
@@ -55,6 +59,7 @@
 	
 	<div id="div1" class="hidden-modal-div">
 		<div class="inner-modal-div">
+			<p class="x-btn" onclick="hideFunction();">X</p>
 			<h3>Add Instructor</h3>
 			<form action="InstructorFunctions" method="post">
 				<p>
@@ -80,6 +85,7 @@
 
 	<div id="div2" class="hidden-modal-div">
 		<div class="inner-modal-div">
+			<p class="x-btn" onclick="hideFunction();">X</p>
 			<h3>Alter Term Schedule</h3>
 			<form action="InstructorFunctions" method="post">
 				<p>
@@ -96,6 +102,7 @@
 	<%-- Template div - Number of divs should match js array options
 	<div id="div2" class="hidden-modal-div">
 		<div class="inner-modal-div">
+			<p class="x-btn">X</p>
 			<form action="ServiceServlet" method="post">
 				
 				<input type="hidden" name="reqType" value="" />

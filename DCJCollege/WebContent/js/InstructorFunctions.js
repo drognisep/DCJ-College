@@ -49,6 +49,18 @@ function showFunction(a) {
 }
 
 /**
+ * Hides all hideable div's
+ */
+function hideFunction() {
+	for(var i = 0; i < anchorKeys.length; i++) {
+		var div = document.getElementById("div"+i);
+		if(div) {
+			div.style.display = "none";
+		}
+	}
+}
+
+/**
  * Creates an async ajax request to update registration.
  * @param form
  */

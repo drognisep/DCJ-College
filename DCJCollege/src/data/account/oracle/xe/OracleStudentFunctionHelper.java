@@ -75,7 +75,7 @@ public class OracleStudentFunctionHelper extends AbstractStudentFunctionHelper {
 							dept_id);
 					courseArray.add(course);
 				}
-
+				rs.close();
 			} catch (SQLException sqle) {
 				sqle.printStackTrace();
 				throw new DbHelperException("Error getting available courses");
@@ -111,7 +111,7 @@ public class OracleStudentFunctionHelper extends AbstractStudentFunctionHelper {
 						room, schedule_id, instr_id);
 				arraySections.add(section);
 			}
-
+			rs.close();
 		} catch (SQLException sqle) {
 			sqle.printStackTrace();
 			throw new DbHelperException("Error getting available courses");
@@ -153,6 +153,7 @@ public class OracleStudentFunctionHelper extends AbstractStudentFunctionHelper {
 						dept_id, sections);
 				myCourseArray.add(course);
 			}
+			rs.close();
 			Collections.sort(myCourseArray);
 			return myCourseArray;
 
@@ -194,6 +195,7 @@ public class OracleStudentFunctionHelper extends AbstractStudentFunctionHelper {
 						dept_id, sections);
 				myCourseArray.add(course);
 			}
+			rs.close();
 			Collections.sort(myCourseArray);
 			return myCourseArray;
 		} catch (SQLException sqle) {
@@ -280,6 +282,7 @@ public class OracleStudentFunctionHelper extends AbstractStudentFunctionHelper {
 				while (rs.next()) {
 					total_fees_due = rs.getDouble("total_fees_due");
 				}
+				rs.close();
 			} catch (SQLException sqle) {
 				sqle.printStackTrace();
 				throw new DbHelperException(
@@ -308,6 +311,7 @@ public class OracleStudentFunctionHelper extends AbstractStudentFunctionHelper {
 				while (rs.next()) {
 					fees_paid = rs.getDouble("fees_paid");
 				}
+				rs.close();
 			} catch (SQLException sqle) {
 				sqle.printStackTrace();
 				throw new DbHelperException(
@@ -387,6 +391,7 @@ public class OracleStudentFunctionHelper extends AbstractStudentFunctionHelper {
 							overall_gpa);
 					transcript.add(entry);
 				}
+				rs.close();
 				// return transcript;
 			} catch (SQLException sqle) {
 				sqle.printStackTrace();

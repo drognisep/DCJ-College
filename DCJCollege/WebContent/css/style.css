@@ -1,6 +1,100 @@
 @CHARSET "ISO-8859-1";
 
+body {
+	color: #fff;
+	text-shadow: 0 0 5px rgb(216, 216, 255);
+	background-color: rgb(166, 166, 255);
+	overflow: auto;
+	padding:48px 16px 0 16px;
+	margin:0;
+}
+
+h1.banner {
+	position: fixed;
+	top: 4px;
+	right: 16px;
+	margin-top:0px;
+}
+
+nav.top-nav {
+	position: fixed;
+	top:0px;
+	left:0px;
+	width:100vw;
+	height: 48px;
+	padding: 11px 8px 8px 16px;
+	box-sizing: border-box;
+	background-color: rgb(136, 136, 225);
+	box-shadow: 0 3px 5px #551A8B;
+}
+
+nav.top-nav > a {
+	color: #551A8B;
+	font-family: "Trebuchet MS", Helvetica, sans-serif;
+	font-weight: bold;
+	margin-right: 8px;
+	text-decoration: none;
+}
+
+nav.top-nav > a:hover {
+	text-decoration: underline;
+}
+
 .errText {
 	font-weight: bold;
 	color: red;
+}
+
+.inner-modal-div {
+	display: block;
+	/* text-align: center;
+	vertical-align: middle;
+	margin: auto; */
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	height: 500px;
+	min-height: 300px;
+	width: 750px;
+	min-width: 550px;
+	margin: -250px 0 0 -375px;
+	z-index: 10;
+	background-color: #31008C;
+	border-radius: 8px;
+	box-shadow: 0 0 5px 0 rgb(1, 39, 169);
+	padding: 16px;
+	box-sizing: border-box;
+}
+
+.hidden-modal-div {
+	display: none;
+	position: fixed;
+	width: 100%;
+	height: 100%;
+	top: 0px;
+	left: 0px;
+	overflow: auto;
+	z-index: 9;
+	background-color: rgba(255, 255, 255, 0.5);
+}
+
+p.x-btn {
+	position: absolute;
+	top: -8px;
+	right: 16px;
+	font-family: sans-serif;
+	font-weight: bold;
+	padding: 0px 4px;
+	margin: 0px;
+	font-size: 16px;
+	box-sizing: border-box;
+	color: #333;
+	border: 1px #333 solid;
+	border-radius: 12px;
+	cursor: pointer;
+	background-color: #eeeeee;
+}
+
+p.x-btn:hover {
+	box-shadow: 0 0 5px 2px #999;
 }
