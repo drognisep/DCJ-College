@@ -55,6 +55,7 @@ function showFunction(a) {
  */
 function updateRegistration(form) {
 	if(form) {
+		console.log("Starting ajax request");
 		var xhr = new XMLHttpRequest();
 		var fname = form.fname.value;
 		var lname = form.lname.value;
@@ -76,10 +77,9 @@ function updateRegistration(form) {
 						"&reqType=" + reqType +
 						"&reqOrigin=" + reqOrigin
 		;
-		xhr.open('post', 'StudentServicesServlet', true); // true for async
+		xhr.open('POST', '/DCJCollege/StudentServices', true); // true for async
 		xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 		xhr.send(parameters);
-		xhr.send();
 
 		xhr.onreadystatechange = function() {
 			var DONE = 4;
@@ -89,10 +89,16 @@ function updateRegistration(form) {
 					console.log("Response type: " + (xhr.responseType === "" ? "text (corrected)" : xhr.responseType));
 					var res = xhr.responseText;
 					alert("Got response: " + res);
+					if(res == "Success!") {
+						var a = document.getElementById("AddDropDiv");
+						showFunction(a);
+					}
 				} else {
 					alert("An error occurred processing AJAX request");
 				}
 			}
 		};
+	} else {
+		console.log("Invalid form parameter");
 	}
 }

@@ -34,7 +34,7 @@ public class RegistrationUpdate extends HttpServlet {
 	 */
 	protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		HttpSession session = request.getSession();
-		String reqOrigin = request.getParameter("reqOrigin"); // S/b "StudentServicesServlet" here
+		String reqOrigin = (String)request.getAttribute("reqOrigin"); // S/b "StudentServicesServlet" here
 		String reqType = request.getParameter("reqType");
 		AccountBean account = (AccountBean)session.getAttribute("account");
 		session.setAttribute("errText", "");
@@ -48,7 +48,6 @@ public class RegistrationUpdate extends HttpServlet {
 		String phone = request.getParameter("phone");
 		AccountBeanHelper helper = AccountBeanHelper.getInstance();
 		
-		response.setContentType("text");
 		
 		if(ObjValidator.emptyStrings(reqOrigin, reqType, fname, lname, street, city, state, zip, phone)) {
 			session.setAttribute("errText", "Missing request metadata");
@@ -64,7 +63,7 @@ public class RegistrationUpdate extends HttpServlet {
 			return;
 		}
 		
-		// TODO: Implement me!
+		response.setContentType("text/html;charset=UTF-8");
 		response.getWriter().print("Success!");
 	}
 

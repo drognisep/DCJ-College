@@ -13,8 +13,10 @@ public class AppConfig {
 		appProps.setProperty("app.config.type", "xml");
 		
 		// Set application properties here
-		appProps.setProperty("db.helper.class", "data.account.DummyAccountBeanHelper");
-		appProps.setProperty("db.helper.student.class", "data.account.DummyStudentFunctionHelper");
+		appProps.setProperty("db.helper.class", "data.account.oracle.xe.OracleAccountBeanHelper");
+		appProps.setProperty("db.helper.student.class", "data.account.oracle.xe.OracleStudentFunctionHelper");
+		appProps.setProperty("db.helper.instructor.class", "data.account.oracle.xe.OracleInstructorFunctionHelper");
+		appProps.setProperty("db.helper.reporting.class", "data.account.oracle.xe.OracleReportingFunctionHelper");
 	}
 	
 	public void setProperty(String key, String value) {
