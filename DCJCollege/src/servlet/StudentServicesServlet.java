@@ -92,7 +92,6 @@ public class StudentServicesServlet extends HttpServlet {
 			response.sendRedirect("StudentFunctions.jsp");
 		}*/
 		
-		request.setAttribute("reqOrigin", "StudentServicesServlet");
 		// Switch for reqOrigin and reqType
 		switch(reqOrigin) {
 		case "StudentFunctions.jsp":
@@ -112,6 +111,7 @@ public class StudentServicesServlet extends HttpServlet {
 					response.getWriter().print("Missing request parameters");
 					return;
 				} else {
+					request.setAttribute("reqOrigin", "StudentServicesServlet");
 					request.getRequestDispatcher("ajaxRegistrationUpdate").forward(request, response);
 					return;
 				}
@@ -129,6 +129,7 @@ public class StudentServicesServlet extends HttpServlet {
 					response.sendRedirect("StudentFunctions.jsp");
 					return;
 				} else {
+					request.setAttribute("reqOrigin", "StudentServicesServlet");
 					request.getRequestDispatcher("UpdateRegistrationServlet").forward(request, response);
 					return;
 				}
@@ -139,6 +140,7 @@ public class StudentServicesServlet extends HttpServlet {
 					session.setAttribute("errText", "Missing request parameters");
 					response.sendRedirect("StudentFunctions.jsp");
 				} else {
+					request.setAttribute("reqOrigin", "StudentServicesServlet");
 					request.getRequestDispatcher("AddDropCourseServlet").forward(request, response);
 					return;
 				}
@@ -150,6 +152,7 @@ public class StudentServicesServlet extends HttpServlet {
 					session.setAttribute("errText", "Missing request parameters");
 					response.sendRedirect("StudentFunctions.jsp");
 				} else {
+					request.setAttribute("reqOrigin", "StudentServicesServlet");
 					request.getRequestDispatcher("AddDropCourseServlet").forward(request, response);
 					return;
 				}
