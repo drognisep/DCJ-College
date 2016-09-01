@@ -1,8 +1,10 @@
 package data.util;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class Student {
+public class Student implements Serializable {
+	private static final long serialVersionUID = -5755597953839978769L;
 	private String fname, lname, street, city, state, zip, phone;
 	private String student_id;
 	private List<Course> courses;

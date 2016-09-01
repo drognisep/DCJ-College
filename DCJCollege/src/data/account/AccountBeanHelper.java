@@ -2,6 +2,7 @@ package data.account;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.sql.Connection;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -61,9 +62,9 @@ public abstract class AccountBeanHelper {
 				Constructor<?> sfhCons = sfhClass.getConstructor(new Class<?>[0]);
 				Object sfInstance = (AbstractStudentFunctionHelper)sfhCons.newInstance(new Object[] {});
 				Constructor<?> ifhCons = ifhClass.getConstructor(new Class<?>[0]);
-				Object ifInstance = (AbstractStudentFunctionHelper)ifhCons.newInstance(new Object[] {});
+				Object ifInstance = (AbstractInstructorFunctionHelper)ifhCons.newInstance(new Object[] {});
 				Constructor<?> rfhCons = rfhClass.getConstructor(new Class<?>[0]);
-				Object rfInstance = (AbstractStudentFunctionHelper)rfhCons.newInstance(new Object[] {});
+				Object rfInstance = (AbstractReportingFunctionHelper)rfhCons.newInstance(new Object[] {});
 				Constructor<?> abhCons = abhClass.getConstructor(new Class<?>[] {
 						AbstractStudentFunctionHelper.class,
 						AbstractInstructorFunctionHelper.class,
@@ -240,4 +241,6 @@ public abstract class AccountBeanHelper {
 			throws DbHelperException {
 		return rHelper.getHonorsList(dept_id, term);
 	}
+
+	public abstract Connection getConnection() throws DbHelperException;
 }

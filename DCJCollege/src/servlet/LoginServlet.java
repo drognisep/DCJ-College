@@ -78,8 +78,7 @@ public class LoginServlet extends HttpServlet {
 			return;
 		}
 		
-		session.setAttribute("errText", "An error occurred");
-//		request.getRequestDispatcher("index.jsp").forward(request, response);
+		session.setAttribute("errText", "Incorrect username/password, please try again");
 		response.sendRedirect("index.jsp");
 	}
 

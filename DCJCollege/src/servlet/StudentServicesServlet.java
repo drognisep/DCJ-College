@@ -51,13 +51,11 @@ public class StudentServicesServlet extends HttpServlet {
 		} else if(account == null) {
 			response.sendRedirect("index.jsp");
 			return;
-		} else {
-			reqOrigin = "StudentServicesServlet";
 		}
 		
 		AccountBeanHelper helper = AccountBeanHelper.getInstance();
 		
-		try {
+/*		try {
 			List<Course> myCourses = helper.getMyCourses(account, 1);
 			List<Course> availCourses = helper.getAvailableCourses(account);
 			ArrayList<Section> availSections = new ArrayList<>();
@@ -92,8 +90,9 @@ public class StudentServicesServlet extends HttpServlet {
 			dbhx.printStackTrace();
 			session.setAttribute("errText", dbhx.getMessage());
 			response.sendRedirect("StudentFunctions.jsp");
-		}
+		}*/
 		
+		request.setAttribute("reqOrigin", "StudentServicesServlet");
 		// Switch for reqOrigin and reqType
 		switch(reqOrigin) {
 		case "StudentFunctions.jsp":
@@ -109,12 +108,13 @@ public class StudentServicesServlet extends HttpServlet {
 						request.getParameter("phone")
 						)) {
 					session.setAttribute("errText", "Missing request parameters");
-					response.sendRedirect("StudentFunctions.jsp");
+					response.setContentType("text/html;charset=UTF-8");
+					response.getWriter().print("Missing request parameters");
+					return;
 				} else {
 					request.getRequestDispatcher("ajaxRegistrationUpdate").forward(request, response);
 					return;
 				}
-				break;
 			case "UpdateRegistration":
 				if(ObjValidator.anyNull(
 						request.getParameter("fname"),
@@ -127,11 +127,11 @@ public class StudentServicesServlet extends HttpServlet {
 						)) {
 					session.setAttribute("errText", "Missing request parameters");
 					response.sendRedirect("StudentFunctions.jsp");
+					return;
 				} else {
 					request.getRequestDispatcher("UpdateRegistrationServlet").forward(request, response);
 					return;
 				}
-				break;
 			case "AddCourse":
 				if(ObjValidator.anyNull(
 						request.getParameter("courseAddSelection")
@@ -155,18 +155,26 @@ public class StudentServicesServlet extends HttpServlet {
 				}
 				break;
 			case "Transcript":
+				// FIXME: Add request handler for Transcript
+				session.setAttribute("infoText", "Bounced back from unimplemented request handler");
 				break;
 			default:
-				session.setAttribute("errText", "Unrecognized request type");
+				session.setAttribute("errText", "Unrecognized request type: " + reqType);
 			}
 			break;
-			
+		case "TranscriptServlet":
+			switch(reqType) {
+			case "Transcript":
+				// FIXME: Setup receiver for session attribute "reqReturn"
+				break;
+			default:
+				session.setAttribute("errText", "Unrecognized request type: " + reqType);
+			}
 		default:
-			session.setAttribute("errText", "Unrecognized request originator");
+			session.setAttribute("errText", "Unrecognized request originator: " + reqOrigin);
 		}
 		
 		log.info("Request Type: " + reqType);
 		response.sendRedirect("StudentFunctions.jsp");
 	}
-
 }

@@ -5,9 +5,11 @@
  */
 package data.util;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class Instructor {
+public class Instructor implements Comparable<Instructor>, Serializable {
+	private static final long serialVersionUID = -5897946111436638395L;
 	String instr_id, first_name, last_name;
 	int dept_id;
 	List<Course> courses;
@@ -52,6 +54,11 @@ public class Instructor {
 
 	public void setCourses(List<Course> courses) {
 		this.courses = courses;
+	}
+
+	@Override
+	public int compareTo(Instructor i) {
+		return instr_id.compareTo(i.getInstr_id());
 	}
 
 }

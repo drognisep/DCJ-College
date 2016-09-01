@@ -1,6 +1,8 @@
 package util;
 
-import inval.object.*;
+import inval.object.ObjValidator;
+
+import java.util.List;
 
 public class TransformHtml {
 	private String attributes = "";
@@ -17,6 +19,16 @@ public class TransformHtml {
 	public static String getOptionList(String... items) {
 		StringBuffer sb = new StringBuffer();
 		for(String i : items) sb.append("<option value=\"").append(i).append("\">").append(i).append("\n");
+		return sb.toString();
+	}
+	
+	public static String getOptionList(List<?> items) {
+		StringBuilder sb = new StringBuilder();
+		
+		for(Object o : items) {
+			sb.append("<option>").append(o.toString()).append("</option>\n");
+		}
+		
 		return sb.toString();
 	}
 	
@@ -50,6 +62,22 @@ public class TransformHtml {
 	
 	public static String getTableRows(int columns, String data) {
 		return getTableRows(columns, data.split("|"));
+	}
+	
+	public static String getTableRows(int columns, List<?> list) {
+		StringBuilder sb = new StringBuilder();
+		
+		boolean newRow = true;
+		for(int i = 0; i < list.size(); i++) {
+			if(newRow) sb.append("<tr>");
+			sb.append("<td>").append(list.get(i).toString()).append("</td>");
+			if((i + 1) % columns == 0) {
+				sb.append("</tr>\n");
+				newRow = true;
+			} else newRow = false;
+		}
+		
+		return sb.toString();
 	}
 	
 	public static String getTable(String attributes, int columns, String headerString, String[] data) {
@@ -139,5 +167,15 @@ public class TransformHtml {
 	
 	public void setTableData(String tableData) {
 		this.tableData = tableData.split("|");
+	}
+	
+	public void setTableData(List<?> tableData) {
+		String[] listData = new String[tableData.size()];
+		
+		for(int i = 0; i < tableData.size(); i++) {
+			listData[i] = tableData.get(i).toString();
+		}
+		
+		this.tableData = listData;
 	}
 }

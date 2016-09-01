@@ -1,7 +1,6 @@
 package data.account.oracle.xe;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -11,6 +10,7 @@ import java.util.List;
 
 import bean.account.AccountBean;
 import data.account.AbstractReportingFunctionHelper;
+import data.account.AccountBeanHelper;
 import data.util.Course;
 import data.util.DbHelperException;
 import data.util.Section;
@@ -21,36 +21,35 @@ public class OracleReportingFunctionHelper extends
 	private Connection connection = null;
 
 	public Connection getConnection() throws DbHelperException {
-
-		try {
-			if (connection != null && !connection.isClosed()) {
-				return connection;
-			}
-		} catch (SQLException e1) {
-			e1.printStackTrace();
-			throw new DbHelperException(
-					"Unable to get determined state of connection");
-		}
-
-		try {
-
-			Class.forName("Oracle.jdbc.driver.OracleDriver");
-			connection = DriverManager.getConnection(
-					"jdbc:oracle:thin:@localhost:1521:XE", "school", "school");
-		} catch (SQLException sqle) {
-			sqle.printStackTrace();
-			throw new DbHelperException(
-					"SQL Exception; AbstractStudentFunctionHelper; connectDB()");
-		} catch (ClassNotFoundException cnfe) {
-			cnfe.printStackTrace();
-			throw new DbHelperException(
-					"ClassNotFound; AbstractStudentFunctionHelper; connectDB");
-		} catch (Exception e) {
-			e.printStackTrace();
-			throw new DbHelperException();
-		}
-		return connection;
-
+		return AccountBeanHelper.getInstance().getConnection();
+//		try {
+//			if (connection != null && !connection.isClosed()) {
+//				return connection;
+//			}
+//		} catch (SQLException e1) {
+//			e1.printStackTrace();
+//			throw new DbHelperException(
+//					"Unable to get determined state of connection");
+//		}
+//
+//		try {
+//
+//			Class.forName("Oracle.jdbc.driver.OracleDriver");
+//			connection = DriverManager.getConnection(
+//					"jdbc:oracle:thin:@localhost:1521:XE", "school", "school");
+//		} catch (SQLException sqle) {
+//			sqle.printStackTrace();
+//			throw new DbHelperException(
+//					"SQL Exception; AbstractStudentFunctionHelper; connectDB()");
+//		} catch (ClassNotFoundException cnfe) {
+//			cnfe.printStackTrace();
+//			throw new DbHelperException(
+//					"ClassNotFound; AbstractStudentFunctionHelper; connectDB");
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//			throw new DbHelperException();
+//		}
+//		return connection;
 	}
 
 	@Override

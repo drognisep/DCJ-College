@@ -3,10 +3,13 @@
  * 
  * CORRECTIONS MADE:
  *   - Changed package (classes -> data.util)
+ *   - Added toString() and compareTo()
  */
 package data.util;
 
-public class Section {
+import java.io.Serializable;
+
+public class Section implements Comparable<Section>, Serializable {
 
 	private int term;
 	private String section_id;
@@ -26,6 +29,28 @@ public class Section {
 		this.room = room;
 		this.schedule_id = schedule_id;
 		this.instr_id = instr_id;
+	}
+	
+	@Override
+	public String toString() {
+		return section_id;
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == this) {
+            return true;
+        }
+        if (!(obj instanceof Section)) {
+            return false;
+        }
+        Section other = (Section) obj;
+        return this.getSection_id().equals(other.getSection_id());
+	}
+	
+	@Override
+	public int hashCode() {
+		return super.hashCode();
 	}
 	
 	public int getTerm() {
@@ -90,6 +115,11 @@ public class Section {
 
 	public void setNo_enrolled(int no_enrolled) {
 		this.no_enrolled = no_enrolled;
+	}
+
+	@Override
+	public int compareTo(Section s) {
+		return section_id.compareTo(s.getSection_id());
 	}
 
 }

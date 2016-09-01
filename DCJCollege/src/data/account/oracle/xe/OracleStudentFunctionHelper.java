@@ -24,15 +24,22 @@
  * 
  * CORRECTIONS MADE:
  *   - changed return types of some methods from List<String> to List<Section> or List<Course>
+ *   - Changed a few queries to accomodate missed changes in db structure and naming
  */
 package data.account.oracle.xe;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.List;
 
 import bean.account.AccountBean;
 import data.account.AbstractStudentFunctionHelper;
+import data.account.AccountBeanHelper;
 import data.util.Course;
 import data.util.DbHelperException;
 import data.util.Section;
@@ -43,48 +50,47 @@ public class OracleStudentFunctionHelper extends AbstractStudentFunctionHelper {
 	private Connection connection = null;
 
 	public Connection getConnection() throws DbHelperException {
-
-		try {
-			if (connection != null && !connection.isClosed()) {
-				return connection;
-			}
-		} catch (SQLException e1) {
-			e1.printStackTrace();
-			throw new DbHelperException(
-					"Unable to determine state of connection");
-		}
-
-		try {
-			// TODO: [FUTURE] Make this pull connection information from
-			// AppConfig, and push updates
-			Class.forName("oracle.jdbc.driver.OracleDriver");
-			connection = DriverManager.getConnection(
-					"jdbc:oracle:thin:@localhost:1521:XE", "school", "school");
-		} catch (SQLException sqle) {
-			sqle.printStackTrace();
-			throw new DbHelperException(
-					"Unable to establish connection to database");
-		} catch (ClassNotFoundException cnfe) {
-			cnfe.printStackTrace();
-			throw new DbHelperException("Unable to locate driver class");
-		} catch (Exception e) {
-			e.printStackTrace();
-			throw new DbHelperException();
-		}
-		return connection;
-
+		return AccountBeanHelper.getInstance().getConnection();
+//		try {
+//			if (connection != null && !connection.isClosed()) {
+//				return connection;
+//			}
+//		} catch (SQLException e1) {
+//			e1.printStackTrace();
+//			throw new DbHelperException(
+//					"Unable to determine state of connection");
+//		}
+//
+//		try {
+//			// TODO: [FUTURE] Make this pull connection information from
+//			// AppConfig, and push updates
+//			Class.forName("oracle.jdbc.driver.OracleDriver");
+//			connection = DriverManager.getConnection(
+//					"jdbc:oracle:thin:@localhost:1521:XE", "school", "school");
+//		} catch (SQLException sqle) {
+//			sqle.printStackTrace();
+//			throw new DbHelperException(
+//					"Unable to establish connection to database");
+//		} catch (ClassNotFoundException cnfe) {
+//			cnfe.printStackTrace();
+//			throw new DbHelperException("Unable to locate driver class");
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//			throw new DbHelperException();
+//		}
+//		return connection;
 	}
 
 	@Override
 	public List<Course> getAvailableCourses(AccountBean act)
 			throws DbHelperException {
-		ArrayList<Course> courseArray = new ArrayList<Course>();
+		ArrayList<Course> courseArray = new ArrayList<Course>(new LinkedHashSet<Course>());
 		Connection connection = getConnection();
 		String id = act.getId();
 		if (id.charAt(0) == 's') {
 			try {
 				PreparedStatement pstmt = connection
-						.prepareStatement("Select * from courses where student_id != ?");
+						.prepareStatement("select * from courses c, enrollment e where c.course_id = e.course_id and student_id != ?");
 				pstmt.setString(1, id);
 				ResultSet rs = pstmt.executeQuery();
 				while (rs.next()) {
@@ -106,13 +112,14 @@ public class OracleStudentFunctionHelper extends AbstractStudentFunctionHelper {
 			}
 			return courseArray;
 		}
+		Collections.sort(courseArray);
 		return courseArray;
 	}
 
 	@Override
 	public List<Section> getCourseSections(String courseID)
 			throws DbHelperException {
-		ArrayList<Section> arraySections = new ArrayList<Section>();
+		ArrayList<Section> arraySections = new ArrayList<Section>(new LinkedHashSet<Section>());
 		Connection connection = getConnection();
 		try {
 			PreparedStatement pstmt = connection
@@ -138,13 +145,14 @@ public class OracleStudentFunctionHelper extends AbstractStudentFunctionHelper {
 			e.printStackTrace();
 			throw new DbHelperException();
 		}
+		Collections.sort(arraySections);
 		return arraySections;
 	}
 
 	@Override
 	public List<Course> getMyCourses(AccountBean act, int term)
 			throws DbHelperException {
-		ArrayList<Course> myCourseArray = new ArrayList<Course>();
+		ArrayList<Course> myCourseArray = new ArrayList<Course>(new LinkedHashSet<Course>());
 		String id = act.getId();
 		String query;
 		Connection connection = getConnection();
@@ -170,7 +178,9 @@ public class OracleStudentFunctionHelper extends AbstractStudentFunctionHelper {
 					Course course = new Course(course_id, course_name, hours,
 							dept_id, sections);
 					myCourseArray.add(course);
-				} return myCourseArray;
+				}
+				Collections.sort(myCourseArray);
+				return myCourseArray;
 
 			} catch (SQLException sqle) {
 				sqle.printStackTrace();
@@ -184,7 +194,7 @@ public class OracleStudentFunctionHelper extends AbstractStudentFunctionHelper {
 	}
 
 	public List<Course> getMyCourses(AccountBean act) throws DbHelperException {
-		ArrayList<Course> myCourseArray = new ArrayList<Course>();
+		ArrayList<Course> myCourseArray = new ArrayList<Course>(new LinkedHashSet<Course>());
 		String id = act.getId();
 		String query;
 		Connection connection = getConnection();
@@ -209,7 +219,9 @@ public class OracleStudentFunctionHelper extends AbstractStudentFunctionHelper {
 					Course course = new Course(course_id, course_name, hours,
 							dept_id, sections);
 					myCourseArray.add(course);
-				} return myCourseArray;
+				}
+				Collections.sort(myCourseArray);
+				return myCourseArray;
 			} catch (SQLException sqle) {
 				sqle.printStackTrace();
 				throw new DbHelperException(
@@ -289,11 +301,11 @@ public class OracleStudentFunctionHelper extends AbstractStudentFunctionHelper {
 		if (student_id.charAt(0) == 's') {
 			try {
 				PreparedStatement pstmt = connection
-						.prepareStatement("Select fees_due from student_fees where student_id = ?");
+						.prepareStatement("Select total_fees_due from student_fees where student_id = ?");
 				pstmt.setString(1, student_id);
 				ResultSet rs = pstmt.executeQuery();
 				while (rs.next()) {
-					total_fees_due = rs.getDouble("fees_due");
+					total_fees_due = rs.getDouble("total_fees_due");
 				}
 			} catch (SQLException sqle) {
 				sqle.printStackTrace();
@@ -321,12 +333,12 @@ public class OracleStudentFunctionHelper extends AbstractStudentFunctionHelper {
 				pstmt.setString(1, student_id);
 				ResultSet rs = pstmt.executeQuery();
 				while (rs.next()) {
-					fees_paid = rs.getDouble("fees_due");
+					fees_paid = rs.getDouble("fees_paid");
 				}
 			} catch (SQLException sqle) {
 				sqle.printStackTrace();
 				throw new DbHelperException(
-						"Error querying for student fees due");
+						"Error querying for student fees paid");
 			} catch (Exception e) {
 				e.printStackTrace();
 				throw new DbHelperException();
@@ -374,7 +386,7 @@ public class OracleStudentFunctionHelper extends AbstractStudentFunctionHelper {
 	@Override
 	public List<TranscriptEntry> getTranscript(AccountBean act)
 			throws DbHelperException {
-		ArrayList<TranscriptEntry> transcript = new ArrayList<TranscriptEntry>();
+		ArrayList<TranscriptEntry> transcript = new ArrayList<TranscriptEntry>(new LinkedHashSet<TranscriptEntry>());
 		String student_id = act.getId();
 		Connection connection = getConnection();
 		if (student_id.charAt(0) == 's') {
@@ -401,7 +413,7 @@ public class OracleStudentFunctionHelper extends AbstractStudentFunctionHelper {
 							overall_gpa);
 					transcript.add(entry);
 				}
-				return transcript;
+//				return transcript;
 			} catch (SQLException sqle) {
 				sqle.printStackTrace();
 				throw new DbHelperException(
@@ -411,6 +423,7 @@ public class OracleStudentFunctionHelper extends AbstractStudentFunctionHelper {
 				throw new DbHelperException();
 			}
 		}
+		Collections.sort(transcript);
 		return transcript;
 	}
 }

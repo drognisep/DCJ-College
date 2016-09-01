@@ -1,3 +1,10 @@
+/*
+ * [REVIEW 8/31]
+ * 
+ * CORRECTIONS MADE:
+ *   - Capital 'O' in driver class is invalid, corrected
+ *   - Invalid table names (student -> students, instructor -> instructors)
+ */
 package data.account.oracle.xe;
 
 import java.sql.Connection;
@@ -22,6 +29,7 @@ public class OracleAccountBeanHelper extends AccountBeanHelper {
 
 	private Connection connection = null;
 
+	@Override
 	public Connection getConnection() throws DbHelperException {
 
 		try {
@@ -34,8 +42,7 @@ public class OracleAccountBeanHelper extends AccountBeanHelper {
 					"Unable to get determined state of connection");
 		}
 		try {
-
-			Class.forName("Oracle.jdbc.driver.OracleDriver");
+			Class.forName("oracle.jdbc.driver.OracleDriver");
 			connection = DriverManager.getConnection(
 					"jdbc:oracle:thin:@localhost:1521:XE", "school", "school");
 		} catch (SQLException sqle) {
@@ -60,14 +67,21 @@ public class OracleAccountBeanHelper extends AccountBeanHelper {
 			try {
 				connection = getConnection();
 				PreparedStatement pstmt = connection
-						.prepareStatement("Select password from student where student_id = ? and password = ?");
+						.prepareStatement("Select password from students where student_id = ? and password = ?");
 				pstmt.setString(1, name);
 				pstmt.setString(2, password);
 				ResultSet rs = pstmt.executeQuery();
 				if (rs.next()) {
+					try {
+						pstmt.close();
+					} catch(Exception any) { /* ignore */ }
 					return true;
-				} else
+				} else {
+					try {
+						pstmt.close();
+					} catch(Exception any) { /* ignore */ }
 					return false;
+				}
 			} catch (SQLException sqle) {
 				sqle.printStackTrace();
 				try {
@@ -89,7 +103,7 @@ public class OracleAccountBeanHelper extends AccountBeanHelper {
 			try {
 				connection = getConnection();
 				PreparedStatement pstmt = connection
-						.prepareStatement("Select password from instructor where instr_id = ? and password = ?");
+						.prepareStatement("Select password from instructors where instr_id = ? and password = ?");
 				pstmt.setString(1, name);
 				pstmt.setString(2, password);
 				ResultSet rs = pstmt.executeQuery();

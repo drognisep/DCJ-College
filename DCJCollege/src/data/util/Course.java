@@ -10,13 +10,16 @@
  *
  * CORRECTIONS MADE:
  * 	 - Removed fees property: duplicate functionality
+ *   - Added toString() and compareTo()
  */
 
 package data.util;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class Course {
+public class Course implements Comparable<Course>, Serializable {
+	private static final long serialVersionUID = 4603886173429370941L;
 	private String course_id;
 	private String course_name;
 	private int hours;
@@ -40,6 +43,28 @@ public class Course {
 		this.hours = hours;
 		this.dept_id = dept_id;
 		this.sections = sections;
+	}
+	
+	@Override
+	public String toString() {
+		return course_id;
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == this) {
+            return true;
+        }
+        if (!(obj instanceof Course)) {
+            return false;
+        }
+        Course other = (Course) obj;
+        return this.getCourse_id().equals(other.getCourse_id());
+	}
+	
+	@Override
+	public int hashCode() {
+		return super.hashCode();
 	}
 
 	public String getCourse_id() {
@@ -80,6 +105,11 @@ public class Course {
 
 	public void setSections(List<Section> sections) {
 		this.sections = sections;
+	}
+
+	@Override
+	public int compareTo(Course c) {
+		return course_id.compareTo(c.getCourse_id());
 	}
 
 }

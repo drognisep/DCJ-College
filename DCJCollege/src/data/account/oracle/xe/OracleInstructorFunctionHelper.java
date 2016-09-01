@@ -8,7 +8,6 @@
 package data.account.oracle.xe;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -18,6 +17,7 @@ import java.util.List;
 
 import bean.account.AccountBean;
 import data.account.AbstractInstructorFunctionHelper;
+import data.account.AccountBeanHelper;
 import data.util.Course;
 import data.util.DbHelperException;
 import data.util.Instructor;
@@ -32,35 +32,34 @@ public class OracleInstructorFunctionHelper extends
 	private Connection connection = null;
 
 	public Connection getConnection() throws DbHelperException {
-
-		try {
-			if (connection != null && !connection.isClosed()) {
-				return connection;
-			}
-		} catch (SQLException e1) {
-			e1.printStackTrace();
-			throw new DbHelperException(
-					"Unable to get determined state of connection");
-		}
-		try {
-
-			Class.forName("Oracle.jdbc.driver.OracleDriver");
-			connection = DriverManager.getConnection(
-					"jdbc:oracle:thin:@localhost:1521:XE", "school", "school");
-		} catch (SQLException sqle) {
-			sqle.printStackTrace();
-			throw new DbHelperException(
-					"SQL Exception; AbstractStudentFunctionHelper; connectDB()");
-		} catch (ClassNotFoundException cnfe) {
-			cnfe.printStackTrace();
-			throw new DbHelperException(
-					"ClassNotFound; AbstractStudentFunctionHelper; connectDB");
-		} catch (Exception e) {
-			e.printStackTrace();
-			throw new DbHelperException();
-		}
-		return connection;
-
+		return AccountBeanHelper.getInstance().getConnection();
+//		try {
+//			if (connection != null && !connection.isClosed()) {
+//				return connection;
+//			}
+//		} catch (SQLException e1) {
+//			e1.printStackTrace();
+//			throw new DbHelperException(
+//					"Unable to get determined state of connection");
+//		}
+//		try {
+//
+//			Class.forName("Oracle.jdbc.driver.OracleDriver");
+//			connection = DriverManager.getConnection(
+//					"jdbc:oracle:thin:@localhost:1521:XE", "school", "school");
+//		} catch (SQLException sqle) {
+//			sqle.printStackTrace();
+//			throw new DbHelperException(
+//					"SQL Exception; AbstractStudentFunctionHelper; connectDB()");
+//		} catch (ClassNotFoundException cnfe) {
+//			cnfe.printStackTrace();
+//			throw new DbHelperException(
+//					"ClassNotFound; AbstractStudentFunctionHelper; connectDB");
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//			throw new DbHelperException();
+//		}
+//		return connection;
 	}
 
 	@Override
@@ -82,6 +81,9 @@ public class OracleInstructorFunctionHelper extends
 				if (rs == 1) {
 					updated = true;
 				}
+				try {
+					pstmt.close();
+				} catch(Exception any) { /* ignore */ }
 			} catch (SQLException sqle) {
 				sqle.printStackTrace();
 			} catch (Exception e) {
@@ -107,6 +109,9 @@ public class OracleInstructorFunctionHelper extends
 				pstmt1.setString(1, courseID);
 				updated = pstmt1.executeUpdate();
 				if (updated < 1) {
+					try {
+						pstmt1.close();
+					} catch(Exception any) { /* ignore */ }
 					throw new SQLException();
 				} else {
 					PreparedStatement pstmt2 = connection
@@ -114,6 +119,12 @@ public class OracleInstructorFunctionHelper extends
 					pstmt2.setString(1, courseID);
 					updated = pstmt2.executeUpdate();
 					if (updated < 1) {
+						try {
+							pstmt1.close();
+						} catch(Exception any) { /* ignore */ }
+						try {
+							pstmt2.close();
+						} catch(Exception any) { /* ignore */ }
 						throw new SQLException();
 					} else {
 						PreparedStatement pstmt3 = connection
@@ -121,10 +132,28 @@ public class OracleInstructorFunctionHelper extends
 						pstmt3.setString(1, courseID);
 						updated = pstmt3.executeUpdate();
 						if (updated < 1) {
+							try {
+								pstmt1.close();
+							} catch(Exception any) { /* ignore */ }
+							try {
+								pstmt2.close();
+							} catch(Exception any) { /* ignore */ }
+							try {
+								pstmt3.close();
+							} catch(Exception any) { /* ignore */ }
 							throw new SQLException();
 						} else {
 							connection.commit();
 							connection.setAutoCommit(autoCom);
+							try {
+								pstmt1.close();
+							} catch(Exception any) { /* ignore */ }
+							try {
+								pstmt2.close();
+							} catch(Exception any) { /* ignore */ }
+							try {
+								pstmt3.close();
+							} catch(Exception any) { /* ignore */ }
 							return true;
 						}
 					}
