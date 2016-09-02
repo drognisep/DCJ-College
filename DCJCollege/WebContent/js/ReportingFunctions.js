@@ -1,6 +1,6 @@
 var anchorKeys = [
-	"Print Schedule",
 	"Print Catalog",
+	"Print Schedule",
 	"Honors List"
 ];
 

@@ -18,7 +18,7 @@ import bean.account.AccountBean;
 /**
  * Servlet implementation class AddDropCourseServlet
  */
-@WebServlet("/AddDropCourseServlet")
+@WebServlet("/DropCourseServlet")
 public class DropCourseServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 

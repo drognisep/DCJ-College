@@ -54,11 +54,11 @@ public class ReportingServicesServlet extends HttpServlet {
 				forward(reqType, request, response);
 				return;
 			} else if(reqOrigin.equals(reqType + "Servlet")) {
-				if(ObjValidator.noneNull(request.getAttribute("reqReturn"))
-						&& (request.getAttribute("reqReturn") instanceof List<?>) 
-						) {
+				if(ObjValidator.noneNull(session.getAttribute("reqReturn"))
+						&& (session.getAttribute("reqReturn") instanceof List<?>) 
+						){
 					session.setAttribute("catalog",
-							TransformHtml.prettyPrintCatalog((List<Course>)request.getAttribute("reqReturn")));
+							TransformHtml.prettyPrintCatalog((List<Course>)session.getAttribute("reqReturn")));
 					response.sendRedirect(jspOrigin);
 					return;
 				} else {
@@ -69,6 +69,7 @@ public class ReportingServicesServlet extends HttpServlet {
 			} else {
 				session.setAttribute("errText", "Invalid request origin");
 				response.sendRedirect(jspOrigin);
+				return;
 			}
 		case "PrintTermSchedule":
 			if(reqOrigin.equals(jspOrigin)) {
@@ -85,11 +86,11 @@ public class ReportingServicesServlet extends HttpServlet {
 				}
 			} else if(reqOrigin.equals(reqType + "Servlet")) {
 				// FIXME: Figure out the format that this needs to be displayed in.
-				if(ObjValidator.noneNull(request.getAttribute("reqReturn"))
-						&& (request.getAttribute("reqReturn") instanceof List<?>) 
+				if(ObjValidator.noneNull(session.getAttribute("reqReturn"))
+						&& (session.getAttribute("reqReturn") instanceof List<?>) 
 						) {
 					session.setAttribute("schedule",
-							TransformHtml.prettyPrintCatalog((List<Course>)request.getAttribute("reqReturn")));
+							TransformHtml.prettyPrintCatalog((List<Course>)session.getAttribute("reqReturn")));
 					response.sendRedirect(jspOrigin);
 					return;
 				} else {
@@ -100,17 +101,22 @@ public class ReportingServicesServlet extends HttpServlet {
 			} else {
 				session.setAttribute("errText", "Invalid request origin");
 				response.sendRedirect(jspOrigin);
+				return;
 			}
 		case "HonorsList":
 			if(reqOrigin.equals(jspOrigin)) {
-				// FIXME: Check for params
-				request.setAttribute("reqOrigin", myOrigin);
-				forward(reqType, request, response);
-				return;
+				if(ObjValidator.notEmptyStrings(
+						request.getParameter("dept_id"),
+						request.getParameter("term")
+						)) {
+					request.setAttribute("reqOrigin", myOrigin);
+					forward(reqType, request, response);
+					return;
+				}
 			} else if(reqOrigin.equals(reqType + "Servlet")) {
-				if(ObjValidator.noneNull(request.getAttribute("reqReturn"))) {
+				if(ObjValidator.noneNull(session.getAttribute("reqReturn"))) {
 					session.setAttribute("honorsList", "<table><tr><th>Honors List</th></tr>" + TransformHtml.getTableRows(1, 
-							(List<String>)request.getAttribute("reqReturn")) + "</table>");
+							(List<String>)session.getAttribute("reqReturn")) + "</table>");
 					response.sendRedirect(jspOrigin);
 					return;
 				} else {
@@ -121,6 +127,7 @@ public class ReportingServicesServlet extends HttpServlet {
 			} else {
 				session.setAttribute("errText", "Invalid request origin");
 				response.sendRedirect(jspOrigin);
+				return;
 			}
 		default:
 			session.setAttribute("errText", "Unrecognized request");

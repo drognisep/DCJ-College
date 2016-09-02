@@ -58,6 +58,24 @@ public class StudentServicesServlet extends HttpServlet {
 
 		// Switch for reqOrigin and reqType
 		switch (reqType) {
+		case "AJAX_GetCourseSections":
+			if(!reqOrigin.equals(jspOrigin)) {
+				session.setAttribute("errText", "Invalid request origin");
+				response.sendRedirect(jspOrigin);
+				return;
+			}
+			if(ObjValidator.notEmptyStrings(
+					request.getParameter("course_id")
+					)) {
+				request.setAttribute("reqOrigin", myOrigin);
+				request.getRequestDispatcher("GetCourseSections")
+						.forward(request, response);
+				return;
+			} else {
+				session.setAttribute("errText", "Missing parameters");
+				response.sendRedirect(reqOrigin);
+	            return;
+			}
 		case "AJAX_UpdateRegistration":
 			if (ObjValidator.anyNull(request.getParameter("fname"),
 					request.getParameter("lname"),
@@ -75,22 +93,6 @@ public class StudentServicesServlet extends HttpServlet {
 						request, response);
 				return;
 			}
-			// case "UpdateRegistration":
-			// if (ObjValidator.anyNull(request.getParameter("fname"),
-			// request.getParameter("lname"),
-			// request.getParameter("street"),
-			// request.getParameter("city"),
-			// request.getParameter("state"), request.getParameter("zip"),
-			// request.getParameter("phone"))) {
-			// session.setAttribute("errText", "Missing request parameters");
-			// response.sendRedirect("StudentFunctions.jsp");
-			// return;
-			// } else {
-			// request.setAttribute("reqOrigin", myOrigin);
-			// request.getRequestDispatcher("UpdateRegistrationServlet")
-			// .forward(request, response);
-			// return;
-			// }
 		case "AddCourse":
 			if (!reqOrigin.equals(jspOrigin)) {
 				session.setAttribute("errText", "Invalid request origin");
@@ -125,7 +127,6 @@ public class StudentServicesServlet extends HttpServlet {
 			}
 		case "Transcript":
 			if (reqOrigin.equals(jspOrigin)) {
-				// FIXME: Get request parameters!
 				request.setAttribute("reqOrigin", myOrigin);
 				forward(reqType, request, response);
 				return;

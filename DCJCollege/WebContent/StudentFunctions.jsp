@@ -92,18 +92,18 @@ List<Course> availCourses = helper.getAvailableCourses(account);
 						<th>Section to Add</th>
 					</tr>
 					<tr>
-						<td><select name="courseAddSelection" style="width: 100%;">
+						<td><select name="courseAddSelection" style="width: 100%;" onchange="updateCourseSections(this, 'addSec')">
 								<option>---</option>
 								<%=TransformHtml.getOptionList(helper.getAvailableCourses(account))%>
 						</select></td>
-						<td><select name="sectionAddSelection" style="width: 100%;">
+						<td><select name="sectionAddSelection" id="addSec" style="width: 100%;">
 								<option>---</option>
-								<%
+								<%--
 									List<Course> courses = helper.getAvailableCourses(account);
 												for(Course c : courses) {
 													out.print("<options>---</option>\n" + TransformHtml.getOptionList(helper.getCourseSections(c.getCourse_id())));
 												}
-								%>
+								--%>
 						</select></td>
 					</tr>
 					<tr>
@@ -113,43 +113,34 @@ List<Course> availCourses = helper.getAvailableCourses(account);
 				<input type="hidden" name="reqType" value="AddCourse" /> <input
 					type="hidden" name="reqOrigin" value="<%= reqOrigin %>" />
 			</form>
-
-			<!-- 			<form action="StudentServicesServlet" method="post"> -->
-			<!-- 				<table> -->
-			<!-- 				<tr><th>Section to Drop</th></tr> -->
-			<!-- 				<tr> -->
-			<!-- 				<td><select name="courseDropSelection" style="width:100%;"> -->
-			<!-- 					<option>---</option> -->
-			<!-- 				</select></td> -->
-			<!-- 				<td><input type="submit" value="Submit" /></td> -->
-			<!-- 				</table> -->
-			<table>
-				<tr>
-					<th>Course</th>
-					<th>Section to Drop</th>
-				</tr>
-				<tr>
-					<td><select name="course_id" style="width: 100%;">
-							<option>---</option>
-							<%=TransformHtml.getOptionList(helper.getMyCourses(account))%>
-					</select></td>
-					<td><select name="section_id" style="width: 100%;">
-							<option>---</option>
-							<%
+			<form action="StudentServicesServlet" method="post">
+				<table>
+					<tr>
+						<th>Course</th>
+						<th>Section to Drop</th>
+					</tr>
+					<tr>
+						<td><select name="course_id" style="width: 100%;" onchange="updateCourseSections(this, 'dropSec')">
+								<option>---</option>
+								<%=TransformHtml.getOptionList(helper.getMyCourses(account))%>
+						</select></td>
+						<td><select name="section_id" id="dropSec" style="width: 100%;">
+								<option>---</option>
+								<%--
 								courses = helper.getMyCourses(account);
 								for(Course c : courses) {
 									out.print("<options>---</option>\n" + TransformHtml.getOptionList(helper.getCourseSections(c.getCourse_id())));
 								}
-							%>
-					</select></td>
-				</tr>
-				<tr>
-					<td colspan="2"><input type="submit" value="Drop" /></td>
-				</tr>
-			</table>
-			<input type="hidden" name="reqType" value="DropCourse" /> <input
-				type="hidden" name="reqOrigin" value="<%= reqOrigin %>" />
-			<!-- 			</form> -->
+							--%>
+						</select></td>
+					</tr>
+					<tr>
+						<td colspan="2"><input type="submit" value="Drop" /></td>
+					</tr>
+				</table>
+				<input type="hidden" name="reqType" value="DropCourse" /> <input
+					type="hidden" name="reqOrigin" value="<%=reqOrigin%>" />
+			</form>
 		</div>
 	</div>
 

@@ -61,3 +61,48 @@ function hideFunction() {
 		}
 	}
 }
+
+function updateCourseSections(emitter, target_id) {
+	if (emitter && target_id) {
+		console.log("Starting ajax request");
+		var xhr = new XMLHttpRequest();
+		// Expects a drop down list of course_id's
+		var course_id = emitter.options[emitter.selectedIndex].text;
+		var reqType = "AJAX_GetCourseSections";
+		var reqOrigin = "InstructorFunctions.jsp";
+
+		var parameters = "course_id=" + course_id + "&reqType=" + reqType + "&reqOrigin="
+				+ reqOrigin;
+		xhr.open('POST', '/DCJCollege/InstructorServicesServlet', false);
+		xhr.setRequestHeader("Content-type",
+				"application/x-www-form-urlencoded");
+		xhr.send(parameters);
+
+		xhr.onreadystatechange = function() {
+			var DONE = 4;
+			var OK = 200;
+			if (xhr.readyState === DONE) {
+				if (xhr.status === OK) {
+					console.log("Response type: "
+							+ (xhr.responseType === "" ? "text (corrected)"
+									: xhr.responseType));
+					var res = JSON.parse(xhr.responseText);
+					var target = document.getElementById(target_id);
+					var data = "";
+					if(target && res) {
+						for(var i = 0; i < res.length; i++) {
+							data += "<option>" + res[i].section_id + "</option>";
+						}
+						target.innerHtml = data;
+					} else {
+						alert("Coding error: target is undefined");
+					}
+				} else {
+					alert("An error occurred processing AJAX request");
+				}
+			}
+		};
+	} else {
+		console.log("Invalid parameters!");
+	}
+}

@@ -52,53 +52,75 @@ public class InstructorServicesServlet extends HttpServlet {
 		
 		AccountBeanHelper helper = AccountBeanHelper.getInstance();
 		
-//		Branching origin check
-//			if(reqOrigin.equals(jspOrigin)) {
-//				
-//			} else if(reqOrigin.equals(reqType + "Servlet")) {
-//				
-//			} else {
-//				session.setAttribute("errText", "Invalid request origin");
-//				response.sendRedirect(jspOrigin);
-//			}
-		
-//		Handler w/ Objects
-//			case "CreateCourses":
-//				if(!reqOrigin.equals(jspOrigin)) {
-//					session.setAttribute("errText", "Invalid request origin");
-//					response.sendRedirect(jspOrigin);
-//				}
-//				if(ObjValidator.noneNull(request.getAttribute("course"))) {
-//					request.setAttribute("reqOrigin", myOrigin);
-//					forward(reqType, request, response);
-//					return;
-//				} else {
-//					session.setAttribute("errText", "Missing parameters");
-//					response.sendRedirect(reqOrigin);
-//                  return;
-//				}
-		
-//		Handler w/ Strings
-//			case "AddInstructor":
-//				if(!reqOrigin.equals(jspOrigin)) {
-//					session.setAttribute("errText", "Invalid request origin");
-//					response.sendRedirect(jspOrigin);
-//					return;
-//				}
-//				if(ObjValidator.notEmptyStrings(
-//						request.getParameter("instr_id"),
-//						request.getParameter("section_id")
-//						)) {
-//					request.setAttribute("reqOrigin", myOrigin);
-//					forward(reqType, request, response);
-//					return;
-//				} else {
-//					session.setAttribute("errText", "Missing parameters");
-//					response.sendRedirect(reqOrigin);
-//		            return;
-//				}
+		/*
+		Branching origin check
+			if(reqOrigin.equals(jspOrigin)) {
+				
+			} else if(reqOrigin.equals(reqType + "Servlet")) {
+				
+			} else {
+				session.setAttribute("errText", "Invalid request origin");
+				response.sendRedirect(jspOrigin);
+			}
+		*/
+		/*
+		Handler w/ Objects
+			case "CreateCourses":
+				if(!reqOrigin.equals(jspOrigin)) {
+					session.setAttribute("errText", "Invalid request origin");
+					response.sendRedirect(jspOrigin);
+				}
+				if(ObjValidator.noneNull(request.getAttribute("course"))) {
+					request.setAttribute("reqOrigin", myOrigin);
+					forward(reqType, request, response);
+					return;
+				} else {
+					session.setAttribute("errText", "Missing parameters");
+					response.sendRedirect(reqOrigin);
+                  return;
+				}
+		*/
+		/*
+		Handler w/ Strings
+			case "AddInstructor":
+				if(!reqOrigin.equals(jspOrigin)) {
+					session.setAttribute("errText", "Invalid request origin");
+					response.sendRedirect(jspOrigin);
+					return;
+				}
+				if(ObjValidator.notEmptyStrings(
+						request.getParameter("instr_id"),
+						request.getParameter("section_id")
+						)) {
+					request.setAttribute("reqOrigin", myOrigin);
+					forward(reqType, request, response);
+					return;
+				} else {
+					session.setAttribute("errText", "Missing parameters");
+					response.sendRedirect(reqOrigin);
+		            return;
+				}
+		 */
 		
 		switch(reqType) {
+		case "AJAX_GetCourseSections":
+			if(!reqOrigin.equals(jspOrigin)) {
+				session.setAttribute("errText", "Invalid request origin");
+				response.sendRedirect(jspOrigin);
+				return;
+			}
+			if(ObjValidator.notEmptyStrings(
+					request.getParameter("course_id")
+					)) {
+				request.setAttribute("reqOrigin", myOrigin);
+				request.getRequestDispatcher("GetCourseSections")
+						.forward(request, response);
+				return;
+			} else {
+				session.setAttribute("errText", "Missing parameters");
+				response.sendRedirect(reqOrigin);
+	            return;
+			}
 		case "CreateCourse":
 			if(!reqOrigin.equals(jspOrigin)) {
 				session.setAttribute("errText", "Invalid request origin");

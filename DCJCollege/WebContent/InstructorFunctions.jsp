@@ -104,6 +104,10 @@ AccountBean account = (AccountBean)session.getAttribute("account");
 						%>
 					</select>
 				</p>
+				<p>
+					<label for="instr_id">Instructor ID</label>
+					<input type="text" name="instr_id" />
+				</p>
 				<input type="hidden" name="reqType" value="DropInstructor" />
 				<input type="hidden" name="reqOrigin" value="<%= reqOrigin %>" />
 				<input type="submit" value="Submit" />
@@ -165,7 +169,7 @@ AccountBean account = (AccountBean)session.getAttribute("account");
 				</p>
 				<p>
 					<label for="grade">Grade</label>
-					<input type="text" name="grade" />
+					<input type="text" name="grade" pattern="^[ABCDF][+-]?$" title="Must be a letter grade" />
 				</p>
 				<input type="submit" value="Submit" />
 				<input type="hidden" name="reqType" value="UpdateGrades" />

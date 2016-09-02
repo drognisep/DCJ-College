@@ -14,7 +14,7 @@ String sHonors = (String)(session.getAttribute("honorsList") == null ? "<h3>Plea
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <jsp:include page="include/headInclude.jsp"></jsp:include>
-<title>Instructor Portal</title>
+<title>Reporting Functions</title>
 <script type="text/javascript" src="js/ReportingFunctions.js"></script>
 </head>
 <body>
@@ -51,7 +51,7 @@ String sHonors = (String)(session.getAttribute("honorsList") == null ? "<h3>Plea
 		<div class="inner-modal-div">
 			<p class="x-btn" onclick="hideFunction();">X</p>
 			<form action="ReportingServicesServlet" method="post">
-				${sCatalog}
+				<%= sCatalog %>
 				<input type="submit" value="Refresh" />
 				<input type="hidden" name="reqType" value="PrintCatalog" />
 				<input type="hidden" name="reqOrigin" value="<%= reqOrigin %>" />
@@ -62,7 +62,9 @@ String sHonors = (String)(session.getAttribute("honorsList") == null ? "<h3>Plea
 		<div class="inner-modal-div">
 			<p class="x-btn" onclick="hideFunction();">X</p>
 			<form action="ReportingServicesServlet" method="post">
-				${sSchedule}
+				<%= sSchedule %>
+				<label for="term">Term</label>
+				<input type="text" name="term" />
 				<input type="submit" value="Refresh" />
 				<input type="hidden" name="reqType" value="PrintTermSchedule" />
 				<input type="hidden" name="reqOrigin" value="<%= reqOrigin %>" />
@@ -73,7 +75,15 @@ String sHonors = (String)(session.getAttribute("honorsList") == null ? "<h3>Plea
 		<div class="inner-modal-div">
 			<p class="x-btn" onclick="hideFunction();">X</p>
 			<form action="ReportingServicesServlet" method="post">
-				${sHonors}
+				<%= sHonors %>
+				<p>
+					<label for="dept_id">Department ID</label>
+					<input type="text" name="dept_id" />
+				</p>
+				<p>
+					<label for="term">Term</label>
+					<input type="text" name="term" />
+				</p>
 				<input type="submit" value="Refresh" />
 				<input type="hidden" name="reqType" value="HonorsList" />
 				<input type="hidden" name="reqOrigin" value="<%= reqOrigin %>" />
