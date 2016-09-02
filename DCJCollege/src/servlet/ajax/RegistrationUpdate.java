@@ -46,6 +46,7 @@ public class RegistrationUpdate extends HttpServlet {
 		String zip = request.getParameter("zip");
 		String phone = request.getParameter("phone");
 		Connection con = null;
+		boolean autocom = true;
 		
 		if(ObjValidator.emptyStrings(reqOrigin, reqType, fname, lname, street, city, state, zip, phone)) {
 			session.setAttribute("errText", "Missing request metadata");
@@ -78,16 +79,16 @@ public class RegistrationUpdate extends HttpServlet {
 		}
 		
 		try {
-			boolean autocom = con.getAutoCommit();
+			autocom = con.getAutoCommit();
 			con.setAutoCommit(false);
-			String query = "UPDATE students"
-						 	+ "first_name = ?,"
-						 	+ "last_name = ?,"
-						 	+ "street = ?,"
-						 	+ "city = ?,"
-						 	+ "state = ?,"
-						 	+ "zip = ?,"
-						 	+ "phone = ?"
+			String query = "UPDATE students set "
+						 	+ "first_name = ?, "
+						 	+ "last_name = ?, "
+						 	+ "street = ?, "
+						 	+ "city = ?, "
+						 	+ "state = ?, "
+						 	+ "zip = ?, "
+						 	+ "phone = ? "
 						 + "where student_id = ?";
 			PreparedStatement ps = con.prepareStatement(query);
 			ps.setString(1, fname);
@@ -111,6 +112,10 @@ public class RegistrationUpdate extends HttpServlet {
 			con.commit();
 			con.setAutoCommit(autocom);
 		} catch (SQLException sqlx) {
+			try {
+				con.rollback();
+				con.setAutoCommit(autocom);
+			} catch (Exception any) { /* ignore */ }
 			sqlx.printStackTrace();
 			log.log(Level.SEVERE, "Error occurred updating registration");
 			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, 

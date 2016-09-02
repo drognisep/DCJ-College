@@ -5,7 +5,7 @@
 <jsp:include page="include/validateLogin.jsp"></jsp:include>
 <% 
 AccountBeanHelper.getInstance().closeConnection();
-String reqOrigin = "ReportingFunctions.jsp";
+String reqOrigin = "InstructorFunctions.jsp";
 AccountBeanHelper helper = AccountBeanHelper.getInstance();
 AccountBean account = (AccountBean)session.getAttribute("account");
 %>
@@ -18,30 +18,11 @@ AccountBean account = (AccountBean)session.getAttribute("account");
 <script type="text/javascript" src="js/InstructorFunctions.js"></script>
 </head>
 <body>
-	<%-- Nav Template - Number of 'a' should match js array of options
-	<nav class="top-nav">
-		<a href="#" onclick="showFunction(this)">Will be replaced</a>
-		<a href="#" onclick="showFunction(this)">Same here</a>
-		<a href="MainMenu.jsp">Back</a>
-	</nav>
-	--%>
-	<%-- <h3 class="banner">Banner</h3> --%>
-	<%-- Template div - Number of divs should match js array options
-	<div id="div2" class="hidden-modal-div">
-		<div class="inner-modal-div">
-			<p class="x-btn">X</p>
-			<form action="ServiceServlet" method="post">
-				
-				<input type="hidden" name="reqType" value="" />
-				<input type="hidden" name="reqOrigin" value="" />
-			</form>
-		</div>
-	</div>
-	--%>
 	<nav class="top-nav">
 		<a id="nav0" href="#" onclick="showFunction(this)">0</a>
 		<a id="nav1" href="#" onclick="showFunction(this)">1</a>
 		<a id="nav2" href="#" onclick="showFunction(this)">2</a>
+		<a id="nav3" href="#" onclick="showFunction(this)">3</a>
 		<a href="MainMenu.jsp">&lt;Back</a>
 	</nav>
 	<h1 class="banner">Instructor Portal</h1>
@@ -59,7 +40,7 @@ AccountBean account = (AccountBean)session.getAttribute("account");
 				</p>
 				<p>
 					<label for="course_name">Course Name</label> <input type="text"
-						name="course_name" required maxlength="30" pattern="[A-Za-z0-9]+"
+						name="course_name" required maxlength="30" pattern="[A-Za-z0-9 ]+"
 						title="Alphanumeric characters only" />
 				</p>
 				<p>
@@ -134,53 +115,61 @@ AccountBean account = (AccountBean)session.getAttribute("account");
 		<div class="inner-modal-div">
 			<p class="x-btn" onclick="hideFunction();">X</p>
 			<h3>Alter Term Schedule</h3>
-			<!-- 
-			private int term;
-			private String section_id;
-			private String course_id;
-			private int room;
-			private int schedule_id;
-			private String instr_id;
-			private int capacity;
-			private int no_enrolled;
-			-->
 			<form action="InstructorServicesServlet" method="post">
 				<p>
-					<label for="section_id"></label>
+					<label for="section_id">Section ID</label>
 					<input type="text" name="section_id" />
 				</p>
 				<p>
-					<label for="course_id"></label>
+					<label for="course_id">Course ID</label>
 					<input type="text" name="course_id" />
 				</p>
 				<p>
-					<label for="term"></label>
+					<label for="term">Term</label>
 					<input type="text" name="term" />
 				</p>
 				<p>
-					<label for="room"></label>
+					<label for="room">Room</label>
 					<input type="text" name="room" />
 				</p>
 				<p>
-					<label for=""></label>
-					<input type="text" name="name" />
+					<label for="schedule_id">Schedule ID</label>
+					<input type="text" name="schedule_id" />
 				</p>
 				<p>
-					<label for=""></label>
-					<input type="text" name="name" />
+					<label for="instr_id">Instructor ID</label>
+					<input type="text" name="instr_id" />
 				</p>
 				<p>
-					<label for=""></label>
-					<input type="text" name="name" />
-				</p>
-				<p>
-					<label for=""></label>
-					<input type="text" name="name" />
+					<label for="capacity">Capacity</label>
+					<input type="text" name="capacity" />
 				</p>
 				<input type="submit" value="Submit" />
-				<input type="hidden" name="reqType" value="AddInstructor" />
+				<input type="hidden" name="reqType" value="UpdateSection" />
 				<input type="hidden" name="reqOrigin" value="<%= reqOrigin %>" />
+			</form>
+		</div>
+	</div>
+	<div id="div3" class="hidden-modal-div">
+		<div class="inner-modal-div">
+			<p class="x-btn" onclick="hideFunction();">X</p>
+			<h3>Update Grades</h3>
+			<form action="InstructorServicesServlet" method="post">
+				<p>
+					<label for="section_id">Section ID</label>
+					<input type="text" name="section_id" />
+				</p>
+				<p>
+					<label for="student_id">Student ID</label>
+					<input type="text" name="student_id" />
+				</p>
+				<p>
+					<label for="grade">Grade</label>
+					<input type="text" name="grade" />
+				</p>
 				<input type="submit" value="Submit" />
+				<input type="hidden" name="reqType" value="UpdateGrades" />
+				<input type="hidden" name="reqOrigin" value="<%= reqOrigin %>" />
 			</form>
 		</div>
 	</div>

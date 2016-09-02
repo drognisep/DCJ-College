@@ -36,6 +36,13 @@ public class AddCourseServlet extends HttpServlet {
 		}
 		sb.append("<li>Current reqOrigin: " + request.getAttribute("reqOrigin") + "</li></ul>");
 		
+		sb.append("<h1>Attribute names found:</h1><ul>");
+		Enumeration<String> attNames = request.getAttributeNames();
+		while(attNames.hasMoreElements()) {
+			sb.append("<li>").append(attNames.nextElement()).append("</li>");
+		}
+		sb.append("</ul>");
+		
 		Logger.getLogger("AddCourseServlet").info("In working servlet for: " + request.getParameter("reqType") + "\n" + sb.toString());
 		response.getWriter().print(sb.toString());
 	}

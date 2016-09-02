@@ -29,7 +29,7 @@ public class AddInstructorServlet extends HttpServlet {
 	 * @see HttpServlet#service(HttpServletRequest request, HttpServletResponse response)
 	 */
     protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-    	Enumeration<String> names = request.getParameterNames();
+		Enumeration<String> names = request.getParameterNames();
 		StringBuilder sb = new StringBuilder();
 		response.setContentType("text/html");
 		sb.append("<h1>Request parameter listing</h1>");
@@ -46,6 +46,13 @@ public class AddInstructorServlet extends HttpServlet {
 			sb.append("<li>" + s + "</li>");
 		}
 		sb.append("<li>Current reqOrigin: " + request.getAttribute("reqOrigin") + "</li></ul>");
+		
+		sb.append("<h1>Attribute names found:</h1><ul>");
+		Enumeration<String> attNames = request.getAttributeNames();
+		while(attNames.hasMoreElements()) {
+			sb.append("<li>").append(attNames.nextElement()).append("</li>");
+		}
+		sb.append("</ul>");
 		
 		Logger.getLogger("AddCourseServlet").info("In working servlet for: " + request.getParameter("reqType") + "\n" + sb.toString());
 		response.getWriter().print(sb.toString());
