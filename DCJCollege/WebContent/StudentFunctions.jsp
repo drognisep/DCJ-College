@@ -1,7 +1,7 @@
 <%@page import="util.TransformHtml"%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1" errorPage="StudentFunctionsErr.jsp"
-	import="data.account.*,java.util.*,data.util.*,bean.account.*"%>
+	import="data.account.*,java.util.*,data.util.*,bean.account.*" isELIgnored="false"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%
 	AccountBeanHelper.getInstance().closeConnection();
@@ -38,7 +38,7 @@ List<Course> availCourses = helper.getAvailableCourses(account);
 		<div class="inner-modal-div">
 			<p class="x-btn" onclick="hideFunction();">X</p>
 			<h3>Registration Form</h3>
-			<form action="StudentServices" method="post"
+			<form action="StudentServicesServlet" method="post"
 				onsubmit="event.preventDefault();updateRegistration(this);">
 				<p>Please confirm your information is correct and make changes
 					as needed</p>
@@ -70,7 +70,7 @@ List<Course> availCourses = helper.getAvailableCourses(account);
 						value="<%=(account.getPhone() == 0 ? "" : account.getPhone())%>" />
 				</p>
 				<input type="hidden" name="reqType" value="UpdateRegistration" /> <input
-					type="hidden" name="reqOrigin" value="${reqOrigin}" /> <input
+					type="hidden" name="reqOrigin" value="<%= reqOrigin %>" /> <input
 					type="submit" value="Update" />
 			</form>
 		</div>
@@ -85,7 +85,7 @@ List<Course> availCourses = helper.getAvailableCourses(account);
 				</tr>
 				<%=TransformHtml.getTableRows(5, helper.getAvailableCourses(account))%>
 			</table>
-			<form action="StudentServices" method="post">
+			<form action="StudentServicesServlet" method="post">
 				<table>
 					<tr>
 						<th>Course</th>
@@ -111,10 +111,10 @@ List<Course> availCourses = helper.getAvailableCourses(account);
 					</tr>
 				</table>
 				<input type="hidden" name="reqType" value="AddCourse" /> <input
-					type="hidden" name="reqOrigin" value="${reqOrigin}" />
+					type="hidden" name="reqOrigin" value="<%= reqOrigin %>" />
 			</form>
 
-			<!-- 			<form action="StudentServices" method="post"> -->
+			<!-- 			<form action="StudentServicesServlet" method="post"> -->
 			<!-- 				<table> -->
 			<!-- 				<tr><th>Section to Drop</th></tr> -->
 			<!-- 				<tr> -->
@@ -148,7 +148,7 @@ List<Course> availCourses = helper.getAvailableCourses(account);
 				</tr>
 			</table>
 			<input type="hidden" name="reqType" value="DropCourse" /> <input
-				type="hidden" name="reqOrigin" value="${reqOrigin}" />
+				type="hidden" name="reqOrigin" value="<%= reqOrigin %>" />
 			<!-- 			</form> -->
 		</div>
 	</div>
@@ -158,10 +158,10 @@ List<Course> availCourses = helper.getAvailableCourses(account);
 			<p class="x-btn" onclick="hideFunction();">X</p>
 			<h3>Transcript</h3>
 			${transcript}
-			<form action="StudentServices" method="post">
+			<form action="StudentServicesServlet" method="post">
 				<input type="submit" value="Refresh Transcript" /> <input
 					type="hidden" name="reqType" value="Transcript" /> <input
-					type="hidden" name="reqOrigin" value="${reqOrigin}" />
+					type="hidden" name="reqOrigin" value="<%= reqOrigin %>" />
 			</form>
 		</div>
 	</div>
@@ -173,13 +173,13 @@ List<Course> availCourses = helper.getAvailableCourses(account);
 			<p>
 				Fees Due:
 				<%=String.format("$%0,1.2f", helper.getTotalFees(account) - helper.getPaidFees(account))%></p>
-			<form action="StudentServices" method="post">
+			<form action="StudentServicesServlet" method="post">
 				<p>
 					<label for="amount">Amount</label> <input type="text" name="amount" />
 				</p>
 				<input type="submit" value="Submit" /> <input type="hidden"
 					name="reqType" value="PayFees" /> <input type="hidden"
-					name="reqOrigin" value="${reqOrigin}" />
+					name="reqOrigin" value="<%= reqOrigin %>" />
 			</form>
 		</div>
 	</div>

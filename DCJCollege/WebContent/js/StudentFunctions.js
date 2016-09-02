@@ -86,8 +86,7 @@ function updateRegistration(form) {
 				+ street + "&city=" + city + "&state=" + state + "&zip=" + zip
 				+ "&phone=" + phone + "&reqType=" + reqType + "&reqOrigin="
 				+ reqOrigin;
-		xhr.open('POST', '/DCJCollege/StudentServices', true); // true for
-																// async
+		xhr.open('POST', '/DCJCollege/StudentServicesServlet', true); // true for async
 		xhr.setRequestHeader("Content-type",
 				"application/x-www-form-urlencoded");
 		xhr.send(parameters);

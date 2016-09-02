@@ -2,6 +2,7 @@ package servlet.worker;
 
 import java.io.IOException;
 import java.util.Enumeration;
+import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -29,6 +30,13 @@ public class AddCourseServlet extends HttpServlet {
 			sb.append("</li>");
 		}
 		sb.append("</ul>");
+		sb.append("<h1>All reqOrigin parameters</h1>\n<ul>");
+		for(String s : request.getParameterValues("reqOrigin")) {
+			sb.append("<li>" + s + "</li>");
+		}
+		sb.append("<li>Current reqOrigin: " + request.getAttribute("reqOrigin") + "</li></ul>");
+		
+		Logger.getLogger("AddCourseServlet").info("In working servlet for: " + request.getParameter("reqType") + "\n" + sb.toString());
 		response.getWriter().print(sb.toString());
 	}
 

@@ -4,6 +4,7 @@ import inval.object.ObjValidator;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -18,7 +19,7 @@ import data.util.TranscriptEntry;
 /**
  * Servlet implementation class StudentServicesServlet
  */
-@WebServlet("/StudentServices")
+@WebServlet("/StudentServicesServlet")
 public class StudentServicesServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
@@ -35,6 +36,7 @@ public class StudentServicesServlet extends HttpServlet {
 	@SuppressWarnings({ "unchecked" })
 	protected void service(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
+		Logger log = Logger.getLogger("StudentServicesServlet");
 		String reqType = request.getParameter("reqType");
 		String reqOrigin = request.getParameter("reqOrigin");
 		String myOrigin = "StudentServicesServlet";
@@ -45,7 +47,9 @@ public class StudentServicesServlet extends HttpServlet {
 		AccountBean account = (AccountBean) session.getAttribute("account");
 
 		if (ObjValidator.emptyStrings(reqType, reqOrigin)) {
-			response.sendRedirect("StudentFunctions.jsp");
+			log.info("Bouncing back to JSP");
+			log.info("reqType: " + reqType + ", reqOrigin: " + reqOrigin);
+			response.sendRedirect(jspOrigin);
 			return;
 		} else if (account == null) {
 			response.sendRedirect("index.jsp");
@@ -97,27 +101,28 @@ public class StudentServicesServlet extends HttpServlet {
 					request.getParameter("sectionAddSelection"))) {
 				session.setAttribute("errText", "Missing request parameters");
 				response.sendRedirect("StudentFunctions.jsp");
+				return;
 			} else {
 				request.setAttribute("reqOrigin", myOrigin);
 				forward(reqType, request, response);
 				return;
 			}
-			break;
 		case "DropCourse":
 			if (!reqOrigin.equals(jspOrigin)) {
 				session.setAttribute("errText", "Invalid request origin");
 				response.sendRedirect(jspOrigin);
+				return;
 			}
 			if (ObjValidator.emptyStrings(request.getParameter("course_id"),
 					request.getParameter("section_id"))) {
 				session.setAttribute("errText", "Missing request parameters");
 				response.sendRedirect("StudentFunctions.jsp");
+				return;
 			} else {
 				request.setAttribute("reqOrigin", myOrigin);
 				forward(reqType, request, response);
 				return;
 			}
-			break;
 		case "Transcript":
 			if (reqOrigin.equals(jspOrigin)) {
 				// FIXME: Get request parameters!
@@ -154,12 +159,13 @@ public class StudentServicesServlet extends HttpServlet {
 			} else {
 				session.setAttribute("errText", "Invalid request origin");
 				response.sendRedirect(jspOrigin);
+				return;
 			}
-			break;
 		case "PayFees":
 			if (!reqOrigin.equals(jspOrigin)) {
 				session.setAttribute("errText", "Invalid request origin");
 				response.sendRedirect(jspOrigin);
+				return;
 			}
 			if (ObjValidator.notEmptyStrings(
 					request.getParameter("amount")

@@ -40,14 +40,12 @@ public class ReportingServicesServlet extends HttpServlet {
 		AccountBean account = (AccountBean)session.getAttribute("account");
 		
 		if(ObjValidator.emptyStrings(reqType, reqOrigin)) {
-			response.sendRedirect("InstructorFunctions.jsp");
+			response.sendRedirect(jspOrigin);
 			return;
 		} else if(account == null) {
 			response.sendRedirect("index.jsp");
 			return;
 		}
-		
-		AccountBeanHelper helper = AccountBeanHelper.getInstance();
 		
 		switch(reqType) {
 		case "PrintCatalog":
@@ -90,7 +88,7 @@ public class ReportingServicesServlet extends HttpServlet {
 				if(ObjValidator.noneNull(request.getAttribute("reqReturn"))
 						&& (request.getAttribute("reqReturn") instanceof List<?>) 
 						) {
-					session.setAttribute("catalog",
+					session.setAttribute("schedule",
 							TransformHtml.prettyPrintCatalog((List<Course>)request.getAttribute("reqReturn")));
 					response.sendRedirect(jspOrigin);
 					return;

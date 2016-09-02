@@ -72,7 +72,7 @@ AccountBean account = (AccountBean)session.getAttribute("account");
 						title="Should be in format: 00" />
 				</p>
 				<input type="hidden" name="reqType" value="CreateCourse" />
-				<input type="hidden" name="reqOrigin" value="${reqOrigin}" />
+				<input type="hidden" name="reqOrigin" value="<%= reqOrigin %>" />
 				<input type="submit" value="Submit" />
 			</form>
 		</div>
@@ -103,7 +103,7 @@ AccountBean account = (AccountBean)session.getAttribute("account");
 					<input type="text" name="instr_id" required />
 				</p>
 				<input type="hidden" name="reqType" value="AddInstructor" />
-				<input type="hidden" name="reqOrigin" value="${reqOrigin}" />
+				<input type="hidden" name="reqOrigin" value="<%= reqOrigin %>" />
 				<input type="submit" value="Submit" />
 			</form>
 			<h3>Drop Instructor</h3>
@@ -124,7 +124,7 @@ AccountBean account = (AccountBean)session.getAttribute("account");
 					</select>
 				</p>
 				<input type="hidden" name="reqType" value="DropInstructor" />
-				<input type="hidden" name="reqOrigin" value="${reqOrigin}" />
+				<input type="hidden" name="reqOrigin" value="<%= reqOrigin %>" />
 				<input type="submit" value="Submit" />
 			</form>
 		</div>
@@ -179,7 +179,7 @@ AccountBean account = (AccountBean)session.getAttribute("account");
 				</p>
 				<input type="submit" value="Submit" />
 				<input type="hidden" name="reqType" value="AddInstructor" />
-				<input type="hidden" name="reqOrigin" value="${reqOrigin}" />
+				<input type="hidden" name="reqOrigin" value="<%= reqOrigin %>" />
 				<input type="submit" value="Submit" />
 			</form>
 		</div>

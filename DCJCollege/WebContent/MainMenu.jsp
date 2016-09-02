@@ -10,9 +10,9 @@
 </head>
 <body>
 	<nav class="top-nav">
-		<a href="StudentServices">Student</a>
-		<a href="InstructorServices">Instructor</a>
-		<a href="ReportingServices">Reporting</a>
+		<a href="StudentServicesServlet">Student</a>
+		<a href="InstructorServicesServlet">Instructor</a>
+		<a href="ReportingServicesServlet">Reporting</a>
 		<a href="Logout">Logout</a>
 	</nav>
 	<h1 class="banner">Welcome to your home page</h1>
