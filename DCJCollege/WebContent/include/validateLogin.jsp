@@ -4,6 +4,8 @@
 	AccountBean account = null;
 	Object o = session.getAttribute("account");
 	if(o == null) {
+		session.setAttribute("errText", "Unauthorized access, please login");
+		session.setAttribute("infoText", "");
 		response.sendRedirect("index.jsp");
 		return;
 	}

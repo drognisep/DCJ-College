@@ -9,21 +9,24 @@
 <title>Welcome to DCJ College</title>
 </head>
 <body>
-	<h1>Welcome to DCJ College!</h1>
-	<br />
-	<h3>Please login to continue</h3>
-	<form action="Login" method="post">
-		<p>
-			<label for="name">User name</label>
-			<input type="text" name="name" required />
-		</p>
-		<p>
-			<label for="pass">Password</label>
-			<input type="password" name="pass" required />
-		</p>
-		<input type="submit" value="Login" />
-		<input type="hidden" name="csrf" value='${csrfToken}' />
-	</form>
-	<p class="errText">${errText}</p>
+	<div style="text-align:center;">
+		<h1>Welcome to DCJ College!</h1>
+		<br />
+		<h3>Please login to continue</h3>
+		<form action="Login" method="post">
+			<p>
+				<label for="name">User name</label> <input type="text" name="name"
+					required />
+			</p>
+			<p>
+				<label for="pass">Password</label> <input type="password"
+					name="pass" required />
+			</p>
+			<input type="submit" value="Login" /> <input type="hidden"
+				name="csrf" value='${csrfToken}' />
+		</form>
+		<p class="errText">${errText}</p>
+	</div>
+	<jsp:include page="include/footer.jsp"></jsp:include>
 </body>
 </html>

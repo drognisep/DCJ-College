@@ -20,15 +20,7 @@ import data.account.AccountBeanHelper;
 @WebServlet("/ajaxRegistrationUpdate")
 public class RegistrationUpdate extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-       
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
-    public RegistrationUpdate() {
-        super();
-        // TODO Auto-generated constructor stub
-    }
-
+	
 	/**
 	 * @see HttpServlet#service(HttpServletRequest request, HttpServletResponse response)
 	 */
@@ -63,6 +55,7 @@ public class RegistrationUpdate extends HttpServlet {
 			return;
 		}
 		
+		session.setAttribute("infoText", "Success!");
 		response.setContentType("text/html;charset=UTF-8");
 		response.getWriter().print("Success!");
 	}

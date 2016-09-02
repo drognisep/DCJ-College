@@ -10,7 +10,7 @@ package data.util;
 import java.io.Serializable;
 
 public class Section implements Comparable<Section>, Serializable {
-
+	private static final long serialVersionUID = -360349305981284528L;
 	private int term;
 	private String section_id;
 	private String course_id;

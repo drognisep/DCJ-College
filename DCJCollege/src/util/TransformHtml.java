@@ -4,6 +4,9 @@ import inval.object.ObjValidator;
 
 import java.util.List;
 
+import data.util.Course;
+import data.util.Section;
+
 public class TransformHtml {
 	private String attributes = "";
 	private int columns = 1;
@@ -124,6 +127,28 @@ public class TransformHtml {
 		sb.append("</table>\n");
 		
 		return null;
+	}
+	
+	public static String prettyPrintCatalog(List<Course> list) {
+		if(list == null || list.size() == 0) {
+			return "<table><tr><td>Error retrieving catalog data</td></tr></table>";
+		}
+		StringBuilder sb = new StringBuilder();
+		sb.append("<table>");
+		sb.append("<tr><th>Course ID</th><th>Course Name</th><th>Hours</th>"
+				+ "<th>Section ID</th><th>Room</th></tr>");
+		for(Course c : list) {
+			sb.append("<tr>");
+			for(Section s : c.getSections()) {
+				sb.append("<td>").append(c.getCourse_id()).append("</td>");
+				sb.append("<td>").append(c.getCourse_name()).append("</td>");
+				sb.append("<td>").append(c.getHours()).append("</td>");
+				sb.append("<td>").append(s.getSection_id()).append("</td>");
+				sb.append("<td>").append(s.getRoom()).append("</td>");
+			}
+			sb.append("</tr>");
+		}
+		return sb.toString();
 	}
 
 	public String getAttributes() {

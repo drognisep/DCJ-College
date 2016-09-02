@@ -63,7 +63,7 @@ public class OracleStudentFunctionHelper extends AbstractStudentFunctionHelper {
 		if (id.charAt(0) == 's') {
 			try {
 				PreparedStatement pstmt = connection
-						.prepareStatement("select * from courses c, enrollment e where c.course_id = e.course_id and student_id != ?");
+						.prepareStatement("select distinct course_id, course_name, hours, dept_id from student_section where student_id != ?");
 				pstmt.setString(1, id);
 				ResultSet rs = pstmt.executeQuery();
 				while (rs.next()) {
@@ -97,7 +97,7 @@ public class OracleStudentFunctionHelper extends AbstractStudentFunctionHelper {
 		Connection connection = getConnection();
 		try {
 			PreparedStatement pstmt = connection
-					.prepareStatement("Select * from sections where course_id = ?");
+					.prepareStatement("Select distinct * from sections where course_id = ?");
 			pstmt.setString(1, courseID);
 			ResultSet rs = pstmt.executeQuery();
 			while (rs.next()) {
@@ -132,9 +132,9 @@ public class OracleStudentFunctionHelper extends AbstractStudentFunctionHelper {
 		String query;
 		Connection connection = getConnection();
 		if (id.charAt(0) == 's') {
-			query = "Select * from student_section where (student_id = ?) and (term = ?)";
+			query = "select distinct * from student_section where (student_id = ?) and (term = ?)";
 		} else if (id.charAt(0) == 'i') {
-			query = "Select * from instr_section where (instr_id = ?) and (term = ?)";
+			query = "Select distinct * from instr_section where (instr_id = ?) and (term = ?)";
 		} else {
 			throw new DbHelperException("Not a student or instructor id");
 		}
@@ -151,7 +151,7 @@ public class OracleStudentFunctionHelper extends AbstractStudentFunctionHelper {
 				List<Section> sections = getCourseSections(course_id);
 				Course course = new Course(course_id, course_name, hours,
 						dept_id, sections);
-				myCourseArray.add(course);
+				if(!myCourseArray.contains(course)) myCourseArray.add(course);
 			}
 			rs.close();
 			Collections.sort(myCourseArray);
@@ -175,9 +175,9 @@ public class OracleStudentFunctionHelper extends AbstractStudentFunctionHelper {
 		String query;
 		Connection connection = getConnection();
 		if (id.charAt(0) == 's') {
-			query = "Select * from student_section where (student_id = ?)";
+			query = "Select distinct * from student_section where (student_id = ?)";
 		} else if (id.charAt(0) == 'i') {
-			query = "Select * from instr_section where (instr_id = ?)";
+			query = "Select distinct * from instr_section where (instr_id = ?)";
 		} else {
 			throw new DbHelperException("Not a student or instructor id");
 		}
@@ -193,6 +193,7 @@ public class OracleStudentFunctionHelper extends AbstractStudentFunctionHelper {
 				List<Section> sections = getCourseSections(course_id);
 				Course course = new Course(course_id, course_name, hours,
 						dept_id, sections);
+				if(!myCourseArray.contains(course)) myCourseArray.add(course);
 				myCourseArray.add(course);
 			}
 			rs.close();

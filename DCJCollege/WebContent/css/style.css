@@ -7,9 +7,12 @@ body {
 	overflow: auto;
 	padding:48px 16px 0 16px;
 	margin:0;
+	font-family: Tahoma, Geneva, sans-serif;
 }
 
 h1.banner {
+	font-family: Impact, Charcoal, sans-serif;
+	font-weight: lighter;
 	position: fixed;
 	top: 4px;
 	right: 16px;
@@ -55,15 +58,24 @@ nav.top-nav > a:hover {
 	left: 50%;
 	height: 500px;
 	min-height: 300px;
-	width: 750px;
-	min-width: 550px;
-	margin: -250px 0 0 -375px;
+	width: 500px;
+	min-width: 500px;
+	margin: -250px 0 0 -250px;
 	z-index: 10;
 	background-color: #31008C;
 	border-radius: 8px;
 	box-shadow: 0 0 5px 0 rgb(1, 39, 169);
 	padding: 16px;
 	box-sizing: border-box;
+}
+
+.inner-modal-div > h3 {
+	text-align: center;
+}
+
+.inner-modal-div > h3, form, table {
+	width: 80%;
+	margin-left: 10%;
 }
 
 .hidden-modal-div {
@@ -97,4 +109,17 @@ p.x-btn {
 
 p.x-btn:hover {
 	box-shadow: 0 0 5px 2px #999;
+}
+
+.infoText {
+	font-weight: bold;
+	font-style: italic;
+}
+
+div.footer {
+	text-align: center;
+	position: fixed;
+	bottom: 0;
+	width: 100vw;
+	background-color: rgba(0, 0, 0, 0); // Fully transparent
 }
