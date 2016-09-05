@@ -2,7 +2,8 @@ var anchorKeys = [
 	"Create New Course",
 	"Add/Drop Instructor",
 	"Alter Term Schedule",
-	"Update Grades"
+	"Update Grades",
+	"Add/Drop Sections"
 ];
 
 window.onload = function() {
@@ -76,11 +77,11 @@ function updateCourseSections(emitter, target_id) {
 		xhr.open('POST', '/DCJCollege/InstructorServicesServlet', false);
 		xhr.setRequestHeader("Content-type",
 				"application/x-www-form-urlencoded");
-		xhr.send(parameters);
 
 		xhr.onreadystatechange = function() {
 			var DONE = 4;
 			var OK = 200;
+			console.log("In AJAX response handler");
 			if (xhr.readyState === DONE) {
 				if (xhr.status === OK) {
 					console.log("Response type: "
@@ -88,12 +89,17 @@ function updateCourseSections(emitter, target_id) {
 									: xhr.responseType));
 					var res = JSON.parse(xhr.responseText);
 					var target = document.getElementById(target_id);
-					var data = "";
 					if(target && res) {
-						for(var i = 0; i < res.length; i++) {
-							data += "<option>" + res[i].section_id + "</option>";
+						console.log("Result: " + xhr.responseText);
+						while(target.options.length > 0) {
+							target.remove(target.options.length - 1);
 						}
-						target.innerHtml = data;
+						for(var i = 0; i < res.length; i++) {
+							var opt = document.createElement('option');
+							opt.text = res[i].section_id;
+							opt.value = res[i].section_id;
+							target.add(opt, null);
+						}
 					} else {
 						alert("Coding error: target is undefined");
 					}
@@ -102,6 +108,8 @@ function updateCourseSections(emitter, target_id) {
 				}
 			}
 		};
+		
+		xhr.send(parameters);
 	} else {
 		console.log("Invalid parameters!");
 	}

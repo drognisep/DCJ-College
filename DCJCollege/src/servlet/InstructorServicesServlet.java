@@ -34,7 +34,7 @@ public class InstructorServicesServlet extends HttpServlet {
 	protected void service(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		String reqType = request.getParameter("reqType");
-		String reqOrigin = request.getParameter("reqOrigin");
+		String reqOrigin = request.getAttribute("reqOrigin") == null ? request.getParameter("reqOrigin") : (String)request.getAttribute("reqOrigin");
 		String myOrigin = "InstructorServicesServlet";
 		String jspOrigin = "InstructorFunctions.jsp";
 		HttpSession session = request.getSession();
@@ -50,7 +50,7 @@ public class InstructorServicesServlet extends HttpServlet {
 			return;
 		}
 		
-		AccountBeanHelper helper = AccountBeanHelper.getInstance();
+//		AccountBeanHelper helper = AccountBeanHelper.getInstance();
 		
 		/*
 		Branching origin check
@@ -190,22 +190,27 @@ public class InstructorServicesServlet extends HttpServlet {
 				return;
 			}
 			if(ObjValidator.notEmptyStrings(
-					request.getParameter("section_id")
+					request.getParameter("course_id"),
+					request.getParameter("section_id"),
+					request.getParameter("term"),
+					request.getParameter("room"),
+					request.getParameter("schedule_id"),
+					request.getParameter("capacity"),
+					request.getParameter("instr_id")
 					)) {
-				request.setAttribute("section", getSection(request.getParameter("section_id")));
-				if(request.getAttribute("section") == null) {
-					session.setAttribute("errText", "Unable to retrieve Section");
-					response.sendRedirect(jspOrigin);
-					return;
-				}
-			}
-			if(ObjValidator.noneNull(request.getAttribute("section"))) {
-				request.setAttribute("reqOrigin", myOrigin);
+				Section s = new Section(
+						Integer.parseInt(request.getParameter("term")),
+						request.getParameter("section_id"),
+						request.getParameter("course_id"),
+						Integer.parseInt(request.getParameter("room")), 
+						Integer.parseInt(request.getParameter("schedule_id")), 
+						request.getParameter("instr_id"));
+				session.setAttribute("section", s);
 				forward(reqType, request, response);
 				return;
 			} else {
 				session.setAttribute("errText", "Missing parameters");
-				response.sendRedirect(reqOrigin);
+				response.sendRedirect(jspOrigin);
 				return;
 			}
 		case "RemoveSection":
@@ -214,7 +219,9 @@ public class InstructorServicesServlet extends HttpServlet {
 				response.sendRedirect(jspOrigin);
 				return;
 			}
-			if(ObjValidator.noneNull(request.getAttribute("section"))) {
+			if(ObjValidator.emptyStrings(
+					request.getParameter("section_id")
+					)) {
 				request.setAttribute("reqOrigin", myOrigin);
 				forward(reqType, request, response);
 				return;

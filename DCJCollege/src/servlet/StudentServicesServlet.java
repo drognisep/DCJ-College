@@ -38,7 +38,7 @@ public class StudentServicesServlet extends HttpServlet {
 			HttpServletResponse response) throws ServletException, IOException {
 		Logger log = Logger.getLogger("StudentServicesServlet");
 		String reqType = request.getParameter("reqType");
-		String reqOrigin = request.getParameter("reqOrigin");
+		String reqOrigin = request.getAttribute("reqOrigin") == null ? request.getParameter("reqOrigin") : (String)request.getAttribute("reqOrigin");
 		String myOrigin = "StudentServicesServlet";
 		String jspOrigin = "StudentFunctions.jsp";
 		HttpSession session = request.getSession();

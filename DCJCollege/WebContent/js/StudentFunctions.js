@@ -128,7 +128,6 @@ function updateCourseSections(emitter, target_id) {
 		xhr.open('POST', '/DCJCollege/StudentServicesServlet', true);
 		xhr.setRequestHeader("Content-type",
 				"application/x-www-form-urlencoded");
-		xhr.send(parameters);
 
 		xhr.onreadystatechange = function() {
 			var DONE = 4;
@@ -159,6 +158,8 @@ function updateCourseSections(emitter, target_id) {
 				}
 			}
 		};
+		
+		xhr.send(parameters);
 	} else {
 		console.log("Invalid parameters!");
 	}

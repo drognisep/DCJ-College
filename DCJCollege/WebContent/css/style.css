@@ -67,6 +67,7 @@ nav.top-nav > a:hover {
 	box-shadow: 0 0 5px 0 rgb(1, 39, 169);
 	padding: 16px;
 	box-sizing: border-box;
+	overflow: auto;
 }
 
 .inner-modal-div > h3 {
@@ -92,7 +93,7 @@ nav.top-nav > a:hover {
 
 p.x-btn {
 	position: absolute;
-	top: -8px;
+/* 	top: -8px; */
 	right: 16px;
 	font-family: sans-serif;
 	font-weight: bold;

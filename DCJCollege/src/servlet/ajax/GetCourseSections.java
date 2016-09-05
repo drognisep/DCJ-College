@@ -34,7 +34,6 @@ public class GetCourseSections extends HttpServlet {
 	 * @see HttpServlet#service(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		response.setContentType("application/json");
 		
 		if(ObjValidator.emptyStrings(request.getParameter("course_id"))) {
 			response.sendError(HttpServletResponse.SC_BAD_REQUEST, 
@@ -45,11 +44,12 @@ public class GetCourseSections extends HttpServlet {
 		String course_id = request.getParameter("course_id");
 		if(course_id.equals("---")) {
 			// Silently ignore this
-			response.sendRedirect(request.getParameter("reqOrigin"));
+			response.sendError(HttpServletResponse.SC_NOT_FOUND, "Got default course_id");
 			return;
 		}
 		List<Section> sections = null;
 		StringBuilder sb = new StringBuilder();
+		response.setContentType("application/json");
 		try {
 			sections = AccountBeanHelper.getInstance().getCourseSections(course_id);
 //			sb.append("\"response\":[");

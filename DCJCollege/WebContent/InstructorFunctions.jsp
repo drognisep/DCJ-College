@@ -23,9 +23,11 @@ AccountBean account = (AccountBean)session.getAttribute("account");
 		<a id="nav1" href="#" onclick="showFunction(this)">1</a>
 		<a id="nav2" href="#" onclick="showFunction(this)">2</a>
 		<a id="nav3" href="#" onclick="showFunction(this)">3</a>
+		<a id="nav3" href="#" onclick="showFunction(this)">4</a>
 		<a href="MainMenu.jsp">&lt;Back</a>
 	</nav>
 	<h1 class="banner">Instructor Portal</h1>
+	<p>Please select one of the options above.</p>
 	<p class="errText">${errText}</p>
 	<p class="infoText">${infoText}</p>
 	<div id="div0" class="hidden-modal-div">
@@ -34,13 +36,13 @@ AccountBean account = (AccountBean)session.getAttribute("account");
 			<h3>Course creation</h3>
 			<form action="InstructorServicesServlet" method="post">
 				<p>
-					<label for="course_id">Course ID</label> <input type="text"
-						name="course_id" required maxlength="3" pattern="[A-Z]{1}[0-9]{2}"
+					<label for="course_id">Course ID</label> 
+					<input type="text" name="course_id" required maxlength="3" pattern="[A-Z][0-9]{2}"
 						title="Should be in format: A00" />
 				</p>
 				<p>
-					<label for="course_name">Course Name</label> <input type="text"
-						name="course_name" required maxlength="30" pattern="[A-Za-z0-9 ]+"
+					<label for="course_name">Course Name</label>
+					<input type="text" name="course_name" required maxlength="30" pattern="[A-Za-z0-9 ]+"
 						title="Alphanumeric characters only" />
 				</p>
 				<p>
@@ -93,14 +95,15 @@ AccountBean account = (AccountBean)session.getAttribute("account");
 					<label for="section_id">Section to stop teaching</label>
 					<select name="section_id">
 						<option>---</option>
-						<%
-							for(Course c : helper.getMyCourses(account)) {
+						<%=
+							/* for(Course c : helper.getMyCourses(account)) {
 								out.println(
 									TransformHtml.getOptionList(
 											helper.getCourseSections(c.getCourse_id())
 									)
 								);
-							}
+							} */
+							TransformHtml.getOptionList(helper.getMyCourses(account))
 						%>
 					</select>
 				</p>
@@ -174,6 +177,86 @@ AccountBean account = (AccountBean)session.getAttribute("account");
 				<input type="submit" value="Submit" />
 				<input type="hidden" name="reqType" value="UpdateGrades" />
 				<input type="hidden" name="reqOrigin" value="<%= reqOrigin %>" />
+			</form>
+		</div>
+	</div>
+	
+	<div id="div4" class="hidden-modal-div">
+		<div class="inner-modal-div">
+			<p class="x-btn" onclick="hideFunction();">X</p>
+			<h3>Add Section</h3>
+			<form action="InstructorServicesServlet" method="post">
+				<p>
+					<label for="course_id">Your courses</label>
+					<select name="course_id">
+						<option>---</option>
+						<%=
+							/* for(Course c : helper.getMyCourses(account)) {
+								out.println(
+									TransformHtml.getOptionList(
+											helper.getCourseSections(c.getCourse_id())
+									)
+								);
+							} */
+							TransformHtml.getOptionList(helper.getMyCourses(account))
+						%>
+					</select>
+				</p>
+				<p>
+					<label for="section_id">New Section ID</label>
+					<input type="text" name="section_id" required pattern="^[A-Z]{2}[0-9]{2}$" title="Must adhere to this regex: ^[A-Z]{2}[0-9]{2}$" />
+				</p>
+				<p>
+					<label for="term">Term</label>
+					<input type="text" name="term" required pattern="^[0-9]{4}[12]$" title="Must adhere to this regex: ^[0-9]{4}[12]$" />
+				</p>
+				<p>
+					<label for="room">Room</label>
+					<input type="text" name="room" required pattern="^[0-9]+$" title="Must adhere to this regex: ^[0-9]+$" />
+				</p>
+				<p>
+					<label for="schedule_id">Schedule ID</label>
+					<input type="text" name="schedule_id" required pattern="^[1]?[0-9]$" title="Must adhere to this regex: ^[1]?[0-9]$" />
+				</p>
+				<p>
+					<label for="capacity">Capacity</label>
+					<input type="text" name="capacity" required pattern="^[0-9]{1,3}$" title="Must adhere to this regex: ^[0-9]{1,3}$" />
+				</p>
+				<p>
+					<label for="instr_id">Instructor ID</label>
+					<input type="text" name="instr_id" required pattern="^i[0-9]{5}$" title="Must adhere to this regex: ^i[0-9]{5}$" />
+				</p>
+				<input type="hidden" name="reqType" value="AddSection" />
+				<input type="hidden" name="reqOrigin" value="<%= reqOrigin %>" />
+				<input type="submit" value="Submit" />
+			</form>
+			<h3>Remove Section</h3>
+			<form action="InstructorServicesServlet" method="post">
+				<p>
+					<label for="course_id">Your courses</label>
+					<select name="course_id" onchange="updateCourseSections(this, 'sectionDropdown')">
+						<option>---</option>
+						<%=
+							/* for(Course c : helper.getMyCourses(account)) {
+								out.println(
+									TransformHtml.getOptionList(
+											helper.getCourseSections(c.getCourse_id())
+									)
+								);
+							} */
+							TransformHtml.getOptionList(helper.getMyCourses(account))
+						%>
+					</select>
+				</p>
+				<p>
+					<label for="section_id">Section of course to remove</label>
+					<select name="section_id" id="sectionDropdown">
+						<option>---</option>
+					</select>
+				</p>
+				<input type="hidden" name="reqType" value="RemoveSection" />
+				<input type="hidden" name="reqOrigin" value="<%= reqOrigin %>" />
+				<input type="submit" value="Submit" />
 			</form>
 		</div>
 	</div>
