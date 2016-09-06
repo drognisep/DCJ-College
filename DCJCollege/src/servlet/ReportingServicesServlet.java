@@ -113,8 +113,8 @@ public class ReportingServicesServlet extends HttpServlet {
 				}
 			} else if(reqOrigin.equals(reqType + "Servlet")) {
 				if(ObjValidator.noneNull(session.getAttribute("reqReturn"))) {
-					session.setAttribute("honorsList", "<table><tr><th>Honors List</th></tr>" + TransformHtml.getTableRows(1, 
-							(List<String>)session.getAttribute("reqReturn")) + "</table>");
+					session.setAttribute("honorsList", "<table style='text-align:center'><thead><h3 style='text-align:left'>Honors List</h3></thead><tbody><tr><th>Top Performers</th></tr>" + TransformHtml.getTableRows(1, 
+							(List<String>)session.getAttribute("reqReturn")) + "</tbody></table>");
 					response.sendRedirect(jspOrigin);
 					return;
 				} else {

@@ -185,7 +185,7 @@ public class TransformHtml {
 			}
 			sb.append("</tr>\n");
 		}
-		sb.append("</table>\n");
+		sb.append("</table><br />\n");
 		return sb.toString();
 	}
 

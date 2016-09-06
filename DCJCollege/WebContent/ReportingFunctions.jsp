@@ -7,7 +7,7 @@ AccountBeanHelper.getInstance().closeConnection();
 String reqOrigin = "ReportingFunctions.jsp";
 String sCatalog = (String)(session.getAttribute("catalog") == null ? "<h3>Please refresh catalog</h3>" : session.getAttribute("catalog"));
 String sSchedule = (String)(session.getAttribute("schedule") == null ? "<h3>Please refresh schedule</h3>" : session.getAttribute("schedule"));
-String sHonors = (String)(session.getAttribute("honorsList") == null ? "<h3>Please refresh to view</h3>" : session.getAttribute("honorsList"));
+String sHonors = (String)(session.getAttribute("honorsList") == null ? "<h3>Please refresh honors list to view</h3>" : session.getAttribute("honorsList"));
 %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
@@ -39,7 +39,7 @@ String sHonors = (String)(session.getAttribute("honorsList") == null ? "<h3>Plea
 	</div>
 	--%>
 	<nav class="top-nav">
-		<a href="#" onclick="showFunction(this)">Will be replaced</a>
+		<a href="#" onclick="document.getElementById('refreshCatalog').click()">Will be replaced</a>
 		<a href="#" onclick="showFunction(this)">Same here</a>
 		<a href="#" onclick="showFunction(this)">Same here</a>
 		<a href="MainMenu.jsp">&lt;Back</a>
@@ -47,6 +47,7 @@ String sHonors = (String)(session.getAttribute("honorsList") == null ? "<h3>Plea
 	<h1 class="banner">Reporting Functions</h1>
 	<p class="errText">${errText}</p>
 	<p class="infoText">${infoText}</p>
+	<%= sHonors %>
 	<%= sSchedule %>
 	<%= sCatalog %>
 	<div id="div0" class="hidden-modal-div">
@@ -54,7 +55,7 @@ String sHonors = (String)(session.getAttribute("honorsList") == null ? "<h3>Plea
 			<p class="x-btn" onclick="hideFunction();">X</p>
 			<h3>Click this button to refresh the catalog display</h3>
 			<form action="ReportingServicesServlet" method="post">
-				<input type="submit" value="Refresh" />
+				<input id="refreshCatalog" type="submit" value="Refresh" />
 				<input type="hidden" name="reqType" value="PrintCatalog" />
 				<input type="hidden" name="reqOrigin" value="<%= reqOrigin %>" />
 			</form>
@@ -77,7 +78,6 @@ String sHonors = (String)(session.getAttribute("honorsList") == null ? "<h3>Plea
 		<div class="inner-modal-div">
 			<p class="x-btn" onclick="hideFunction();">X</p>
 			<form action="ReportingServicesServlet" method="post">
-				<%= sHonors %>
 				<p>
 					<label for="dept_id">Department ID</label>
 					<input type="text" name="dept_id" />
