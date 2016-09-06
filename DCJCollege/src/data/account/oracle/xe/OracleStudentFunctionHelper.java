@@ -224,7 +224,7 @@ public class OracleStudentFunctionHelper extends AbstractStudentFunctionHelper {
 			try {
 				connection = getConnection();
 				PreparedStatement pstmt = connection
-						.prepareStatement("Insert into enrollment values(?,?,?,'C',3,20161)");
+						.prepareStatement("Insert into enrollment values(?,?,?,'F',3,20161)");
 				pstmt.setString(1, student_id);
 				pstmt.setString(2, courseID);
 				pstmt.setString(3, sectionID);
