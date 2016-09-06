@@ -50,10 +50,7 @@ CREATE TABLE school.instructors(
 );
      
 
-     
-
-
-
+    
 ---courses----
 
 CREATE TABLE school.courses(
@@ -65,11 +62,7 @@ CREATE TABLE school.courses(
 );
      
 
-     
-     
-     
-
-     
+   
 ---schedule---
 
 CREATE TABLE school.schedule(
@@ -360,4 +353,15 @@ t.student_id, t.section_id, t.course_id,
 t.course_name, t.dept_id, t.hours, t.term, t.section_gpa, g.overall_gpa
 from school.student_section t,school.gpa g
 where (t.student_id = g.student_id))
+;
+
+
+---instructor/section ---
+
+Create view school.instr_section AS
+select i.first_name, i.last_name, i.dept_id, i.instr_id,
+s.section_id, c.course_id, c.course_name, s.term, s.schedule_id, c.hours
+from school.courses c, school.sections s, school.instructors i
+where (i.instr_id = s.instr_id)
+and (s.course_id = c.course_id)
 ;
