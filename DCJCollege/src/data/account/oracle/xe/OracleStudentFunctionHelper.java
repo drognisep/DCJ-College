@@ -56,60 +56,30 @@ public class OracleStudentFunctionHelper extends AbstractStudentFunctionHelper {
 	@Override
 	public List<Course> getAvailableCourses(AccountBean act)
 			throws DbHelperException {
-		ArrayList<Course> courseArray = new ArrayList<Course>(
+		ArrayList<Course> courses = new ArrayList<Course>(
 				new LinkedHashSet<Course>());
 		Connection connection = getConnection();
 		String id = act.getId();
+		String query = "";
 		if (id.charAt(0) == 's') {
-			try {
-				PreparedStatement pstmt = connection
-						.prepareStatement("select distinct course_id, course_name, hours, dept_id from student_section where student_id != ?");
-				pstmt.setString(1, id);
-				ResultSet rs = pstmt.executeQuery();
-				while (rs.next()) {
-					String course_id = rs.getString("course_id");
-					String course_name = rs.getString("course_name");
-					int hours = rs.getInt("hours");
-					int dept_id = rs.getInt("dept_id");
-					Course course = new Course(course_id, course_name, hours,
-							dept_id);
-					courseArray.add(course);
-				}
-				rs.close();
-			} catch (SQLException sqle) {
-				sqle.printStackTrace();
-				throw new DbHelperException("Error getting available courses");
-			} catch (Exception e) {
-				e.printStackTrace();
-				throw new DbHelperException();
-			}
-			return courseArray;
+			query = "select distinct course_id,course_name,hours,dept_id from student_section where course_id not in (select course_id from student_section where student_id = ?)";
+		} else if(id.charAt(0) == 'i') {
+			query = "select distinct course_id,course_name,hours,dept_id from instr_section where course_id not in (select course_id from instr_section where instr_id = ?)";
+		} else {
+			throw new DbHelperException("Unrecognized account ID");
 		}
-		Collections.sort(courseArray);
-		return courseArray;
-	}
-
-	@Override
-	public List<Section> getCourseSections(String courseID)
-			throws DbHelperException {
-		ArrayList<Section> arraySections = new ArrayList<Section>(
-				new LinkedHashSet<Section>());
-		Connection connection = getConnection();
 		try {
-			PreparedStatement pstmt = connection
-					.prepareStatement("Select distinct * from sections where course_id = ?");
-			pstmt.setString(1, courseID);
+			PreparedStatement pstmt = connection.prepareStatement(query);
+			pstmt.setString(1, id);
 			ResultSet rs = pstmt.executeQuery();
 			while (rs.next()) {
-				int term = rs.getInt("term");
-				String section_id = rs.getString("section_id");
 				String course_id = rs.getString("course_id");
-				int room = rs.getInt("room");
-				int schedule_id = rs.getInt("schedule_id");
-				String instr_id = rs.getString("instr_id");
-				Section section = new Section(term, section_id, course_id,
-						room, schedule_id, instr_id);
-				arraySections.add(section);
+				String course_name = rs.getString("course_name");
+				int hours = rs.getInt("hours");
+				int dept_id = rs.getInt("dept_id");
+				Course course = new Course(course_id, course_name, hours,
+						dept_id);
+				courses.add(course);
 			}
 			rs.close();
 		} catch (SQLException sqle) {
@@ -119,8 +89,41 @@ public class OracleStudentFunctionHelper extends AbstractStudentFunctionHelper {
 			e.printStackTrace();
 			throw new DbHelperException();
 		}
-		Collections.sort(arraySections);
-		return arraySections;
+		Collections.sort(courses);
+		return courses;
+	}
+
+	@Override
+	public List<Section> getCourseSections(String course_id)
+			throws DbHelperException {
+		ArrayList<Section> sections = new ArrayList<Section>(
+				new LinkedHashSet<Section>());
+		Connection connection = getConnection();
+		try {
+			PreparedStatement pstmt = connection
+					.prepareStatement("Select distinct * from sections where course_id = ?");
+			pstmt.setString(1, course_id);
+			ResultSet rs = pstmt.executeQuery();
+			while (rs.next()) {
+				String section_id = rs.getString("section_id");
+				int term = rs.getInt("term");
+				int room = rs.getInt("room");
+				int schedule_id = rs.getInt("schedule_id");
+				String instr_id = rs.getString("instr_id");
+				Section section = new Section(term, section_id, course_id,
+						room, schedule_id, instr_id);
+				sections.add(section);
+			}
+			rs.close();
+		} catch (SQLException sqle) {
+			sqle.printStackTrace();
+			throw new DbHelperException("Error getting available courses");
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new DbHelperException();
+		}
+		Collections.sort(sections);
+		return sections;
 	}
 
 	@Override
@@ -151,7 +154,8 @@ public class OracleStudentFunctionHelper extends AbstractStudentFunctionHelper {
 				List<Section> sections = getCourseSections(course_id);
 				Course course = new Course(course_id, course_name, hours,
 						dept_id, sections);
-				if(!myCourseArray.contains(course)) myCourseArray.add(course);
+				if (!myCourseArray.contains(course))
+					myCourseArray.add(course);
 			}
 			rs.close();
 			Collections.sort(myCourseArray);
@@ -193,8 +197,9 @@ public class OracleStudentFunctionHelper extends AbstractStudentFunctionHelper {
 				List<Section> sections = getCourseSections(course_id);
 				Course course = new Course(course_id, course_name, hours,
 						dept_id, sections);
-				if(!myCourseArray.contains(course)) myCourseArray.add(course);
-				myCourseArray.add(course);
+				if (!myCourseArray.contains(course))
+					myCourseArray.add(course);
+				// myCourseArray.add(course);
 			}
 			rs.close();
 			Collections.sort(myCourseArray);
@@ -258,6 +263,7 @@ public class OracleStudentFunctionHelper extends AbstractStudentFunctionHelper {
 				int rs = pstmt.executeUpdate();
 				if (rs == 1) {
 					updated = true;
+					return updated;
 				}
 			} catch (SQLException sqle) {
 				sqle.printStackTrace();
@@ -405,5 +411,126 @@ public class OracleStudentFunctionHelper extends AbstractStudentFunctionHelper {
 		}
 		Collections.sort(transcript);
 		return transcript;
+	}
+
+	@Override
+	public ArrayList<String> getAvailableCourse_ids(AccountBean act)
+			throws DbHelperException {
+		ArrayList<String> course_ids = new ArrayList<String>(
+				new LinkedHashSet<String>());
+		Connection connection = getConnection();
+		String id = act.getId();
+		if (id.charAt(0) == 's') {
+			try {
+				PreparedStatement pstmt = connection
+						.prepareStatement("select distinct course_id from student_section where student_id <> ?");
+				pstmt.setString(1, id);
+				ResultSet rs = pstmt.executeQuery();
+				while (rs.next()) {
+					String course_id = rs.getString("course_id");
+					course_ids.add(course_id);
+				}
+				rs.close();
+			} catch (SQLException sqle) {
+				sqle.printStackTrace();
+				throw new DbHelperException("Error getting available courses");
+			} catch (Exception e) {
+				e.printStackTrace();
+				throw new DbHelperException();
+			}
+			return course_ids;
+		}
+		Collections.sort(course_ids);
+		return course_ids;
+	}
+
+	@Override
+	public List<String> getCourseSection_ids(String course_id)
+			throws DbHelperException {
+		ArrayList<String> section_ids = new ArrayList<String>(
+				new LinkedHashSet<String>());
+		Connection connection = getConnection();
+		try {
+			PreparedStatement pstmt = connection
+					.prepareStatement("Select distinct section_id from sections where course_id = ?");
+			pstmt.setString(1, course_id);
+			ResultSet rs = pstmt.executeQuery();
+			while (rs.next()) {
+				String section_id = rs.getString("section_id");
+				section_ids.add(section_id);
+			}
+			rs.close();
+		} catch (SQLException sqle) {
+			sqle.printStackTrace();
+			throw new DbHelperException("Error getting available courses");
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new DbHelperException();
+		}
+		Collections.sort(section_ids);
+		return section_ids;
+	}
+
+	@Override
+	public List<String> getMyCourse_ids(AccountBean act, int term)
+			throws DbHelperException {
+		ArrayList<String> course_ids = new ArrayList<String>(
+				new LinkedHashSet<String>());
+		Connection connection = getConnection();
+		String id = act.getId();
+		if (id.charAt(0) == 's') {
+			try {
+				PreparedStatement pstmt = connection
+						.prepareStatement("select distinct course_id from student_section where student_id = ? and term = ?");
+				pstmt.setString(1, id);
+				pstmt.setInt(2, term);
+				ResultSet rs = pstmt.executeQuery();
+				while (rs.next()) {
+					String course_id = rs.getString("course_id");
+					course_ids.add(course_id);
+				}
+				rs.close();
+			} catch (SQLException sqle) {
+				sqle.printStackTrace();
+				throw new DbHelperException("Error getting available courses");
+			} catch (Exception e) {
+				e.printStackTrace();
+				throw new DbHelperException();
+			}
+			return course_ids;
+		}
+		Collections.sort(course_ids);
+		return course_ids;
+	}
+
+	@Override
+	public List<String> getMyCourse_ids(AccountBean act)
+			throws DbHelperException {
+		ArrayList<String> course_ids = new ArrayList<String>(
+				new LinkedHashSet<String>());
+		Connection connection = getConnection();
+		String id = act.getId();
+		if (id.charAt(0) == 's') {
+			try {
+				PreparedStatement pstmt = connection
+						.prepareStatement("select distinct course_id from student_section where student_id = ?");
+				pstmt.setString(1, id);
+				ResultSet rs = pstmt.executeQuery();
+				while (rs.next()) {
+					String course_id = rs.getString("course_id");
+					course_ids.add(course_id);
+				}
+				rs.close();
+			} catch (SQLException sqle) {
+				sqle.printStackTrace();
+				throw new DbHelperException("Error getting available courses");
+			} catch (Exception e) {
+				e.printStackTrace();
+				throw new DbHelperException();
+			}
+			return course_ids;
+		}
+		Collections.sort(course_ids);
+		return course_ids;
 	}
 }

@@ -33,33 +33,33 @@ public class OracleInstructorFunctionHelper extends
 
 	public Connection getConnection() throws DbHelperException {
 		return AccountBeanHelper.getInstance().getConnection();
-//		try {
-//			if (connection != null && !connection.isClosed()) {
-//				return connection;
-//			}
-//		} catch (SQLException e1) {
-//			e1.printStackTrace();
-//			throw new DbHelperException(
-//					"Unable to get determined state of connection");
-//		}
-//		try {
-//
-//			Class.forName("Oracle.jdbc.driver.OracleDriver");
-//			connection = DriverManager.getConnection(
-//					"jdbc:oracle:thin:@localhost:1521:XE", "school", "school");
-//		} catch (SQLException sqle) {
-//			sqle.printStackTrace();
-//			throw new DbHelperException(
-//					"SQL Exception; AbstractStudentFunctionHelper; connectDB()");
-//		} catch (ClassNotFoundException cnfe) {
-//			cnfe.printStackTrace();
-//			throw new DbHelperException(
-//					"ClassNotFound; AbstractStudentFunctionHelper; connectDB");
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//			throw new DbHelperException();
-//		}
-//		return connection;
+		// try {
+		// if (connection != null && !connection.isClosed()) {
+		// return connection;
+		// }
+		// } catch (SQLException e1) {
+		// e1.printStackTrace();
+		// throw new DbHelperException(
+		// "Unable to get determined state of connection");
+		// }
+		// try {
+		//
+		// Class.forName("Oracle.jdbc.driver.OracleDriver");
+		// connection = DriverManager.getConnection(
+		// "jdbc:oracle:thin:@localhost:1521:XE", "school", "school");
+		// } catch (SQLException sqle) {
+		// sqle.printStackTrace();
+		// throw new DbHelperException(
+		// "SQL Exception; AbstractStudentFunctionHelper; connectDB()");
+		// } catch (ClassNotFoundException cnfe) {
+		// cnfe.printStackTrace();
+		// throw new DbHelperException(
+		// "ClassNotFound; AbstractStudentFunctionHelper; connectDB");
+		// } catch (Exception e) {
+		// e.printStackTrace();
+		// throw new DbHelperException();
+		// }
+		// return connection;
 	}
 
 	@Override
@@ -83,7 +83,8 @@ public class OracleInstructorFunctionHelper extends
 				}
 				try {
 					pstmt.close();
-				} catch(Exception any) { /* ignore */ }
+				} catch (Exception any) { /* ignore */
+				}
 			} catch (SQLException sqle) {
 				sqle.printStackTrace();
 			} catch (Exception e) {
@@ -111,7 +112,8 @@ public class OracleInstructorFunctionHelper extends
 				if (updated < 1) {
 					try {
 						pstmt1.close();
-					} catch(Exception any) { /* ignore */ }
+					} catch (Exception any) { /* ignore */
+					}
 					throw new SQLException();
 				} else {
 					PreparedStatement pstmt2 = connection
@@ -121,10 +123,12 @@ public class OracleInstructorFunctionHelper extends
 					if (updated < 1) {
 						try {
 							pstmt1.close();
-						} catch(Exception any) { /* ignore */ }
+						} catch (Exception any) { /* ignore */
+						}
 						try {
 							pstmt2.close();
-						} catch(Exception any) { /* ignore */ }
+						} catch (Exception any) { /* ignore */
+						}
 						throw new SQLException();
 					} else {
 						PreparedStatement pstmt3 = connection
@@ -134,26 +138,32 @@ public class OracleInstructorFunctionHelper extends
 						if (updated < 1) {
 							try {
 								pstmt1.close();
-							} catch(Exception any) { /* ignore */ }
+							} catch (Exception any) { /* ignore */
+							}
 							try {
 								pstmt2.close();
-							} catch(Exception any) { /* ignore */ }
+							} catch (Exception any) { /* ignore */
+							}
 							try {
 								pstmt3.close();
-							} catch(Exception any) { /* ignore */ }
+							} catch (Exception any) { /* ignore */
+							}
 							throw new SQLException();
 						} else {
 							connection.commit();
 							connection.setAutoCommit(autoCom);
 							try {
 								pstmt1.close();
-							} catch(Exception any) { /* ignore */ }
+							} catch (Exception any) { /* ignore */
+							}
 							try {
 								pstmt2.close();
-							} catch(Exception any) { /* ignore */ }
+							} catch (Exception any) { /* ignore */
+							}
 							try {
 								pstmt3.close();
-							} catch(Exception any) { /* ignore */ }
+							} catch (Exception any) { /* ignore */
+							}
 							return true;
 						}
 					}
@@ -284,13 +294,13 @@ public class OracleInstructorFunctionHelper extends
 			try {
 				connection = getConnection();
 				PreparedStatement pstmt = connection
-						.prepareStatement("Update sections set term = ?, course_id = ?, room = ?, schedule_id = ? where (section_id = ?) and (instr_id = ?)");
+						.prepareStatement("Update sections set term = ?, room = ?, schedule_id = ?, instr_id = ? where (course_id = ?) and (section_id = ?)");
 				pstmt.setInt(1, term);
-				pstmt.setString(2, course_id);
-				pstmt.setInt(3, room);
-				pstmt.setInt(4, schedule_id);
-				pstmt.setString(5, section_id);
-				pstmt.setString(6, instr_id);
+				pstmt.setInt(2, room);
+				pstmt.setInt(3, schedule_id);
+				pstmt.setString(4, instr_id);
+				pstmt.setString(5, course_id);
+				pstmt.setString(6, section_id);
 				updated = pstmt.executeUpdate();
 				if (updated == 1) {
 					return true;
@@ -564,7 +574,7 @@ public class OracleInstructorFunctionHelper extends
 
 	@Override
 	public boolean updateGrade(AccountBean act, String student_id,
-			String section_id, int grade, int term) {
+			String section_id, String grade) {
 		String instr_id = act.getId();
 
 		int updated = 0;
@@ -572,11 +582,10 @@ public class OracleInstructorFunctionHelper extends
 			try {
 				connection = getConnection();
 				PreparedStatement pstmt = connection
-						.prepareStatement("Update enrollment set grade = ? where (student_id = ?) and (section_id = ?) and (term = ?)");
-				pstmt.setInt(1, grade);
+						.prepareStatement("Update enrollment set grade = ? where (student_id = ?) and (section_id = ?)");
+				pstmt.setString(1, grade);
 				pstmt.setString(2, student_id);
 				pstmt.setString(3, section_id);
-				pstmt.setInt(4, term);
 				updated = pstmt.executeUpdate();
 				if (updated == 1) {
 					return true;
@@ -591,51 +600,57 @@ public class OracleInstructorFunctionHelper extends
 	}
 
 	@Override
-	public List<ScheduleEntry> getSchedule(AccountBean act)
+	public List<ScheduleEntry> getSchedule(AccountBean act, int term)
 			throws DbHelperException {
 		ArrayList<ScheduleEntry> scheduleEntries = new ArrayList<ScheduleEntry>();
-		String instr_id = act.getId();
-		if (instr_id.charAt(0) == 'i') {
-			try {
-				connection = getConnection();
-				PreparedStatement pstmt = connection
-						.prepareStatement("select s.schedule_id, s.mon_start, s.mon_end, s.tues_start,s.tues_end,s.wed_start,s.wed_end,s.thur_start,s.thur_end,s.fri_start,s.fri_end, sec.section_id, c.course_id, sec.room, i.last_name from schedule s, sections sec, enrollment e, courses c, instructors i where(s.schedule_id = sec.schedule_id) and (sec.section_id = e.section_id) and (sec.course_id = c.course_id) and (sec.instr_id = i.instr_id) and (i.instr_id = ?)");
-				pstmt.setString(1, instr_id);
-				ResultSet rs = pstmt.executeQuery();
-				while (rs.next()) {
-					int schedule_id = rs.getInt(1);
-					int mon_start = rs.getInt(2);
-					int mon_end = rs.getInt(3);
-					int tues_start = rs.getInt(4);
-					int tues_end = rs.getInt(5);
-					int wed_start = rs.getInt(6);
-					int wed_end = rs.getInt(7);
-					int thur_start = rs.getInt(8);
-					int thur_end = rs.getInt(9);
-					int fri_start = rs.getInt(10);
-					int fri_end = rs.getInt(11);
-					String section_id = rs.getString(12);
-					String course_id = rs.getString(13);
-					int room = rs.getInt(14);
-					String instr_last_name = rs.getString(15);
-					ScheduleEntry sched = new ScheduleEntry(schedule_id,
-							mon_start, mon_end, tues_start, tues_end,
-							wed_start, wed_end, thur_start, thur_end,
-							fri_start, fri_end, section_id, course_id, room,
-							instr_last_name);
-					scheduleEntries.add(sched);
-				}
-				rs.close();
-			} catch (SQLException sqle) {
-				sqle.printStackTrace();
-				throw new DbHelperException(
-						"Error querying current student courses");
-			} catch (Exception e) {
-				e.printStackTrace();
-				throw new DbHelperException();
+		String id = act.getId();
+		String query;
+		if (id.charAt(0) == 'i') {
+			query = "select distinct * from schedule s, sections sec, enrollment e, courses c, instructors i where(s.schedule_id = sec.schedule_id) and (sec.section_id = e.section_id) and (sec.course_id = c.course_id) and (sec.instr_id = i.instr_id) and (i.instr_id = ?) and (sec.term = ?)";
+		} else if (id.charAt(0) == 's') {
+			query = "select distinct * from schedule s, sections sec, enrollment e, courses c, instructors i where(s.schedule_id = sec.schedule_id) and (sec.section_id = e.section_id) and (sec.course_id = c.course_id) and (sec.instr_id = i.instr_id) and (e.student_id = ?) and (sec.term = ?)";
+		} else {
+			List<ScheduleEntry> nullEntry = new ArrayList<ScheduleEntry>();
+			return nullEntry;
+		}
+		try {
+			connection = getConnection();
+			PreparedStatement pstmt = connection.prepareStatement(query);
+			pstmt.setString(1, id);
+			pstmt.setInt(2, term);
+			ResultSet rs = pstmt.executeQuery();
+			while (rs.next()) {
+				int schedule_id = rs.getInt("schedule_id");
+				double mon_start = rs.getDouble("mon_start");
+				double mon_end = rs.getDouble("mon_end");
+				double tues_start = rs.getDouble("tues_start");
+				double tues_end = rs.getDouble("tues_end");
+				double wed_start = rs.getDouble("wed_start");
+				double wed_end = rs.getDouble("wed_end");
+				double thur_start = rs.getDouble("thur_start");
+				double thur_end = rs.getDouble("thur_end");
+				double fri_start = rs.getDouble("fri_start");
+				double fri_end = rs.getDouble("fri_end");
+				String section_id = rs.getString("section_id");
+				String course_id = rs.getString("course_id");
+				int room = rs.getInt("room");
+				String instr_last_name = rs.getString("last_name");
+				ScheduleEntry sched = new ScheduleEntry(schedule_id, mon_start,
+						mon_end, tues_start, tues_end, wed_start, wed_end,
+						thur_start, thur_end, fri_start, fri_end, section_id,
+						course_id, room, instr_last_name);
+				scheduleEntries.add(sched);
 			}
-			return scheduleEntries;
+			rs.close();
+		} catch (SQLException sqle) {
+			sqle.printStackTrace();
+			throw new DbHelperException(
+					"Error querying current student courses");
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new DbHelperException();
 		}
 		return scheduleEntries;
+
 	}
 }

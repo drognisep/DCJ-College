@@ -3,8 +3,6 @@ package servlet.worker;
 import inval.object.ObjValidator;
 
 import java.io.IOException;
-import java.util.Enumeration;
-import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -14,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import bean.account.AccountBean;
+import data.account.AccountBeanHelper;
 
 /**
  * Servlet implementation class AddDropCourseServlet
@@ -26,32 +25,44 @@ public class DropCourseServlet extends HttpServlet {
 	 * @see HttpServlet#service(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		Enumeration<String> names = request.getParameterNames();
-		StringBuilder sb = new StringBuilder();
-		response.setContentType("text/html");
-		sb.append("<h1>Request parameter listing</h1>");
-		sb.append("<ul>");
-		while(names.hasMoreElements()) {
-			String cur = names.nextElement();
-			sb.append("<li>").append(cur).append(" in request equals: ")
-				.append(request.getParameter(cur));
-			sb.append("</li>");
-		}
-		sb.append("</ul>");
-		sb.append("<h1>All reqOrigin parameters</h1>\n<ul>");
-		for(String s : request.getParameterValues("reqOrigin")) {
-			sb.append("<li>" + s + "</li>");
-		}
-		sb.append("<li>Current reqOrigin: " + request.getAttribute("reqOrigin") + "</li></ul>");
 		
-		sb.append("<h1>Attribute names found:</h1><ul>");
-		Enumeration<String> attNames = request.getAttributeNames();
-		while(attNames.hasMoreElements()) {
-			sb.append("<li>").append(attNames.nextElement()).append("</li>");
-		}
-		sb.append("</ul>");
+		HttpSession session = request.getSession();
+		String reqOrigin = (String) request.getAttribute("reqOrigin"); 
+		String reqType = request.getParameter("reqType");
 		
-		Logger.getLogger("AddCourseServlet").info("In working servlet for: " + request.getParameter("reqType") + "\n" + sb.toString());
-		response.getWriter().print(sb.toString());
+		
+		if(!reqOrigin.equals("StudentServicesServlet") || !reqType.equals("DropCourse")) {
+			session.setAttribute("errText", "Invalid request");
+			response.sendRedirect("StudentServices.jsp");
+			return;
+		}
+		
+		AccountBean account = (AccountBean)session.getAttribute("account");
+		
+		String course_id = request.getParameter("course_id");
+		String section_id = request.getParameter("section_id");
+		
+		if(ObjValidator.emptyStrings(reqOrigin, reqType, course_id, section_id)) {
+			session.setAttribute("errText", "Missing request metadata");
+			response.sendRedirect("StudentFunctions.jsp");
+			return;
+		}
+		if(ObjValidator.anyNull(account)) {
+			response.sendRedirect("index.jsp");
+			return;
+		}
+		session.setAttribute("errText", "");
+		session.setAttribute("infoText", "");
+		
+		AccountBeanHelper instance = AccountBeanHelper.getInstance();
+		boolean i = instance.dropSection(account,course_id, section_id);
+		if(i == true){
+			session.setAttribute("infoText", "Course dropped successfully");
+			response.sendRedirect("StudentFunctions.jsp");
+		}else{
+			session.setAttribute("errText", "Course could not be dropped");
+			response.sendRedirect("StudentFunctions.jsp");
+		}
+		
 	}
 }

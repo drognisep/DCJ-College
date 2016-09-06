@@ -160,6 +160,7 @@ public class ScheduleEntry {
 
 	}
     public static String toTimeString(double d) {
+    	while(d >= 24) d-=24;
         double fractional = d % 1;
         long integral = (long) (d - fractional);
         String ap = "am";

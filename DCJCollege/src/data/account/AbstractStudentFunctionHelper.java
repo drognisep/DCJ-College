@@ -7,6 +7,7 @@
  */
 
 package data.account;
+import java.util.ArrayList;
 import java.util.List;
 
 import data.util.Course;
@@ -36,7 +37,7 @@ public abstract class AbstractStudentFunctionHelper {
 	 * @return An array containing the sectionIDs of the given course, a zero length array if no sections
 	 *   have been added to the course, and an exception otherwise.
 	 */
-	public abstract List<Section> getCourseSections(String courseID) throws DbHelperException;
+	public abstract List<Section> getCourseSections(String course_id) throws DbHelperException;
 	
 	/**
 	 * Get all courses the given account is enrolled in by term. If the {@code AccountBean} belongs to an 
@@ -109,4 +110,12 @@ public abstract class AbstractStudentFunctionHelper {
 	 * @throws dbhelperexception indicating what error occurred
 	 */
 	public abstract List<TranscriptEntry> getTranscript(AccountBean act) throws DbHelperException;
+
+	public abstract List<String> getCourseSection_ids(String course_id) throws DbHelperException;
+
+	public abstract ArrayList<String> getAvailableCourse_ids(AccountBean act) throws DbHelperException;
+
+	public abstract List<String> getMyCourse_ids(AccountBean act, int term) throws DbHelperException;
+	
+	public abstract List<String> getMyCourse_ids(AccountBean act) throws DbHelperException;
 }

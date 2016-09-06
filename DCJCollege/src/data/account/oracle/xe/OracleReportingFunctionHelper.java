@@ -127,14 +127,16 @@ public class OracleReportingFunctionHelper extends
 			try {
 				connection = getConnection();
 				Statement stmt = connection.createStatement();
-				ResultSet rs = stmt.executeQuery("Select * from courses");
+				ResultSet rs = stmt.executeQuery("Select distinct course_id, course_name, hours, dept_id from courses");
 				while (rs.next()) {
 					String course_id = rs.getString("course_id");
 					String course_name = rs.getString("course_name");
 					int hours = rs.getInt("hours");
 					int dept_id = rs.getInt("dept_id");
+					List<Section> sections = AccountBeanHelper.getInstance().getCourseSections(course_id);
 //					int fees = rs.getInt("fees");
 					Course course = new Course(course_id, course_name, hours, dept_id);
+					course.setSections(sections);
 					courses.add(course);
 				}
 				rs.close();
@@ -186,13 +188,17 @@ public class OracleReportingFunctionHelper extends
 		ArrayList<String> honors = new ArrayList<String>();
 			try {
 				connection = getConnection();
-				PreparedStatement pstmt = connection.prepareStatement("Select first_name, last_name from student_section_gpa where (dept_id = ?) and (term = ?) and sec_gpa >= 3.0");
+				PreparedStatement pstmt = connection.prepareStatement("Select distinct first_name, last_name from student_section where (dept_id = ?) and (term = ?) and section_gpa >= 3.0");
 				pstmt.setInt(1, dept_id);
 				pstmt.setInt(2, term);
 				ResultSet rs = pstmt.executeQuery();
-				while (rs.next()) {
-					String name = rs.getString(1) + " " + rs.getString(2);
-					honors.add(name);
+				if(rs.next()) {
+					do {
+						String name = rs.getString(1) + " " + rs.getString(2);
+						honors.add(name);
+					} while (rs.next());
+				} else {
+					honors.add("No results to display");
 				}
 				rs.close();
 			} catch (SQLException sqle) {

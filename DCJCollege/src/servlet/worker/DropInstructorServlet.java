@@ -1,14 +1,18 @@
 package servlet.worker;
 
+import inval.object.ObjValidator;
+
 import java.io.IOException;
-import java.util.Enumeration;
-import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import bean.account.AccountBean;
+import data.account.AccountBeanHelper;
 
 /**
  * Servlet implementation class DropInstructorServlet
@@ -16,46 +20,56 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/DropInstructorServlet")
 public class DropInstructorServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-       
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
-    public DropInstructorServlet() {
-        super();
-        // TODO Auto-generated constructor stub
-    }
 
 	/**
 	 * @see HttpServlet#service(HttpServletRequest request, HttpServletResponse response)
 	 */
-    protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		Enumeration<String> names = request.getParameterNames();
-		StringBuilder sb = new StringBuilder();
-		response.setContentType("text/html");
-		sb.append("<h1>Request parameter listing</h1>");
-		sb.append("<ul>");
-		while(names.hasMoreElements()) {
-			String cur = names.nextElement();
-			sb.append("<li>").append(cur).append(" in request equals: ")
-				.append(request.getParameter(cur));
-			sb.append("</li>");
-		}
-		sb.append("</ul>");
-		sb.append("<h1>All reqOrigin parameters</h1>\n<ul>");
-		for(String s : request.getParameterValues("reqOrigin")) {
-			sb.append("<li>" + s + "</li>");
-		}
-		sb.append("<li>Current reqOrigin: " + request.getAttribute("reqOrigin") + "</li></ul>");
+	protected void service(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException {
+
+		HttpSession session = request.getSession();
+		String reqOrigin =(String) request.getAttribute("reqOrigin");
+		String reqType = request.getParameter("reqType");
+
 		
-		sb.append("<h1>Attribute names found:</h1><ul>");
-		Enumeration<String> attNames = request.getAttributeNames();
-		while(attNames.hasMoreElements()) {
-			sb.append("<li>").append(attNames.nextElement()).append("</li>");
+		if (!reqOrigin.equals("InstructorServicesServlet")
+				|| !reqType.equals("DropInstructor")) {
+			session.setAttribute("errText", "Invalid request");
+			response.sendRedirect("InstructorServicesServlet");
+			return;
 		}
-		sb.append("</ul>");
+
+		AccountBean account = (AccountBean) session.getAttribute("account");
+
+		String instr_id = request.getParameter("instr_id");
+		String section_id = request.getParameter("section_id");
 		
-		Logger.getLogger("AddCourseServlet").info("In working servlet for: " + request.getParameter("reqType") + "\n" + sb.toString());
-		response.getWriter().print(sb.toString());
+
+		if (ObjValidator.emptyStrings(reqOrigin, reqType, instr_id, section_id)) {
+			session.setAttribute("errText", "Missing request metadata");
+			response.sendRedirect("InstructorFunctions.jsp");
+			return;
+		}
+		if (ObjValidator.anyNull(account)) {
+			response.sendRedirect("index.jsp");
+			return;
+		}
+		session.setAttribute("errText", "");
+		session.setAttribute("infoText", "");
+
+		AccountBeanHelper instance = AccountBeanHelper.getInstance();
+		boolean i = instance.dropInstructor(account, 
+				section_id,instr_id);
+		if (i == true) {
+			session.setAttribute("infoText",
+					"Instructor dropped from this course successfully");
+			response.sendRedirect("InstructorFunctions.jsp");
+		} else {
+			session.setAttribute("errText",
+					"Instructor could not be dropped from this course.");
+			response.sendRedirect("InstructorFunctions.jsp");
+		}
+
 	}
 
 }

@@ -14,9 +14,8 @@ import javax.servlet.http.HttpSession;
 
 import util.TransformHtml;
 import bean.account.AccountBean;
-import data.account.AccountBeanHelper;
 import data.util.Course;
-import data.util.Section;
+import data.util.ScheduleEntry;
 
 /**
  * Servlet implementation class ReportingServicesServlet
@@ -31,7 +30,7 @@ public class ReportingServicesServlet extends HttpServlet {
 	@SuppressWarnings("unchecked")
 	protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String reqType = request.getParameter("reqType");
-		String reqOrigin = request.getParameter("reqOrigin");
+		String reqOrigin = request.getAttribute("reqOrigin") == null ? request.getParameter("reqOrigin") : (String)request.getAttribute("reqOrigin");
 		String myOrigin = "ReportingServicesServlet";
 		String jspOrigin = "ReportingFunctions.jsp";
 		HttpSession session = request.getSession();
@@ -85,12 +84,11 @@ public class ReportingServicesServlet extends HttpServlet {
 		            return;
 				}
 			} else if(reqOrigin.equals(reqType + "Servlet")) {
-				// FIXME: Figure out the format that this needs to be displayed in.
 				if(ObjValidator.noneNull(session.getAttribute("reqReturn"))
 						&& (session.getAttribute("reqReturn") instanceof List<?>) 
 						) {
 					session.setAttribute("schedule",
-							TransformHtml.prettyPrintCatalog((List<Course>)session.getAttribute("reqReturn")));
+							TransformHtml.prettyPrintSchedule((List<ScheduleEntry>)session.getAttribute("reqReturn")));
 					response.sendRedirect(jspOrigin);
 					return;
 				} else {

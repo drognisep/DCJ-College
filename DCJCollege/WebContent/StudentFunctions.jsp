@@ -25,10 +25,12 @@ List<Course> availCourses = helper.getAvailableCourses(account);
 <script type="text/javascript" src="js/StudentFunctions.js"></script>
 </head>
 <body>
-	<nav class="top-nav"> <a href="#" onclick="showFunction(this)">0</a>
-	<a href="#" onclick="showFunction(this)" id="AddDropDiv">1</a> <a
-		href="#" onclick="showFunction(this)">2</a> <a href="#"
-		onclick="showFunction(this)">3</a> <a href="MainMenu.jsp">&lt;Back</a>
+	<nav class="top-nav"> 
+		<a href="#" onclick="showFunction(this)">0</a>
+		<a href="#" onclick="showFunction(this)" id="AddDropDiv">1</a> 
+		<a href="#" onclick="showFunction(this)">2</a> 
+		<a href="#" onclick="showFunction(this)">3</a> 
+		<a href="MainMenu.jsp">&lt;Back</a>
 	</nav>
 	<h1 class="banner">Student Portal</h1>
 	<p>Please select one of the options above.</p>
@@ -81,9 +83,13 @@ List<Course> availCourses = helper.getAvailableCourses(account);
 			<h3>Add/Drop a Course</h3>
 			<table class="course-listing" style="border: 1px #333 solid">
 				<tr>
-					<th colspan="5">Courses Available</th>
+					<th colspan="1">Courses Available</th>
 				</tr>
-				<%=TransformHtml.getTableRows(5, helper.getAvailableCourses(account))%>
+				<%
+				for(Course c : availCourses) {
+					out.print("<tr><td>" + c.getCourse_id() + " - " + c.getCourse_name() + "</td></tr>");
+				}
+				%>
 			</table>
 			<form action="StudentServicesServlet" method="post">
 				<table>
@@ -148,11 +154,11 @@ List<Course> availCourses = helper.getAvailableCourses(account);
 		<div class="inner-modal-div">
 			<p class="x-btn" onclick="hideFunction();">X</p>
 			<h3>Transcript</h3>
-			${transcript}
+			<%= transcript %>
 			<form action="StudentServicesServlet" method="post">
-				<input type="submit" value="Refresh Transcript" /> <input
-					type="hidden" name="reqType" value="Transcript" /> <input
-					type="hidden" name="reqOrigin" value="<%= reqOrigin %>" />
+				<input type="submit" value="Refresh Transcript" /> 
+				<input type="hidden" name="reqType" value="Transcript" /> 
+				<input type="hidden" name="reqOrigin" value="<%= reqOrigin %>" />
 			</form>
 		</div>
 	</div>

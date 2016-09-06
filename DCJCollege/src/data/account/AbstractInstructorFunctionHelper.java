@@ -125,15 +125,16 @@ public abstract class AbstractInstructorFunctionHelper {
 		 * @param grade to update in the system.
 		 * @return True if the update was successful, false otherwise
 		 */
-		public abstract boolean updateGrade(AccountBean act, String student_id, String section_id, int grade, int term);
+		public abstract boolean updateGrade(AccountBean act, String student_id, String section_id, String grade);
 		
 		/**
 		 * Return a schedule object array of instructor classes
+		 * @param term TODO
 		 * @param AccountBean with all account information
 		 * @throws DbHelperException indicating what error occurred.
 		 * @return An array containing the scheduleIDs of the instructors courses
 		 */
-		public abstract List<ScheduleEntry> getSchedule(AccountBean act) throws DbHelperException;
+		public abstract List<ScheduleEntry> getSchedule(AccountBean act, int term) throws DbHelperException;
 	
 }
 

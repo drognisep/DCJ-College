@@ -68,6 +68,7 @@ nav.top-nav > a:hover {
 	padding: 16px;
 	box-sizing: border-box;
 	overflow: auto;
+	box-sizing: border-box;
 }
 
 .inner-modal-div > h3 {

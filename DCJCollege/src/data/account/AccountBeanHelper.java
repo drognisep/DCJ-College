@@ -120,19 +120,38 @@ public abstract class AccountBeanHelper {
 			throws DbHelperException {
 		return sHelper.getAvailableCourses(act);
 	}
-
+	
+	public List<String> getAvailableCourse_ids(AccountBean act)
+			throws DbHelperException {
+		return sHelper.getAvailableCourse_ids(act);
+	}
+	
 	public List<Section> getCourseSections(String courseID)
 			throws DbHelperException {
 		return sHelper.getCourseSections(courseID);
+	}
+	
+	public List<String> getCourseSection_ids(String courseID)
+			throws DbHelperException {
+		return sHelper.getCourseSection_ids(courseID);
 	}
 
 	public List<Course> getMyCourses(AccountBean act, int term)
 			throws DbHelperException {
 		return sHelper.getMyCourses(act, term);
 	}
+	
+	public List<String> getMyCourse_ids(AccountBean act, int term)
+			throws DbHelperException {
+		return sHelper.getMyCourse_ids(act, term);
+	}
 
 	public List<Course> getMyCourses(AccountBean act) throws DbHelperException {
 		return sHelper.getMyCourses(act);
+	}
+	
+	public List<String> getMyCourse_ids(AccountBean act) throws DbHelperException {
+		return sHelper.getMyCourse_ids(act);
 	}
 
 	public boolean enrollSection(AccountBean act, String courseID,
@@ -210,13 +229,13 @@ public abstract class AccountBeanHelper {
 	}
 
 	public boolean updateGrade(AccountBean act, String student_id,
-			String section_id, int grade, int term) {
-		return iHelper.updateGrade(act, student_id, section_id, grade, term);
+			String section_id, String grade) {
+		return iHelper.updateGrade(act, student_id, section_id, grade);
 	}
 
-	public List<ScheduleEntry> getSchedule(AccountBean act)
+	public List<ScheduleEntry> getSchedule(AccountBean act, int term)
 			throws DbHelperException {
-		return iHelper.getSchedule(act);
+		return iHelper.getSchedule(act, term);
 	}
 
 	public List<Section> getInstructorSections(AccountBean act, String instr_id)
@@ -245,4 +264,5 @@ public abstract class AccountBeanHelper {
 	public abstract Connection getConnection() throws DbHelperException;
 	
 	public abstract void closeConnection();
+
 }
