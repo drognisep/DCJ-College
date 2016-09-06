@@ -138,3 +138,32 @@ div.footer {
 	Fully
 	transparent
 }
+
+table.news-window {
+	width: 80vw;
+	margin-left: 10vw;
+}
+
+table.news-window h1 {
+	margin: 32px 0 0 0;
+}
+
+table.news-window h3 {
+	font-family: "Trebuchet MS", Helvetica, sans-serif;
+	font-size: 1.4em;
+}
+
+table.news-window p {
+	font-family: Georgia, serif;
+	font-size: 1.1em;
+}
+
+table.news-window li {
+	font-family: Georgia, serif;
+	font-weight: bold;
+}
+
+table.news-window a {
+	color: #E3EFFB;
+	text-shadow: 0 0 5px #333;
+}
