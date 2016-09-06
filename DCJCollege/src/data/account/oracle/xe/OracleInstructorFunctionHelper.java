@@ -587,6 +587,7 @@ public class OracleInstructorFunctionHelper extends
 				pstmt.setString(2, student_id);
 				pstmt.setString(3, section_id);
 				updated = pstmt.executeUpdate();
+				System.out.println("update = " + updated);
 				if (updated == 1) {
 					return true;
 				}

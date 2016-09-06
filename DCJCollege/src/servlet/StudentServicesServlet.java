@@ -141,7 +141,7 @@ public class StudentServicesServlet extends HttpServlet {
 					items = (List<TranscriptEntry>) session.getAttribute("transcript");
 				}
 				StringBuilder sb = new StringBuilder();
-				sb.append("<table>");
+				sb.append("<table style='text-align:center'><thead><h3>Transcript</h3></thead><tbody>");
 				sb.append("<tr><th>Last Name</th><th>Course ID</th><th>Course Name</th><th>Grade</th></tr>");
 				for (TranscriptEntry e : items) {
 					sb.append("<tr>");
@@ -153,7 +153,7 @@ public class StudentServicesServlet extends HttpServlet {
 							.append("</td>");
 					sb.append("</tr>");
 				}
-				sb.append("</table>");
+				sb.append("</tbody></table>");
 				session.setAttribute("transcript", sb.toString());
 				response.sendRedirect(jspOrigin);
 				return;

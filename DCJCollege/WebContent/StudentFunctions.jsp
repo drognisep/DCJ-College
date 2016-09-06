@@ -6,7 +6,7 @@
 <%
 	AccountBeanHelper.getInstance().closeConnection();
 String reqOrigin = "StudentFunctions.jsp";
-String transcript = (String)(session.getAttribute("transcript") == null ? "" : session.getAttribute("transcript"));
+String transcript = (String)(session.getAttribute("transcript") == null ? "<h3>Request transcript</h3><button onclick='document.getElementById(\"requestTranscript\").click()'>Submit</button>" : session.getAttribute("transcript"));
 %>
 <jsp:include page="include/validateLogin.jsp"></jsp:include>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -36,6 +36,7 @@ List<Course> availCourses = helper.getAvailableCourses(account);
 	<p>Please select one of the options above.</p>
 	<p class="errText">${errText}</p>
 	<p class="infoText">${infoText}</p>
+	<%= transcript %>
 	<div id="div0" class="hidden-modal-div">
 		<div class="inner-modal-div">
 			<p class="x-btn" onclick="hideFunction();">X</p>
@@ -154,9 +155,8 @@ List<Course> availCourses = helper.getAvailableCourses(account);
 		<div class="inner-modal-div">
 			<p class="x-btn" onclick="hideFunction();">X</p>
 			<h3>Transcript</h3>
-			<%= transcript %>
 			<form action="StudentServicesServlet" method="post">
-				<input type="submit" value="Refresh Transcript" /> 
+				<input id="requestTranscript" type="submit" value="Refresh Transcript" /> 
 				<input type="hidden" name="reqType" value="Transcript" /> 
 				<input type="hidden" name="reqOrigin" value="<%= reqOrigin %>" />
 			</form>
