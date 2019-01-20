@@ -3,6 +3,7 @@
 ### Overview
 This is a project for the Step IT Up America program, during which myself, Chelsea Nett, and Jennifer Wu worked to 
 create a basic college web site for students and instructors.
+
 **Note:** This project was built before we were taught the front controller or dependency injection patterns.
 
 #### General Features
